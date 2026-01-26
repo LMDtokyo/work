@@ -1,0 +1,13 @@
+bin/
+obj/
+.vs/
+.vscode/
+*.user
+*.suo
+appsettings.Development.json
+.env
+*.log
+node_modules/
+dist/
+.idea/
+*.pdb

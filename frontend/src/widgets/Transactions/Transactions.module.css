@@ -1,0 +1,21 @@
+.transactions::-webkit-scrollbar {
+  width: 4px; /* или 4px для более тонкого */
+}
+
+.transactions::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.transactions::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.transactions::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.transactions {
+  scrollbar-width: thin;
+  scrollbar-color: #555 transparent;
+}

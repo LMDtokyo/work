@@ -1,0 +1,168 @@
+@import "tailwindcss";
+
+:root,
+[data-theme="light"] {
+  --color-landing-bg-1: #ffffff;
+  --color-landing-bg-2: #eaecff;
+  --color-landing-bg-3: #f2f3ff;
+  --color-landing-bg-4: #eff1ff;
+
+  --color-auth-bg: #edeff9;
+  --color-auth-input-bg: #ffffff;
+
+  --color-chat-bg: #d9ddf2;
+  --color-chat-gradient-bg-1: #f7f8fd;
+  --color-chat-gradient-bg-2: #eceef9;
+  --color-chat-secondary-bg: #eceef9;
+  --color-chat-tertiary-bg: #ffffff;
+  --color-chat-tertiary-bg-hover: #efefef;
+  --color-chat-selected-bg: #f3f5fb;
+
+  --color-font-primary: #474972;
+  --color-font-primary-hover: #31324f;
+  --color-font-secondary: #9192aa;
+  --color-font-primary-hover: #5054ce;
+
+  --color-glare: rgb(177, 171, 255);
+
+  --color-primary-border: #c4c7db;
+  --color-secondary-border: #ced1df;
+  --color-border: #a6a8bb;
+
+  --color-theme-button: #edefff;
+
+  --color-hover-shadow: #00000025;
+}
+
+[data-theme="dark"] {
+  --color-landing-bg-1: #070714;
+  --color-landing-bg-2: #0b0b14;
+  --color-landing-bg-3: #0d0d12;
+  --color-landing-bg-4: #101014;
+
+  --color-auth-bg: #0a0a10;
+  --color-auth-input-bg: #1d1f30;
+
+  --color-chat-bg: #0a0a10;
+  --color-chat-gradient-bg-1: #262940;
+  --color-chat-gradient-bg-2: #1d1f30;
+  --color-chat-secondary-bg: #1d1f30;
+  --color-chat-tertiary-bg: #30334f;
+  --color-chat-tertiary-bg-hover: #474b74;
+  --color-chat-selected-bg: #262940;
+
+  --color-font-primary: #d2d7f4;
+  --color-font-primary-hover: #dfe1ec;
+  --color-font-secondary: #7b7f94;
+  --color-font-primary-hover: rgb(234, 237, 255);
+
+  --color-glare: rgb(18, 22, 69);
+
+  --color-primary-border: #32354e;
+  --color-secondary-border: #404468;
+  --color-border: #434764;
+
+  --color-theme-button: #2e3160;
+
+  --color-hover-shadow: rgb(48, 15, 132);
+}
+
+@theme {
+  --color-landing-bg-1: var(--color-landing-bg-1);
+  --color-landing-bg-2: var(--color-landing-bg-2);
+  --color-landing-bg-3: var(--color-landing-bg-3);
+  --color-landing-bg-4: var(--color-landing-bg-4);
+
+  --color-auth-bg: var(--color-auth-bg);
+
+  --color-chat-bg: var(--color-chat-bg);
+  --color-chat-gradient-bg-1: var(--color-chat-gradient-bg-1);
+  --color-chat-gradient-bg-2: var(--color-chat-gradient-bg-2);
+  --color-chat-secondary-bg: var(--color-chat-secondary-bg);
+  --color-chat-tertiary-bg: var(--color-chat-tertiary-bg);
+  --color-chat-tertiary-bg-hover: var(--color-chat-tertiary-bg-hover);
+  --color-chat-selected-bg: var(--color-chat-selected-bg);
+
+  --color-auth-input-bg: var(--color-auth-input-bg);
+
+  --color-font-primary: var(--color-font-primary);
+  --color-font-primary-hover: var(--color-font-primary-hover);
+  --color-font-secondary: var(--color-font-secondary);
+  --color-font-tertiary: #ffffff;
+  --color-font-contrast: #8090ff;
+  --color-hover-font-contrast: #4f67ff;
+  --color-font-primary-hover: var(--color-font-primary-hover);
+
+  --color-button-gradient-start: #8090ff;
+  --color-button-gradient-end: #6777e4;
+
+  --color-glare: var(--color-glare);
+
+  --color-primary-border: var(--color-primary-border);
+  --color-secondary-border: var(--color-secondary-border);
+  --color-border: var(--color-border);
+
+  --color-theme-button: var(--color-theme-button);
+
+  --color-hover-shadow: var(--color-hover-shadow);
+
+  --color-bg-contrast-20: #8090ff20;
+
+  --color-red-bg-20: #c7555520;
+  --color-red-bg-30: #c7555530;
+  --color-red-bg: #c75555;
+
+  --color-green-bg-20: #21c45d20;
+  --color-green-bg-30: #21c45d30;
+  --color-green-bg: #21c45d;
+
+  --color-yellow-bg-20: #f59f0920;
+  --color-yellow-bg-30: #f59f0930;
+  --color-yellow-bg: #f59f09;
+
+  --animate-fade-in: fadeIn 0.4s ease;
+  --animate-fade-in-right: fadeInRight 0.4s ease;
+  --animate-fade-in-bottom: fadeInBottom 0.4s ease;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow-x: hidden;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInBottom {
+  0% {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

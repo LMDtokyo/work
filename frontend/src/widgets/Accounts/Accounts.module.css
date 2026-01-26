@@ -1,0 +1,21 @@
+.accounts::-webkit-scrollbar {
+  width: 4px;
+}
+
+.accounts::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.accounts::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.accounts::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.accounts {
+  scrollbar-width: thin;
+  scrollbar-color: #555 transparent;
+}

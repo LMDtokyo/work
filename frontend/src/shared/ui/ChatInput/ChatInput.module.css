@@ -1,0 +1,14 @@
+.input-area {
+  overflow: -moz-scrollbars-none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.input-area::-webkit-scrollbar {
+  display: none;
+  width: 0 !important;
+}
+
+.images::-webkit-scrollbar {
+  width: 0;
+}
