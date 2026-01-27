@@ -10,18 +10,19 @@ interface AccountItemProps {
   onDelete?: () => void;
 }
 
-function formatTokenExpiry(expiresAt: string | null): string {
-  if (!expiresAt) return "Срок неизвестен";
+function getTokenExpiryInfo(expiresAt: string | null): { text: string; cls: string } {
+  if (!expiresAt) return { text: "Срок неизвестен", cls: "text-font-secondary" };
 
   const exp = new Date(expiresAt);
   const now = new Date();
   const diffMs = exp.getTime() - now.getTime();
   const days = Math.ceil(diffMs / 86400000);
 
-  if (days <= 0) return "Токен истёк";
-  if (days === 1) return "Осталось 1 день";
-  if (days < 5) return `Осталось ${days} дня`;
-  return `Осталось ${days} дней`;
+  if (days <= 0) return { text: "Токен истёк", cls: "text-red-400" };
+  if (days <= 14) return { text: `Осталось ${days} дн.`, cls: "text-red-400" };
+  if (days <= 30) return { text: `Осталось ${days} дн.`, cls: "text-yellow-500" };
+  if (days < 5) return { text: `Осталось ${days} дня`, cls: "text-green-400/70" };
+  return { text: `Осталось ${days} дн.`, cls: "text-green-400/70" };
 }
 
 function formatSyncTime(dateStr: string | null): string {
@@ -111,7 +112,9 @@ function AccountItem({ shopName, status, lastSyncAt, tokenExpiresAt, onDelete }:
         </span>
         <span className="text-font-secondary text-sm">{formatSyncTime(lastSyncAt)}</span>
       </div>
-      <p className="text-font-secondary text-xs">{formatTokenExpiry(tokenExpiresAt)}</p>
+      <p className={`text-xs ${getTokenExpiryInfo(tokenExpiresAt).cls}`}>
+        {getTokenExpiryInfo(tokenExpiresAt).text}
+      </p>
     </div>
   );
 }
