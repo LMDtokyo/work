@@ -1,6 +1,7 @@
 using System.Text;
 using MessagingPlatform.Application.Common.Interfaces;
 using MessagingPlatform.Domain.Repositories;
+using MessagingPlatform.Infrastructure.ExternalServices.Wildberries;
 using MessagingPlatform.Infrastructure.Persistence;
 using MessagingPlatform.Infrastructure.Persistence.Repositories;
 using MessagingPlatform.Infrastructure.Security;
@@ -20,6 +21,7 @@ public static class DependencyInjection
     {
         services.AddPersistence(configuration);
         services.AddAuth(configuration);
+        services.AddExternalServices();
 
         return services;
     }
@@ -40,6 +42,8 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddScoped<IWbAccountRepository, WbAccountRepository>();
+        services.AddScoped<IWbOrderRepository, WbOrderRepository>();
 
         return services;
     }
@@ -78,6 +82,17 @@ public static class DependencyInjection
         });
 
         services.AddAuthorization();
+
+        return services;
+    }
+
+    private static IServiceCollection AddExternalServices(this IServiceCollection services)
+    {
+        services.AddHttpClient<IWildberriesApiClient, WildberriesApiClient>(client =>
+        {
+            client.Timeout = TimeSpan.FromSeconds(30);
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+        });
 
         return services;
     }

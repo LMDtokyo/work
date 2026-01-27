@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef, type ReactNode } from "react"
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { authApi, initAuthApiInterceptor } from "../../config/api/authApi";
 import { userApi, initUserApiInterceptor } from "../../config/api/userApi";
+import { initWbApiInterceptor } from "../../config/api/wildberriesApi";
 import { AuthContext } from "./context";
 import type { User, Theme } from "./types";
 
@@ -42,6 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   if (interceptorsReady.current === null) {
     initAuthApiInterceptor(handleAuthFailure);
     initUserApiInterceptor(handleAuthFailure);
+    initWbApiInterceptor(handleAuthFailure);
     interceptorsReady.current = true;
   }
 

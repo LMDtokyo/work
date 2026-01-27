@@ -78,4 +78,51 @@ public static class EndpointExtensions
 
         return app;
     }
+
+    public static IEndpointRouteBuilder MapWildberriesEndpoints(this IEndpointRouteBuilder app)
+    {
+        var group = app.MapGroup("/api/Wildberries")
+            .WithTags("Wildberries")
+            .RequireAuthorization();
+
+        group.MapPost("/accounts", WildberriesEndpoints.AddAccount)
+            .WithName("AddWbAccount")
+            .WithSummary("Add a Wildberries seller account")
+            .RequireRateLimiting("api")
+            .Accepts<WildberriesEndpoints.AddAccountRequest>("application/json")
+            .Produces<WildberriesEndpoints.AccountResponseDto>(StatusCodes.Status200OK);
+
+        group.MapGet("/accounts", WildberriesEndpoints.GetAccounts)
+            .WithName("GetWbAccounts")
+            .WithSummary("Get all Wildberries accounts for current user")
+            .RequireRateLimiting("api")
+            .Produces<IReadOnlyList<WildberriesEndpoints.AccountResponseDto>>(StatusCodes.Status200OK);
+
+        group.MapDelete("/accounts/{id:guid}", WildberriesEndpoints.RemoveAccount)
+            .WithName("RemoveWbAccount")
+            .WithSummary("Remove a Wildberries account")
+            .RequireRateLimiting("api")
+            .Produces(StatusCodes.Status200OK);
+
+        group.MapPut("/accounts/{id:guid}/token", WildberriesEndpoints.UpdateToken)
+            .WithName("UpdateWbAccountToken")
+            .WithSummary("Update API token for a Wildberries account")
+            .RequireRateLimiting("api")
+            .Accepts<WildberriesEndpoints.UpdateTokenRequest>("application/json")
+            .Produces<WildberriesEndpoints.AccountResponseDto>(StatusCodes.Status200OK);
+
+        group.MapPost("/accounts/{id:guid}/sync", WildberriesEndpoints.SyncOrders)
+            .WithName("SyncWbOrders")
+            .WithSummary("Sync orders from Wildberries API")
+            .RequireRateLimiting("api")
+            .Produces<WildberriesEndpoints.SyncResultDto>(StatusCodes.Status200OK);
+
+        group.MapGet("/accounts/{id:guid}/orders", WildberriesEndpoints.GetOrders)
+            .WithName("GetWbOrders")
+            .WithSummary("Get orders for a Wildberries account")
+            .RequireRateLimiting("api")
+            .Produces<WildberriesEndpoints.PaginatedOrdersDto>(StatusCodes.Status200OK);
+
+        return app;
+    }
 }

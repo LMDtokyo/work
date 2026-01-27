@@ -78,5 +78,6 @@ app.UseAuthorization();
 
 app.MapAuthEndpoints();
 app.MapUserEndpoints();
+app.MapWildberriesEndpoints();
 
 app.Run();

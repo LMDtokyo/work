@@ -8,6 +8,8 @@ public sealed class ApplicationDbContext : DbContext, IUnitOfWork
 {
     public DbSet<User> Users => Set<User>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DbSet<WbAccount> WbAccounts => Set<WbAccount>();
+    public DbSet<WbOrder> WbOrders => Set<WbOrder>();
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
