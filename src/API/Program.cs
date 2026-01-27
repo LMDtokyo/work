@@ -79,5 +79,6 @@ app.UseAuthorization();
 app.MapAuthEndpoints();
 app.MapUserEndpoints();
 app.MapWildberriesEndpoints();
+app.MapChatEndpoints();
 
 app.Run();

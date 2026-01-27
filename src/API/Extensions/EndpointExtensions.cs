@@ -125,4 +125,19 @@ public static class EndpointExtensions
 
         return app;
     }
+
+    public static IEndpointRouteBuilder MapChatEndpoints(this IEndpointRouteBuilder app)
+    {
+        var group = app.MapGroup("/api/Chats")
+            .WithTags("Chats")
+            .RequireAuthorization();
+
+        group.MapGet("/", ChatEndpoints.GetChats)
+            .WithName("GetChats")
+            .WithSummary("Get user's chats")
+            .RequireRateLimiting("api")
+            .Produces<IReadOnlyList<ChatEndpoints.ChatResponseDto>>(StatusCodes.Status200OK);
+
+        return app;
+    }
 }

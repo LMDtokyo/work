@@ -1,54 +1,41 @@
-import avatar from "../../shared/assets/avatar.jpg";
+import { useChats } from "../../shared/api/hooks/useChats";
+import defaultAvatar from "../../shared/assets/avatar.jpg";
 import ChatItem from "../../shared/ui/ChatItem/ChatItem";
 
-const data = [
-  {
-    image: avatar,
-    name: "John Doe",
-    lastMessage: "Hello there!",
-    timestamp: "10:30 AM",
-    unreadMessages: 3,
-  },
-  {
-    image: avatar,
-    name: "John Doe",
-    lastMessage: "Hello there!",
-    timestamp: "10:30 AM",
-    unreadMessages: 3,
-  },
-  {
-    image: avatar,
-    name: "John Doe",
-    lastMessage: "Hello there!",
-    timestamp: "10:30 AM",
-    unreadMessages: 3,
-  },
-  {
-    image: avatar,
-    name: "John Doe",
-    lastMessage: "Hello there!",
-    timestamp: "10:30 AM",
-    unreadMessages: 3,
-  },
-  {
-    image: avatar,
-    name: "John Doe",
-    lastMessage: "Hello there!",
-    timestamp: "10:30 AM",
-    unreadMessages: 3,
-  },
-];
-
 function ChatItemsList() {
+  const { data: chats, isLoading } = useChats();
+
+  if (isLoading) {
+    return (
+      <div className="w-full flex flex-col gap-2 mt-1">
+        {[1, 2, 3].map((i) => (
+          <div
+            key={i}
+            className="animate-pulse bg-chat-secondary-bg rounded-xl h-20"
+          />
+        ))}
+      </div>
+    );
+  }
+
+  if (!chats || chats.length === 0) {
+    return (
+      <div className="w-full flex items-center justify-center py-12 text-font-secondary">
+        Нет чатов
+      </div>
+    );
+  }
+
   return (
     <div className="w-full flex flex-col gap-2 mt-1">
-      {data.map((item) => (
+      {chats.map((chat) => (
         <ChatItem
-          image={item.image}
-          name={item.name}
-          lastMessage={item.lastMessage}
-          timestamp={item.timestamp}
-          unreadMessages={item.unreadMessages}
+          key={chat.id}
+          image={chat.avatar || defaultAvatar}
+          name={chat.name}
+          lastMessage={chat.lastMessage || ""}
+          timestamp={chat.lastMessageTime || ""}
+          unreadMessages={chat.unreadCount}
         />
       ))}
     </div>

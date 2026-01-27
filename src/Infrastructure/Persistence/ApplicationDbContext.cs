@@ -10,6 +10,7 @@ public sealed class ApplicationDbContext : DbContext, IUnitOfWork
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<WbAccount> WbAccounts => Set<WbAccount>();
     public DbSet<WbOrder> WbOrders => Set<WbOrder>();
+    public DbSet<Chat> Chats => Set<Chat>();
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 

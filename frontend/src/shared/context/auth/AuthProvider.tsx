@@ -3,6 +3,7 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { authApi, initAuthApiInterceptor } from "../../config/api/authApi";
 import { userApi, initUserApiInterceptor } from "../../config/api/userApi";
 import { initWbApiInterceptor } from "../../config/api/wildberriesApi";
+import { initChatApiInterceptor } from "../../config/api/chatApi";
 import { AuthContext } from "./context";
 import type { User, Theme } from "./types";
 
@@ -44,6 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     initAuthApiInterceptor(handleAuthFailure);
     initUserApiInterceptor(handleAuthFailure);
     initWbApiInterceptor(handleAuthFailure);
+    initChatApiInterceptor(handleAuthFailure);
     interceptorsReady.current = true;
   }
 

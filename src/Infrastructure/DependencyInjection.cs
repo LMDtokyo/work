@@ -44,6 +44,7 @@ public static class DependencyInjection
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IWbAccountRepository, WbAccountRepository>();
         services.AddScoped<IWbOrderRepository, WbOrderRepository>();
+        services.AddScoped<IChatRepository, ChatRepository>();
 
         return services;
     }
