@@ -7,15 +7,15 @@
 }
 
 .transactions::-webkit-scrollbar-thumb {
-  background: #888;
+  background: var(--color-primary-border);
   border-radius: 3px;
 }
 
 .transactions::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: var(--color-primary-border);
 }
 
 .transactions {
   scrollbar-width: thin;
-  scrollbar-color: #555 transparent;
+  scrollbar-color: var(--color-primary-border) transparent;
 }

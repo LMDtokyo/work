@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Threading.RateLimiting;
 using MessagingPlatform.API.Extensions;
+using MessagingPlatform.API.Infrastructure;
 using MessagingPlatform.API.Middleware;
 using MessagingPlatform.API.Services;
 using MessagingPlatform.Application;
@@ -10,6 +11,22 @@ using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// SECURITY: Configure logging to prevent sensitive data leakage
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole(options =>
+{
+    options.FormatterName = "secure";
+});
+builder.Logging.AddConsoleFormatter<SecureConsoleFormatter, Microsoft.Extensions.Logging.Console.SimpleConsoleFormatterOptions>();
+builder.Logging.AddFilter((category, level) =>
+{
+    // Never log at Trace level (too verbose, may leak sensitive data)
+    if (level == LogLevel.Trace)
+        return false;
+
+    return true;
+});
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {

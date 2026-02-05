@@ -1,4 +1,8 @@
-import type { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from "axios";
+import type {
+  AxiosInstance,
+  AxiosError,
+  InternalAxiosRequestConfig,
+} from "axios";
 import axios from "axios";
 
 interface QueuedRequest {
@@ -40,7 +44,7 @@ function shouldAttemptRefresh(config: InternalAxiosRequestConfig): boolean {
 
 export function setupAuthInterceptor(
   instance: AxiosInstance,
-  onAuthFailure?: () => void
+  onAuthFailure?: () => void,
 ): void {
   instance.interceptors.response.use(
     (response) => {
@@ -95,7 +99,7 @@ export function setupAuthInterceptor(
       }
 
       return Promise.reject(error);
-    }
+    },
   );
 }
 

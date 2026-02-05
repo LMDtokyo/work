@@ -2,7 +2,10 @@ import PosibilityItemsList from "../PosibilityItemsList/PosibilityItemsList";
 
 function PosibilitiesSection() {
   return (
-    <div id="posibilities" className="flex flex-col items-center relative px-2 sm:px-0">
+    <div
+      id="posibilities"
+      className="flex flex-col items-center relative px-2 sm:px-0"
+    >
       <h2 className="text-center text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-font-primary w-full sm:w-[90%] md:w-[85%] lg:w-220 mb-4 sm:mb-5 z-99 leading-tight">
         Вся история коммуникаций и договорённостей с клиентом{" "}
         <span className="bg-linear-to-r from-button-gradient-start to-button-gradient-end bg-clip-text text-transparent">

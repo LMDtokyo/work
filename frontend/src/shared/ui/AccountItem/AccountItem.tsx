@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { EllipsisVertical, Trash2 } from "lucide-react";
-import wildberries from "../../assets/wildberries.svg";
+import WildberriesIcon from "../../assets/WildberriesIcon";
 
 interface AccountItemProps {
   shopName: string;
@@ -10,8 +10,12 @@ interface AccountItemProps {
   onDelete?: () => void;
 }
 
-function getTokenExpiryInfo(expiresAt: string | null): { text: string; cls: string } {
-  if (!expiresAt) return { text: "Срок неизвестен", cls: "text-font-secondary" };
+function getTokenExpiryInfo(expiresAt: string | null): {
+  text: string;
+  cls: string;
+} {
+  if (!expiresAt)
+    return { text: "Срок неизвестен", cls: "text-font-secondary" };
 
   const exp = new Date(expiresAt);
   const now = new Date();
@@ -20,8 +24,10 @@ function getTokenExpiryInfo(expiresAt: string | null): { text: string; cls: stri
 
   if (days <= 0) return { text: "Токен истёк", cls: "text-red-400" };
   if (days <= 14) return { text: `Осталось ${days} дн.`, cls: "text-red-400" };
-  if (days <= 30) return { text: `Осталось ${days} дн.`, cls: "text-yellow-500" };
-  if (days < 5) return { text: `Осталось ${days} дня`, cls: "text-green-400/70" };
+  if (days <= 30)
+    return { text: `Осталось ${days} дн.`, cls: "text-yellow-500" };
+  if (days < 5)
+    return { text: `Осталось ${days} дня`, cls: "text-green-400/70" };
   return { text: `Осталось ${days} дн.`, cls: "text-green-400/70" };
 }
 
@@ -44,15 +50,35 @@ function formatSyncTime(dateStr: string | null): string {
 
 function getStatusStyle(status: string) {
   const styles: Record<string, { text: string; cls: string }> = {
-    active: { text: "Подключено", cls: "bg-green-bg-20 border-green-bg text-green-bg" },
+    active: {
+      text: "Подключено",
+      cls: "bg-green-bg-20 border-green-bg text-green-bg",
+    },
     error: { text: "Ошибка", cls: "bg-red-500/20 border-red-500 text-red-500" },
-    inactive: { text: "Отключено", cls: "bg-gray-500/20 border-gray-500 text-gray-400" },
-    tokenexpired: { text: "Токен истёк", cls: "bg-yellow-500/20 border-yellow-500 text-yellow-500" },
+    inactive: {
+      text: "Отключено",
+      cls: "bg-gray-500/20 border-gray-500 text-gray-400",
+    },
+    tokenexpired: {
+      text: "Токен истёк",
+      cls: "bg-yellow-500/20 border-yellow-500 text-yellow-500",
+    },
   };
-  return styles[status] || { text: status, cls: "bg-gray-500/20 border-gray-500 text-gray-400" };
+  return (
+    styles[status] || {
+      text: status,
+      cls: "bg-gray-500/20 border-gray-500 text-gray-400",
+    }
+  );
 }
 
-function AccountItem({ shopName, status, lastSyncAt, tokenExpiresAt, onDelete }: AccountItemProps) {
+function AccountItem({
+  shopName,
+  status,
+  lastSyncAt,
+  tokenExpiresAt,
+  onDelete,
+}: AccountItemProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const statusInfo = getStatusStyle(status);
@@ -78,7 +104,7 @@ function AccountItem({ shopName, status, lastSyncAt, tokenExpiresAt, onDelete }:
     <div className="flex flex-col gap-4 bg-chat-tertiary-bg rounded-xl py-4 px-5 relative">
       <div className="flex justify-between items-start">
         <div className="flex gap-3">
-          <img src={wildberries} className="w-12 h-12" alt="" />
+          <WildberriesIcon width={48} height={48} />
           <div className="flex flex-col">
             <h2 className="text-font-primary text-lg font-semibold leading-tight">
               {shopName}
@@ -94,7 +120,7 @@ function AccountItem({ shopName, status, lastSyncAt, tokenExpiresAt, onDelete }:
             <EllipsisVertical className="text-font-primary w-5 h-5" />
           </button>
           {menuOpen && (
-            <div className="absolute right-0 top-8 bg-chat-secondary-bg border border-primary-border rounded-lg shadow-lg z-10 min-w-[140px] py-1">
+            <div className="absolute right-0 top-8 bg-chat-secondary-bg border border-primary-border rounded-lg shadow-lg z-10 min-w-35 py-1">
               <button
                 onClick={handleDelete}
                 className="w-full flex items-center gap-2 px-4 py-2 text-red-400 hover:bg-chat-tertiary-bg transition-colors text-sm"
@@ -107,10 +133,14 @@ function AccountItem({ shopName, status, lastSyncAt, tokenExpiresAt, onDelete }:
         </div>
       </div>
       <div className="flex flex-wrap gap-2 items-center">
-        <span className={`inline-flex border rounded-full py-1 px-3 text-sm ${statusInfo.cls}`}>
+        <span
+          className={`inline-flex border rounded-full py-1 px-3 text-sm ${statusInfo.cls}`}
+        >
           {statusInfo.text}
         </span>
-        <span className="text-font-secondary text-sm">{formatSyncTime(lastSyncAt)}</span>
+        <span className="text-font-secondary text-sm">
+          {formatSyncTime(lastSyncAt)}
+        </span>
       </div>
       <p className={`text-xs ${getTokenExpiryInfo(tokenExpiresAt).cls}`}>
         {getTokenExpiryInfo(tokenExpiresAt).text}

@@ -22,7 +22,10 @@ interface ApiResponse<T> {
   errors?: Array<{ description: string }>;
 }
 
-export async function addWbAccount({ apiToken, shopName }: AddAccountParams): Promise<WbAccount> {
+export async function addWbAccount({
+  apiToken,
+  shopName,
+}: AddAccountParams): Promise<WbAccount> {
   try {
     const { data } = await wbApi.post<ApiResponse<WbAccount>>("/accounts", {
       apiToken,
@@ -30,7 +33,8 @@ export async function addWbAccount({ apiToken, shopName }: AddAccountParams): Pr
     });
 
     if (!data.isSuccess || !data.data) {
-      const msg = data.errors?.[0]?.description || "Не удалось добавить аккаунт";
+      const msg =
+        data.errors?.[0]?.description || "Не удалось добавить аккаунт";
       throw new Error(msg);
     }
 
@@ -46,7 +50,8 @@ export async function getWbAccounts(): Promise<WbAccount[]> {
     const { data } = await wbApi.get<ApiResponse<WbAccount[]>>("/accounts");
 
     if (!data.isSuccess) {
-      const msg = data.errors?.[0]?.description || "Не удалось загрузить аккаунты";
+      const msg =
+        data.errors?.[0]?.description || "Не удалось загрузить аккаунты";
       throw new Error(msg);
     }
 
@@ -59,7 +64,9 @@ export async function getWbAccounts(): Promise<WbAccount[]> {
 
 export async function removeWbAccount(accountId: string): Promise<void> {
   try {
-    const { data } = await wbApi.delete<ApiResponse<null>>(`/accounts/${accountId}`);
+    const { data } = await wbApi.delete<ApiResponse<null>>(
+      `/accounts/${accountId}`,
+    );
 
     if (!data.isSuccess) {
       const msg = data.errors?.[0]?.description || "Не удалось удалить аккаунт";
@@ -73,7 +80,9 @@ export async function removeWbAccount(accountId: string): Promise<void> {
 
 export async function syncWbOrders(accountId: string): Promise<number> {
   try {
-    const { data } = await wbApi.post<ApiResponse<{ newOrdersCount: number }>>(`/accounts/${accountId}/sync`);
+    const { data } = await wbApi.post<ApiResponse<{ newOrdersCount: number }>>(
+      `/accounts/${accountId}/sync`,
+    );
 
     if (!data.isSuccess || !data.data) {
       const msg = data.errors?.[0]?.description || "Синхронизация не удалась";

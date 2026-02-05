@@ -7,7 +7,6 @@ function TransactionsItemsList() {
       {mockTransactions.map((tx) => (
         <TransactionItem
           key={tx.id}
-          type={tx.type}
           title={tx.title}
           platform={tx.platform}
           sum={tx.sum}

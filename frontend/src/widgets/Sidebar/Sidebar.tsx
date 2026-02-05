@@ -1,48 +1,97 @@
-import { MessageCircle, Moon, Settings, Sun } from "lucide-react";
-import SidebarItem from "../../shared/ui/SidebarItem/SidebarItem";
-import { useState } from "react";
-import { useAuth } from "../../shared/context/auth";
+import { Crown, Menu, Settings, UserRound } from "lucide-react";
+import WildberriesIcon from "../../shared/assets/WildberriesIcon";
+import AvitoIcon from "../../shared/assets/AvitoIcon";
+import TelegramIcon from "../../shared/assets/TelegramIcon";
+import PlatformLink from "../../shared/ui/PlatformLink/PlatformLink";
+import { NavLink } from "react-router-dom";
+import { useRef, useState } from "react";
+import { useClickOutside } from "../../shared/hooks";
+import AllAccountsIcon from "../../shared/assets/AllAccountsIcon";
+
+const items = [
+  {
+    link: "/app/chats/wildberries",
+    icon: <WildberriesIcon width={52} height={52} />,
+  },
+  {
+    link: "/app/chats/avito",
+    icon: <AvitoIcon width={52} height={52} />,
+  },
+  {
+    link: "/app/chats/telegram",
+    icon: <TelegramIcon width={52} height={52} />,
+  },
+  {
+    link: "/app/chats/all-accounts",
+    icon: <AllAccountsIcon width={52} height={52} />,
+  },
+];
+
+const menuItems = [
+  {
+    link: "/app/profile",
+    title: "Профиль",
+    icon: <UserRound />,
+  },
+  {
+    link: "/app/settings",
+    title: "Настройки",
+    icon: <Settings />,
+  },
+  {
+    link: "/app/subscription",
+    title: "Подписка",
+    icon: <Crown />,
+  },
+];
 
 function Sidebar() {
-  const [selectedItem, setSelectedItem] = useState(0);
-  const { theme, setTheme } = useAuth();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useClickOutside(menuRef, () => setMenuOpen(false), menuOpen);
 
   return (
-    <div className="flex flex-col justify-between h-full">
-      <div>
-        <SidebarItem
-          icon={<MessageCircle />}
-          link={"/app/chats"}
-          isSelected={selectedItem === 0}
-          onClick={() => {
-            setSelectedItem(0);
-          }}
-        />
+    <div
+      ref={menuRef}
+      className="flex flex-col bg-chat-secondary-bg items-center border border-primary-border rounded-2xl relative"
+    >
+      <button
+        onClick={() => setMenuOpen(!menuOpen)}
+        className="flex items-center justify-center h-16 w-full border border-transparent border-b-primary-border rounded-t-xl cursor-pointer hover:bg-primary-border duration-100"
+      >
+        <Menu className="text-font-primary" width={28} height={28} />
+      </button>
+      <div className="flex flex-col">
+        {items.map((item, i) => (
+          <PlatformLink
+            key={item.link}
+            to={item.link}
+            icon={item.icon}
+            onClick={() => setMenuOpen(false)}
+            className={i === items.length - 1 ? "rounded-b-xl" : ""}
+          />
+        ))}
       </div>
-      <div className="flex flex-col gap-2">
-        <SidebarItem
-          icon={<Settings />}
-          link="/app/chats"
-          isSelected={selectedItem === 1}
-          onClick={() => setSelectedItem(1)}
-        />
-        <SidebarItem
-          icon={theme === "light" ? <Sun /> : <Moon />}
-          link=""
-          isButton
-          onClick={() => {
-            setTheme(theme === "light" ? "dark" : "light");
-          }}
-        />
-        <SidebarItem
-          icon={<span className="font-semibold text-2xl">A</span>}
-          link="/app/profile"
-          isSelected={selectedItem === 3}
-          onClick={() => {
-            setSelectedItem(3);
-          }}
-        />
-      </div>
+      {menuOpen && (
+        <div
+          className={`absolute flex flex-col rounded-xl border border-primary-border left-18 -top-px bg-chat-secondary-bg z-99 overflow-hidden ${menuOpen && "animate-fade-in-bottom"}`}
+        >
+          {menuItems.map((item) => (
+            <NavLink
+              key={item.link}
+              to={item.link}
+              onClick={() => setMenuOpen(false)}
+              className={({ isActive }) =>
+                `flex gap-2 text-font-primary py-3 px-4 hover:bg-primary-border duration-100 ${isActive && "bg-primary-border"}`
+              }
+            >
+              {item.icon}
+              <span>{item.title}</span>
+            </NavLink>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

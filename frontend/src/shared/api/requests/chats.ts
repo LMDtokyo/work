@@ -31,3 +31,22 @@ export async function getChats(): Promise<Chat[]> {
     throw error;
   }
 }
+
+export async function markChatAsRead(chatId: string): Promise<boolean> {
+  try {
+    const { data } = await chatApi.put<ApiResponse<boolean>>(
+      `/${chatId}/read`
+    );
+
+    if (!data.isSuccess) {
+      const msg =
+        data.errors?.[0]?.description || "Не удалось отметить чат";
+      throw new Error(msg);
+    }
+
+    return data.data || false;
+  } catch (error) {
+    handleApiError(error, "Ошибка обновления чата");
+    throw error;
+  }
+}

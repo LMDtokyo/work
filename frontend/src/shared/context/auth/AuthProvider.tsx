@@ -1,4 +1,10 @@
-import { useState, useEffect, useCallback, useRef, type ReactNode } from "react";
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  type ReactNode,
+} from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { authApi, initAuthApiInterceptor } from "../../config/api/authApi";
 import { userApi, initUserApiInterceptor } from "../../config/api/userApi";
@@ -49,7 +55,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     interceptorsReady.current = true;
   }
 
-  const { data: user, isLoading, refetch } = useQuery({
+  const {
+    data: user,
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["auth", "me"],
     queryFn: fetchCurrentUser,
     staleTime: 0,
@@ -68,7 +78,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     mutationFn: updateThemeOnServer,
     onMutate: async (newTheme) => {
       await queryClient.cancelQueries({ queryKey: ["auth", "me"] });
-      const previousUser = queryClient.getQueryData<User | null>(["auth", "me"]);
+      const previousUser = queryClient.getQueryData<User | null>([
+        "auth",
+        "me",
+      ]);
       queryClient.setQueryData(["auth", "me"], (prev: User | null) => {
         if (!prev) return prev;
         return { ...prev, theme: newTheme };
@@ -98,7 +111,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setLocalTheme(newTheme);
       }
     },
-    [user, themeMutation]
+    [user, themeMutation],
   );
 
   const logout = useCallback(async () => {

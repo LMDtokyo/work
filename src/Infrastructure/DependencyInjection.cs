@@ -1,10 +1,12 @@
 using System.Text;
 using MessagingPlatform.Application.Common.Interfaces;
+using MessagingPlatform.Application.Common.Services;
 using MessagingPlatform.Domain.Repositories;
 using MessagingPlatform.Infrastructure.ExternalServices.Wildberries;
 using MessagingPlatform.Infrastructure.Persistence;
 using MessagingPlatform.Infrastructure.Persistence.Repositories;
 using MessagingPlatform.Infrastructure.Security;
+using MessagingPlatform.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -94,6 +96,9 @@ public static class DependencyInjection
             client.Timeout = TimeSpan.FromSeconds(30);
             client.DefaultRequestHeaders.Add("Accept", "application/json");
         });
+
+        services.AddScoped<IInitialSyncService, InitialSyncService>();
+        services.AddHostedService<BackgroundSyncService>();
 
         return services;
     }

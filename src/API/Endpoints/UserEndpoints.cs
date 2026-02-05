@@ -15,6 +15,15 @@ public static class UserEndpoints
         public string Theme { get; set; } = string.Empty;
     }
 
+    public sealed class ChangePasswordRequest
+    {
+        [JsonPropertyName("oldPassword")]
+        public string OldPassword { get; set; } = string.Empty;
+
+        [JsonPropertyName("newPassword")]
+        public string NewPassword { get; set; } = string.Empty;
+    }
+
     public sealed record ThemeResponseDto(string Theme);
 
     public static async Task<IResult> UpdateTheme(
@@ -33,5 +42,22 @@ public static class UserEndpoints
 
         return Results.Ok(ApiResponse<ThemeResponseDto>.Success(
             new ThemeResponseDto(result.Value.ToString().ToLowerInvariant())));
+    }
+
+    public static async Task<IResult> ChangePassword(
+        ChangePasswordRequest request,
+        ClaimsPrincipal user,
+        ISender sender)
+    {
+        if (!ClaimsExtractor.TryGetUserId(user, out var userId))
+            return Results.Ok(ApiResponse<bool>.Failure("Unauthorized"));
+
+        var command = new ChangePasswordCommand(userId, request.OldPassword, request.NewPassword);
+        var result = await sender.Send(command);
+
+        if (result.IsFailure)
+            return Results.Ok(ApiResponse<bool>.Failure(result.Error!));
+
+        return Results.Ok(ApiResponse<bool>.Success(true));
     }
 }

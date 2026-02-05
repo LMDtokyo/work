@@ -5,6 +5,7 @@ interface IChatItem {
   timestamp: string;
   unreadMessages: number;
   isSelected?: boolean;
+  onClick?: () => void;
 }
 
 function ChatItem({
@@ -14,9 +15,11 @@ function ChatItem({
   timestamp,
   unreadMessages,
   isSelected = false,
+  onClick,
 }: IChatItem) {
   return (
     <div
+      onClick={onClick}
       className={`flex items-center justify-between w-full gap-4 bg-chat-secondary-bg px-6 py-3 hover:bg-chat-selected-bg duration-50 rounded-xl cursor-pointer ${isSelected ? "bg-chat-selected-bg border border-primary-border" : "bg-chat-secondary-bg"}`}
     >
       <div className="flex items-center gap-4">

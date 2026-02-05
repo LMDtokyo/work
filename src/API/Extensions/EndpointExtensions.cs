@@ -76,6 +76,13 @@ public static class EndpointExtensions
             .Accepts<UserEndpoints.UpdateThemeRequest>("application/json")
             .Produces<UserEndpoints.ThemeResponseDto>(StatusCodes.Status200OK);
 
+        group.MapPut("/password", UserEndpoints.ChangePassword)
+            .WithName("ChangePassword")
+            .WithSummary("Change user password")
+            .RequireRateLimiting("api")
+            .Accepts<UserEndpoints.ChangePasswordRequest>("application/json")
+            .Produces<bool>(StatusCodes.Status200OK);
+
         return app;
     }
 
@@ -123,6 +130,12 @@ public static class EndpointExtensions
             .RequireRateLimiting("api")
             .Produces<WildberriesEndpoints.PaginatedOrdersDto>(StatusCodes.Status200OK);
 
+        group.MapPost("/accounts/{id:guid}/sync-chats", WildberriesEndpoints.SyncChats)
+            .WithName("SyncWbChats")
+            .WithSummary("Sync chats from Wildberries API")
+            .RequireRateLimiting("api")
+            .Produces<int>(StatusCodes.Status200OK);
+
         return app;
     }
 
@@ -137,6 +150,19 @@ public static class EndpointExtensions
             .WithSummary("Get user's chats")
             .RequireRateLimiting("api")
             .Produces<IReadOnlyList<ChatEndpoints.ChatResponseDto>>(StatusCodes.Status200OK);
+
+        group.MapPost("/{id:guid}/messages", ChatEndpoints.SendMessage)
+            .WithName("SendChatMessage")
+            .WithSummary("Send message to a chat")
+            .RequireRateLimiting("api")
+            .Accepts<ChatEndpoints.SendMessageRequest>("application/json")
+            .Produces<bool>(StatusCodes.Status200OK);
+
+        group.MapPut("/{id:guid}/read", ChatEndpoints.MarkAsRead)
+            .WithName("MarkChatAsRead")
+            .WithSummary("Mark chat as read")
+            .RequireRateLimiting("api")
+            .Produces<bool>(StatusCodes.Status200OK);
 
         return app;
     }

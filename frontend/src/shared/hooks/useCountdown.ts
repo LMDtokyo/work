@@ -33,9 +33,12 @@ export function useCountdown(initialSeconds: number): CountdownReturn {
     };
   }, [seconds > 0]);
 
-  const reset = useCallback((newSeconds?: number) => {
-    setSeconds(newSeconds ?? initialSeconds);
-  }, [initialSeconds]);
+  const reset = useCallback(
+    (newSeconds?: number) => {
+      setSeconds(newSeconds ?? initialSeconds);
+    },
+    [initialSeconds],
+  );
 
   const minutes = Math.floor(seconds / 60);
   const secs = seconds % 60;

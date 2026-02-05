@@ -1,5 +1,5 @@
 .transactions::-webkit-scrollbar {
-  width: 4px; /* или 4px для более тонкого */
+  width: 4px;
 }
 
 .transactions::-webkit-scrollbar-track {
@@ -7,7 +7,7 @@
 }
 
 .transactions::-webkit-scrollbar-thumb {
-  background: #888;
+  background: var(--color-primary-border);
   border-radius: 3px;
 }
 
@@ -16,6 +16,6 @@
 }
 
 .transactions {
-  scrollbar-width: thin;
-  scrollbar-color: #555 transparent;
+  scrollbar-width: small;
+  scrollbar-color: var(--color-primary-border) transparent;
 }

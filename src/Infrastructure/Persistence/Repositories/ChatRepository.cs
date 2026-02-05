@@ -22,8 +22,28 @@ internal sealed class ChatRepository : IChatRepository
             .OrderByDescending(x => x.LastMessageAt ?? x.CreatedAt)
             .ToListAsync(ct);
 
+    public async Task<Chat?> GetByWbChatIdAsync(Guid wbAccountId, long wbChatId, CancellationToken ct = default)
+        => await _context.Chats.FirstOrDefaultAsync(
+            x => x.WbAccountId == wbAccountId && x.WbChatId == wbChatId, ct);
+
+    public async Task<Dictionary<long, Chat>> GetByWbChatIdsAsync(
+        Guid wbAccountId,
+        IEnumerable<long> wbChatIds,
+        CancellationToken ct = default)
+    {
+        var chatIdList = wbChatIds.ToList();
+        var chats = await _context.Chats
+            .Where(x => x.WbAccountId == wbAccountId && x.WbChatId != null && chatIdList.Contains(x.WbChatId.Value))
+            .ToListAsync(ct);
+
+        return chats.ToDictionary(x => x.WbChatId!.Value);
+    }
+
     public async Task AddAsync(Chat chat, CancellationToken ct = default)
         => await _context.Chats.AddAsync(chat, ct);
+
+    public async Task AddRangeAsync(IEnumerable<Chat> chats, CancellationToken ct = default)
+        => await _context.Chats.AddRangeAsync(chats, ct);
 
     public void Update(Chat chat) => _context.Chats.Update(chat);
 

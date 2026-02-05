@@ -10,7 +10,12 @@ interface ValidationErrorResponse {
   errors?: string[];
 }
 
-type ErrorResponse = ApiErrorResponse | ValidationErrorResponse | string | null | undefined;
+type ErrorResponse =
+  | ApiErrorResponse
+  | ValidationErrorResponse
+  | string
+  | null
+  | undefined;
 
 const errorMessages: Record<string, string> = {
   "Invalid credentials": "Неверный email или пароль",
@@ -24,11 +29,12 @@ const errorMessages: Record<string, string> = {
   "Password is too weak": "Пароль слишком простой",
   "Invalid token": "Сессия истекла, войдите заново",
   "Token expired": "Сессия истекла, войдите заново",
-  "Unauthorized": "Необходима авторизация",
+  Unauthorized: "Необходима авторизация",
   "Access denied": "Доступ запрещён",
   "Network Error": "Ошибка сети. Проверьте подключение к интернету",
   "Request failed with status code 500": "Ошибка сервера. Попробуйте позже",
-  "Request failed with status code 429": "Слишком много запросов. Подождите немного",
+  "Request failed with status code 429":
+    "Слишком много запросов. Подождите немного",
 };
 
 function translateError(message: string): string {

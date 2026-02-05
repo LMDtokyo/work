@@ -4,6 +4,7 @@ using MediatR;
 using MessagingPlatform.API.Models;
 using MessagingPlatform.API.Utilities;
 using MessagingPlatform.Application.Common.Models;
+using MessagingPlatform.Application.Features.Chats.Commands;
 using MessagingPlatform.Application.Features.Wildberries.Commands;
 using MessagingPlatform.Application.Features.Wildberries.DTOs;
 using MessagingPlatform.Application.Features.Wildberries.Queries;
@@ -206,4 +207,21 @@ public static class WildberriesEndpoints
             result.TotalPages,
             result.HasPreviousPage,
             result.HasNextPage);
+
+    public static async Task<IResult> SyncChats(
+        Guid id,
+        ClaimsPrincipal user,
+        ISender sender)
+    {
+        if (!ClaimsExtractor.TryGetUserId(user, out var userId))
+            return Results.Ok(ApiResponse<int>.Failure("Unauthorized"));
+
+        var command = new SyncWbChatsCommand(id, userId);
+        var result = await sender.Send(command);
+
+        if (result.IsFailure)
+            return Results.Ok(ApiResponse<int>.Failure(result.Error!));
+
+        return Results.Ok(ApiResponse<int>.Success(result.Value));
+    }
 }

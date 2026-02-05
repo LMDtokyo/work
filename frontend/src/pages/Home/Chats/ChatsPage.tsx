@@ -12,7 +12,7 @@ export const Chats = () => {
         <ChatsCategoryItemsList />
         <ChatItemsList />
       </div>
-      <div className="flex flex-col w-full h-full bg-linear-to-b from-chat-gradient-bg-1 to-chat-gradient-bg-2 rounded-[40px] p-4 py-3 pb-2 border border-primary-border animate-fade-in-bottom">
+      <div className="flex flex-col w-full h-full bg-linear-to-b from-chat-gradient-bg-1 to-chat-gradient-bg-2 rounded-2xl p-4 py-3 pb-2 border border-primary-border animate-fade-in-bottom">
         <div className="h-full text-font-secondary flex items-center justify-center">
           Пока что здесь пусто...
         </div>

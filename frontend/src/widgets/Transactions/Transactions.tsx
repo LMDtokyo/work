@@ -18,12 +18,15 @@ function Transactions() {
       <div className={`grow overflow-auto mt-4 ${styles.transactions}`}>
         <TransactionsItemsList />
       </div>
-      <Link
-        to="/app/profile/transactions"
-        className="text-font-contrast text-center hover:text-hover-font-contrast"
-      >
-        Смотреть все
-      </Link>
+      <div className="flex flex-col">
+        <hr className="h-px border-none bg-linear-to-r from-chat-secondary-bg via-primary-border to-chat-secondary-bg mb-3" />
+        <Link
+          to="/app/profile/transactions"
+          className="text-font-contrast text-center hover:text-hover-font-contrast"
+        >
+          Смотреть все
+        </Link>
+      </div>
     </div>
   );
 }

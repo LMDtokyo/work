@@ -1,5 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getWbAccounts, addWbAccount, removeWbAccount, syncWbOrders } from "../requests/wildberries";
+import {
+  getWbAccounts,
+  addWbAccount,
+  removeWbAccount,
+  syncWbOrders,
+} from "../requests/wildberries";
 import type { WbAccount } from "../requests/wildberries";
 
 const WB_ACCOUNTS_KEY = ["wildberries", "accounts"];

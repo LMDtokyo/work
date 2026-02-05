@@ -88,3 +88,73 @@ public sealed record WbErrorResponse
     [JsonPropertyName("data")]
     public object? Data { get; init; }
 }
+
+// Chat DTOs
+public sealed record WbChatDto
+{
+    [JsonPropertyName("chatId")]
+    public long ChatId { get; init; }
+
+    [JsonPropertyName("customerName")]
+    public string CustomerName { get; init; } = string.Empty;
+
+    [JsonPropertyName("customerAvatar")]
+    public string? CustomerAvatar { get; init; }
+
+    [JsonPropertyName("lastMessage")]
+    public string? LastMessage { get; init; }
+
+    [JsonPropertyName("lastMessageAt")]
+    public DateTime? LastMessageAt { get; init; }
+
+    [JsonPropertyName("unreadCount")]
+    public int UnreadCount { get; init; }
+}
+
+public sealed record WbChatsResponse
+{
+    [JsonPropertyName("chats")]
+    public List<WbChatDto> Chats { get; init; } = new();
+}
+
+public sealed record WbMessageDto
+{
+    [JsonPropertyName("messageId")]
+    public long MessageId { get; init; }
+
+    [JsonPropertyName("chatId")]
+    public long ChatId { get; init; }
+
+    [JsonPropertyName("text")]
+    public string Text { get; init; } = string.Empty;
+
+    [JsonPropertyName("isFromCustomer")]
+    public bool IsFromCustomer { get; init; }
+
+    [JsonPropertyName("createdAt")]
+    public DateTime CreatedAt { get; init; }
+}
+
+public sealed record WbMessagesResponse
+{
+    [JsonPropertyName("messages")]
+    public List<WbMessageDto> Messages { get; init; } = new();
+}
+
+public sealed record WbSendMessageRequest
+{
+    [JsonPropertyName("chatId")]
+    public long ChatId { get; init; }
+
+    [JsonPropertyName("text")]
+    public string Text { get; init; } = string.Empty;
+}
+
+public sealed record WbSendMessageResponse
+{
+    [JsonPropertyName("success")]
+    public bool Success { get; init; }
+
+    [JsonPropertyName("messageId")]
+    public long? MessageId { get; init; }
+}

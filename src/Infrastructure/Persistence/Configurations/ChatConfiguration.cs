@@ -19,7 +19,16 @@ internal sealed class ChatConfiguration : IEntityTypeConfiguration<Chat>
             .HasColumnName("user_id")
             .IsRequired();
 
+        builder.Property(x => x.WbAccountId)
+            .HasColumnName("wb_account_id");
+
+        builder.Property(x => x.WbChatId)
+            .HasColumnName("wb_chat_id");
+
         builder.HasIndex(x => x.UserId);
+        builder.HasIndex(x => new { x.WbAccountId, x.WbChatId })
+            .IsUnique()
+            .HasFilter("wb_account_id IS NOT NULL AND wb_chat_id IS NOT NULL");
 
         builder.Property(x => x.ContactName)
             .HasColumnName("contact_name")
@@ -44,9 +53,17 @@ internal sealed class ChatConfiguration : IEntityTypeConfiguration<Chat>
         builder.Property(x => x.CreatedAt)
             .HasColumnName("created_at");
 
+        builder.Property(x => x.UpdatedAt)
+            .HasColumnName("updated_at");
+
         builder.HasOne<User>()
             .WithMany()
             .HasForeignKey(x => x.UserId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne<WbAccount>()
+            .WithMany()
+            .HasForeignKey(x => x.WbAccountId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

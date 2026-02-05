@@ -41,7 +41,7 @@ const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 AuthInput.displayName = "AuthInput";

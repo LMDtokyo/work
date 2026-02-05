@@ -59,13 +59,29 @@ namespace MessagingPlatform.Infrastructure.Persistence.Migrations
                         .HasDefaultValue(0)
                         .HasColumnName("unread_count");
 
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid")
                         .HasColumnName("user_id");
 
+                    b.Property<Guid?>("WbAccountId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("wb_account_id");
+
+                    b.Property<long?>("WbChatId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("wb_chat_id");
+
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("WbAccountId", "WbChatId")
+                        .IsUnique()
+                        .HasFilter("wb_account_id IS NOT NULL AND wb_chat_id IS NOT NULL");
 
                     b.ToTable("chats", (string)null);
                 });
@@ -259,6 +275,11 @@ namespace MessagingPlatform.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<string>("Article")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("article");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
@@ -276,6 +297,10 @@ namespace MessagingPlatform.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("customer_phone");
 
+                    b.Property<DateTime?>("FinishedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("finished_at");
+
                     b.Property<string>("ProductName")
                         .HasMaxLength(512)
                         .HasColumnType("character varying(512)")
@@ -286,6 +311,10 @@ namespace MessagingPlatform.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasDefaultValue(1)
                         .HasColumnName("quantity");
+
+                    b.Property<long?>("Rid")
+                        .HasColumnType("bigint")
+                        .HasColumnName("rid");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -331,6 +360,11 @@ namespace MessagingPlatform.Infrastructure.Persistence.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("MessagingPlatform.Domain.Entities.WbAccount", null)
+                        .WithMany()
+                        .HasForeignKey("WbAccountId")
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("MessagingPlatform.Domain.Entities.WbAccount", b =>

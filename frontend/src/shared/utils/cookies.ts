@@ -14,7 +14,11 @@ export function getCookie(name: string): string | null {
 export function setCookie(
   name: string,
   value: string,
-  options?: { maxAge?: number; path?: string; sameSite?: "Strict" | "Lax" | "None" }
+  options?: {
+    maxAge?: number;
+    path?: string;
+    sameSite?: "Strict" | "Lax" | "None";
+  },
 ): void {
   const maxAge = options?.maxAge ?? DEFAULT_MAX_AGE;
   const path = options?.path ?? "/";

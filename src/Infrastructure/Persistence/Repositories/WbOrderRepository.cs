@@ -44,6 +44,19 @@ internal sealed class WbOrderRepository : IWbOrderRepository
             .ToListAsync(ct);
     }
 
+    public async Task<Dictionary<long, WbOrder>> GetByWbOrderIdsAsync(
+        Guid accountId,
+        IEnumerable<long> wbOrderIds,
+        CancellationToken ct = default)
+    {
+        var orderIdList = wbOrderIds.ToList();
+        var orders = await _context.WbOrders
+            .Where(x => x.WbAccountId == accountId && orderIdList.Contains(x.WbOrderId))
+            .ToListAsync(ct);
+
+        return orders.ToDictionary(x => x.WbOrderId);
+    }
+
     public async Task AddAsync(WbOrder order, CancellationToken ct = default)
         => await _context.WbOrders.AddAsync(order, ct);
 

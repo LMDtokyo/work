@@ -1,4 +1,8 @@
-import { useNavigate, useRouteError, isRouteErrorResponse } from "react-router-dom";
+import {
+  useNavigate,
+  useRouteError,
+  isRouteErrorResponse,
+} from "react-router-dom";
 import AuthButton from "../../../shared/ui/AuthButton/AuthButton";
 
 export const ErrorPage = () => {

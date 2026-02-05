@@ -54,6 +54,16 @@ internal sealed class WbOrderConfiguration : IEntityTypeConfiguration<WbOrder>
             .HasColumnName("quantity")
             .HasDefaultValue(1);
 
+        builder.Property(x => x.Article)
+            .HasColumnName("article")
+            .HasMaxLength(255);
+
+        builder.Property(x => x.Rid)
+            .HasColumnName("rid");
+
+        builder.Property(x => x.FinishedAt)
+            .HasColumnName("finished_at");
+
         builder.Property(x => x.WbCreatedAt)
             .HasColumnName("wb_created_at");
 

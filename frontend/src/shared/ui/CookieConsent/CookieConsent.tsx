@@ -26,7 +26,7 @@ function CookieConsent() {
 
   return (
     <div
-      className={`fixed bottom-0 left-0 right-0 z-50 p-4 transition-all duration-300 ${
+      className={`fixed bottom-0 left-0 right-0 z-99 p-4 transition-all duration-300 ${
         mounted ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
       }`}
     >
@@ -59,16 +59,16 @@ function CookieConsent() {
               </button>
             </div>
           </div>
-          <div className="flex gap-3 flex-shrink-0">
+          <div className="flex gap-3 shrink-0">
             <button
               onClick={() => handleClose(false)}
-              className="hidden md:block px-5 py-2.5 text-font-primary text-sm font-medium border border-primary-border rounded-full hover:bg-chat-tertiary-bg-hover transition-colors"
+              className="hidden md:block px-5 py-2.5 text-font-primary text-sm font-medium border border-primary-border rounded-full hover:bg-chat-tertiary-bg-hover transition-colors cursor-pointer"
             >
               Отклонить
             </button>
             <button
               onClick={() => handleClose(true)}
-              className="flex-1 md:flex-none px-6 py-2.5 bg-linear-to-b from-button-gradient-start to-button-gradient-end text-font-tertiary text-sm font-semibold rounded-full shadow-[0_2px_4px_var(--color-hover-shadow)] hover:shadow-[0_3px_8px_var(--color-hover-shadow)] transition-shadow"
+              className="flex-1 md:flex-none px-6 py-2.5 bg-linear-to-b from-button-gradient-start to-button-gradient-end text-font-tertiary text-sm font-semibold rounded-full shadow-[0_2px_4px_var(--color-hover-shadow)] hover:shadow-[0_3px_8px_var(--color-hover-shadow)] transition-shadow cursor-pointer"
             >
               Принять
             </button>

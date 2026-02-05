@@ -11,14 +11,20 @@ function PricesCalculator() {
     <div className="flex flex-col bg-chat-tertiary-bg px-4 sm:px-8 md:px-16 lg:px-28 py-8 sm:py-12 md:py-16 lg:py-20 rounded-2xl sm:rounded-3xl w-full border border-border z-99">
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 md:gap-10 lg:gap-15">
         <div className="flex items-end gap-2 sm:gap-3">
-          <h2 className="font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-font-primary">{accounts}</h2>
-          <p className="text-font-secondary text-xl sm:text-2xl md:text-3xl lg:text-4xl mb-0.5 sm:mb-1">аккаунтов</p>
+          <h2 className="font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-font-primary">
+            {accounts}
+          </h2>
+          <p className="text-font-secondary text-xl sm:text-2xl md:text-3xl lg:text-4xl mb-0.5 sm:mb-1">
+            аккаунтов
+          </p>
         </div>
         <div className="flex items-end gap-2 sm:gap-3">
           <h2 className="font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl bg-linear-to-r from-button-gradient-start to-button-gradient-end bg-clip-text text-transparent">
             {price}
           </h2>
-          <p className="text-font-secondary text-xl sm:text-2xl md:text-3xl lg:text-4xl mb-0.5 sm:mb-1">₽/мес.</p>
+          <p className="text-font-secondary text-xl sm:text-2xl md:text-3xl lg:text-4xl mb-0.5 sm:mb-1">
+            ₽/мес.
+          </p>
         </div>
       </div>
       <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 md:gap-8 lg:gap-10 my-6 sm:my-8 md:my-10">

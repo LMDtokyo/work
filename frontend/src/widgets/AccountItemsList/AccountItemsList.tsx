@@ -1,5 +1,8 @@
 import AccountItem from "../../shared/ui/AccountItem/AccountItem";
-import { useWbAccounts, useRemoveWbAccount } from "../../shared/api/hooks/useWbAccounts";
+import {
+  useWbAccounts,
+  useRemoveWbAccount,
+} from "../../shared/api/hooks/useWbAccounts";
 
 interface AccountItemsListProps {
   limit?: number;

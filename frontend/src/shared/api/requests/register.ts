@@ -14,7 +14,8 @@ async function fetchRegister({ email, password }: RegisterParams) {
     });
 
     if (!data.isSuccess) {
-      const errorMessage = data.errors?.[0]?.description || "Ошибка регистрации";
+      const errorMessage =
+        data.errors?.[0]?.description || "Ошибка регистрации";
       throw new Error(errorMessage);
     }
 

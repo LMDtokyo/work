@@ -4,32 +4,58 @@ import AddAccountButton from "../../shared/ui/AddAccountButton/AddAccountButton"
 import styles from "./Accounts.module.css";
 import { useState } from "react";
 import AddAccountModal from "../AddAccountModal/AddAccountModal";
+import AccountCategoryButtonsList from "../AccountCateogryButtonsList/AccountCategoryButtonsList";
+import useAccountCategory from "../../shared/store/useAccountCategory";
+import { ChevronLeft } from "lucide-react";
 
 function Accounts() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const accountCategory = useAccountCategory((state) => state.category);
+  const setCategory = useAccountCategory((state) => state.setCategory);
 
   return (
     <div className="flex flex-col gap-3 py-6 pb-4 px-8 bg-chat-secondary-bg rounded-2xl border border-primary-border w-full h-full overflow-hidden animate-fade-in-bottom">
       <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-font-primary text-2xl font-semibold">
-            Подключённые аккаунты
-          </h2>
-          <p className="text-font-secondary">
-            Управляйте своими торговыми площадками
-          </p>
+        <div className="flex items-center gap-4">
+          {accountCategory.length > 0 && (
+            <button
+              onClick={() => setCategory("")}
+              className="text-font-primary cursor-pointer bg-chat-tertiary-bg hover:bg-chat-tertiary-bg-hover p-2 rounded-md duration-100"
+            >
+              <ChevronLeft />
+            </button>
+          )}
+          <div>
+            <h2 className="text-font-primary text-2xl font-semibold">
+              Подключённые аккаунты
+            </h2>
+            <p className="text-font-secondary">
+              Управляйте своими торговыми площадками
+            </p>
+          </div>
         </div>
-        <AddAccountButton onClick={() => setIsModalOpen(true)} />
+        {accountCategory.length > 0 && (
+          <AddAccountButton onClick={() => setIsModalOpen(true)} />
+        )}
       </div>
       <div className={`grow overflow-auto mt-4 ${styles.accounts}`}>
-        <AccountItemsList />
+        {accountCategory.length > 0 ? (
+          <AccountItemsList />
+        ) : (
+          <AccountCategoryButtonsList />
+        )}
       </div>
-      <Link
-        to="/app/profile/accounts"
-        className="text-font-contrast text-center float-start hover:text-hover-font-contrast"
-      >
-        Смотреть все
-      </Link>
+      {accountCategory.length > 0 && (
+        <div className="flex flex-col">
+          <hr className="h-px border-none bg-linear-to-r from-chat-secondary-bg via-primary-border to-chat-secondary-bg mb-3" />
+          <Link
+            to="/app/profile/accounts"
+            className="text-font-contrast text-center hover:text-hover-font-contrast"
+          >
+            Смотреть все
+          </Link>
+        </div>
+      )}
       {isModalOpen && <AddAccountModal setIsModalOpen={setIsModalOpen} />}
     </div>
   );

@@ -5,7 +5,10 @@ import SignupForm from "../../../widgets/Forms/SignupForm/SignupForm";
 export const Signup = () => {
   return (
     <div className="w-full h-svh flex flex-col justify-center items-center bg-auth-bg overflow-hidden relative px-4 sm:px-6">
-      <BackButton className="absolute left-4 sm:left-6 md:left-8 top-4 sm:top-5 md:top-6" link="/login" />
+      <BackButton
+        className="absolute left-4 sm:left-6 md:left-8 top-4 sm:top-5 md:top-6"
+        link="/login"
+      />
       <SignupForm />
       <p className="text-font-primary absolute bottom-4 w-full max-w-[320px] sm:max-w-[400px] md:max-w-[480px] text-center text-xs sm:text-sm px-4">
         Нажимая кнопку, вы соглашаетесь с{" "}

@@ -1,9 +1,23 @@
+import { useState } from "react";
 import { useChats } from "../../shared/api/hooks/useChats";
+import { markChatAsRead } from "../../shared/api/requests/chats";
 import defaultAvatar from "../../shared/assets/avatar.jpg";
 import ChatItem from "../../shared/ui/ChatItem/ChatItem";
 
 function ChatItemsList() {
-  const { data: chats, isLoading } = useChats();
+  const { data: chats, isLoading, refetch } = useChats();
+  const [selectedChat, setSelectedChat] = useState<string | null>(null);
+
+  const handleChatClick = async (chatId: string) => {
+    setSelectedChat(chatId);
+
+    try {
+      await markChatAsRead(chatId);
+      refetch();
+    } catch (err) {
+      console.error("Failed to mark chat as read:", err);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -36,6 +50,8 @@ function ChatItemsList() {
           lastMessage={chat.lastMessage || ""}
           timestamp={chat.lastMessageTime || ""}
           unreadMessages={chat.unreadCount}
+          isSelected={selectedChat === chat.id}
+          onClick={() => handleChatClick(chat.id)}
         />
       ))}
     </div>

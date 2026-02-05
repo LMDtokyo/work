@@ -1,11 +1,18 @@
 using MessagingPlatform.API.Constants;
+using MessagingPlatform.Infrastructure.Security;
+using Microsoft.Extensions.Options;
 
 namespace MessagingPlatform.API.Services;
 
 public sealed class CookieAuthService : ICookieAuthService
 {
-    private const int AccessTokenLifetimeMinutes = 15;
+    private readonly JwtSettings _jwtSettings;
     private const string AuthPath = "/api/Auth";
+
+    public CookieAuthService(IOptions<JwtSettings> jwtSettings)
+    {
+        _jwtSettings = jwtSettings.Value;
+    }
 
     public void SetTokens(HttpContext context, string accessToken, string refreshToken, DateTime refreshExpiry)
     {
@@ -17,7 +24,7 @@ public sealed class CookieAuthService : ICookieAuthService
             HttpOnly = true,
             Secure = isSecure,
             SameSite = sameSite,
-            Expires = DateTimeOffset.UtcNow.AddMinutes(AccessTokenLifetimeMinutes),
+            Expires = DateTimeOffset.UtcNow.AddMinutes(_jwtSettings.AccessTokenExpirationMinutes),
             Path = "/"
         });
 

@@ -27,7 +27,7 @@ function RecoveryPasswordForm() {
   return (
     <form
       onSubmit={handleSubmit(submitForm)}
-      className="animate-fade-in-bottom w-full max-w-[320px] sm:max-w-[400px] md:max-w-[500px]"
+      className="animate-fade-in-bottom w-full max-w-[320px] sm:max-w-100 md:max-w-125"
     >
       <div className="flex flex-col gap-1 items-center">
         <h1 className="text-font-primary font-bold text-xl sm:text-2xl md:text-[28px] lg:text-[32px] text-center">

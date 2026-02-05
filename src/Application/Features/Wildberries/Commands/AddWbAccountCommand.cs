@@ -2,6 +2,7 @@ using FluentValidation;
 using MediatR;
 using MessagingPlatform.Application.Common.Interfaces;
 using MessagingPlatform.Application.Common.Models;
+using MessagingPlatform.Application.Common.Services;
 using MessagingPlatform.Application.Features.Wildberries.DTOs;
 using MessagingPlatform.Domain.Entities;
 using MessagingPlatform.Domain.Repositories;
@@ -38,17 +39,20 @@ internal sealed class AddWbAccountCommandHandler : IRequestHandler<AddWbAccountC
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IWildberriesApiClient _wbApiClient;
+    private readonly IInitialSyncService _initialSyncService;
 
     public AddWbAccountCommandHandler(
         IWbAccountRepository accountRepository,
         IUserRepository userRepository,
         IUnitOfWork unitOfWork,
-        IWildberriesApiClient wbApiClient)
+        IWildberriesApiClient wbApiClient,
+        IInitialSyncService initialSyncService)
     {
         _accountRepository = accountRepository;
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
         _wbApiClient = wbApiClient;
+        _initialSyncService = initialSyncService;
     }
 
     public async Task<Result<WbAccountDto>> Handle(AddWbAccountCommand request, CancellationToken ct)
@@ -71,6 +75,19 @@ internal sealed class AddWbAccountCommandHandler : IRequestHandler<AddWbAccountC
 
         await _accountRepository.AddAsync(account, ct);
         await _unitOfWork.SaveChangesAsync(ct);
+
+        // Fire-and-forget initial sync - user will see data appear within seconds
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await _initialSyncService.PerformInitialSyncAsync(account.Id, request.UserId, CancellationToken.None);
+            }
+            catch
+            {
+                // Silently fail - user can manually trigger sync later if needed
+            }
+        }, CancellationToken.None);
 
         return new WbAccountDto(
             account.Id,

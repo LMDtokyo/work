@@ -57,12 +57,15 @@ internal sealed class GetWbOrdersQueryHandler : IRequestHandler<GetWbOrdersQuery
                 o.Id,
                 o.WbOrderId,
                 o.Status,
+                o.Article,
+                o.Rid,
                 o.CustomerPhone,
                 o.TotalPrice,
                 o.Currency,
                 o.ProductName,
                 o.Quantity,
-                o.WbCreatedAt))
+                o.WbCreatedAt,
+                o.FinishedAt))
             .ToList();
 
         var result = PaginatedResult<WbOrderDto>.Create(dtos, totalCount, request.Skip, request.Take);

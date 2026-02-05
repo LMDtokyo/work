@@ -2,12 +2,19 @@
 
 :root,
 [data-theme="light"] {
-  --color-landing-bg-1: #ffffff;
-  --color-landing-bg-2: #eaecff;
-  --color-landing-bg-3: #f2f3ff;
-  --color-landing-bg-4: #eff1ff;
+  --color-landing-bg: #ecf5ff;
+  --color-landing-secondary-bg: #ffffff80;
 
-  --color-auth-bg: #edeff9;
+  --color-subscription-light-purple-bg: #d3dcff;
+  --color-subscription-yellow-bg: #f8b21a;
+  --color-subscription-blue-bg: #1a89f8;
+  --color-subscription-sea-blue-bg: #1af0f8;
+  --color-subscription-light-pink-bg: #ffa1d0;
+  --color-subscription-pink-bg: #ff3072;
+  --color-subscription-purple-bg: #a3a9ff;
+  --color-subscription-violet-bg: #dcafff;
+
+  --color-auth-bg: #ecf5ff;
   --color-auth-input-bg: #ffffff;
 
   --color-chat-bg: #d9ddf2;
@@ -18,15 +25,16 @@
   --color-chat-tertiary-bg-hover: #efefef;
   --color-chat-selected-bg: #f3f5fb;
 
-  --color-font-primary: #474972;
+  --color-font-primary: #000000;
   --color-font-primary-hover: #31324f;
   --color-font-secondary: #9192aa;
   --color-font-primary-hover: #5054ce;
 
-  --color-glare: rgb(177, 171, 255);
+  --color-glare: #6f98ff;
 
   --color-primary-border: #c4c7db;
   --color-secondary-border: #ced1df;
+  --color-tertiary-border: #b9cbff;
   --color-border: #a6a8bb;
 
   --color-theme-button: #edefff;
@@ -35,13 +43,20 @@
 }
 
 [data-theme="dark"] {
-  --color-landing-bg-1: #070714;
-  --color-landing-bg-2: #0b0b14;
-  --color-landing-bg-3: #0d0d12;
-  --color-landing-bg-4: #101014;
+  --color-landing-bg: #0a0a10;
+  --color-landing-secondary-bg: #1d1f30;
+
+  --color-subscription-purple-bg: #5f6b99;
+  --color-subscription-yellow-bg: #9a6c09;
+  --color-subscription-blue-bg: #2178d0;
+  --color-subscription-sea-blue-bg: #00c0c7;
+  --color-subscription-light-pink-bg: #9e6481;
+  --color-subscription-pink-bg: #dd1b58;
+  --color-subscription-purple-bg: #4951cd;
+  --color-subscription-violet-bg: #7b2bb8;
 
   --color-auth-bg: #0a0a10;
-  --color-auth-input-bg: #1d1f30;
+  --color-auth-input-bg: #0f1126;
 
   --color-chat-bg: #0a0a10;
   --color-chat-gradient-bg-1: #262940;
@@ -51,15 +66,16 @@
   --color-chat-tertiary-bg-hover: #474b74;
   --color-chat-selected-bg: #262940;
 
-  --color-font-primary: #d2d7f4;
+  --color-font-primary: #ffffff;
   --color-font-primary-hover: #dfe1ec;
-  --color-font-secondary: #7b7f94;
+  --color-font-secondary: #ffffff80;
   --color-font-primary-hover: rgb(234, 237, 255);
 
   --color-glare: rgb(18, 22, 69);
 
   --color-primary-border: #32354e;
   --color-secondary-border: #404468;
+  --color-tertiary-border: #32354e;
   --color-border: #434764;
 
   --color-theme-button: #2e3160;
@@ -68,12 +84,23 @@
 }
 
 @theme {
-  --color-landing-bg-1: var(--color-landing-bg-1);
-  --color-landing-bg-2: var(--color-landing-bg-2);
-  --color-landing-bg-3: var(--color-landing-bg-3);
-  --color-landing-bg-4: var(--color-landing-bg-4);
+  --color-landing-bg: var(--color-landing-bg);
+  --color-landing-secondary-bg: var(--color-landing-secondary-bg);
+
+  --color-subscription-light-purple-bg: var(
+    --color-subscription-light-purple-bg
+  );
+  --color-subscription-yellow-bg: var(--color-subscription-yellow-bg);
+  --color-subscription-blue-bg: var(--color-subscription-blue-bg);
+  --color-subscription-sea-blue-bg: var(--color-subscription-sea-blue-bg);
+  --color-subscription-light-pink-bg: var(--color-subscription-light-pink-bg);
+  --color-subscription-pink-bg: var(--color-subscription-pink-bg);
+  --color-subscription-purple-bg: var(--color-subscription-purple-bg);
+  --color-subscription-violet-bg: var(--color-subscription-violet-bg);
+  --color-current-tarif: #5f6b99;
 
   --color-auth-bg: var(--color-auth-bg);
+  --color-auth-input-bg: var(--color-auth-input-bg);
 
   --color-chat-bg: var(--color-chat-bg);
   --color-chat-gradient-bg-1: var(--color-chat-gradient-bg-1);
@@ -83,14 +110,12 @@
   --color-chat-tertiary-bg-hover: var(--color-chat-tertiary-bg-hover);
   --color-chat-selected-bg: var(--color-chat-selected-bg);
 
-  --color-auth-input-bg: var(--color-auth-input-bg);
-
   --color-font-primary: var(--color-font-primary);
   --color-font-primary-hover: var(--color-font-primary-hover);
   --color-font-secondary: var(--color-font-secondary);
   --color-font-tertiary: #ffffff;
-  --color-font-contrast: #8090ff;
-  --color-hover-font-contrast: #4f67ff;
+  --color-font-contrast: #003dd8;
+  --color-hover-font-contrast: #0048ff;
   --color-font-primary-hover: var(--color-font-primary-hover);
 
   --color-button-gradient-start: #8090ff;
@@ -100,6 +125,7 @@
 
   --color-primary-border: var(--color-primary-border);
   --color-secondary-border: var(--color-secondary-border);
+  --color-tertiary-border: var(--color-tertiary-border);
   --color-border: var(--color-border);
 
   --color-theme-button: var(--color-theme-button);
@@ -107,6 +133,7 @@
   --color-hover-shadow: var(--color-hover-shadow);
 
   --color-bg-contrast-20: #8090ff20;
+  --color-contrast: #0048ff;
 
   --color-red-bg-20: #c7555520;
   --color-red-bg-30: #c7555530;

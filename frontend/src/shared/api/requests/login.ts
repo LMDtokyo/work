@@ -16,7 +16,8 @@ async function fetchLogin({ email, password, rememberMe }: LoginParams) {
     });
 
     if (!data.isSuccess) {
-      const errorMessage = data.errors?.[0]?.description || "Ошибка авторизации";
+      const errorMessage =
+        data.errors?.[0]?.description || "Ошибка авторизации";
       throw new Error(errorMessage);
     }
 

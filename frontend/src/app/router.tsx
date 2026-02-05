@@ -15,6 +15,8 @@ import { AccountsPage } from "../pages/Home/Accounts";
 import { TransactionsPage } from "../pages/Home/Transactions";
 import { GuestRoute } from "../shared/components/GuestRoute";
 import { PrivateRoute } from "../shared/components/PrivateRoute";
+import { SettingsPage } from "../pages/Home/Settings";
+import { SubscriptionPage } from "../pages/Home/Subscription";
 
 export const router = createBrowserRouter([
   {
@@ -82,7 +84,7 @@ export const router = createBrowserRouter([
     element: (
       <PrivateRoute>
         <App />
-      </PrivateRoute>
+      </PrivateRoute> 
     ),
     errorElement: <ErrorPage />,
     children: [
@@ -95,8 +97,32 @@ export const router = createBrowserRouter([
         element: <ChatsPage />,
       },
       {
+        path: "/app/chats/wildberries",
+        element: <ChatsPage />,
+      },
+      {
+        path: "/app/chats/avito",
+        element: <ChatsPage />,
+      },
+      {
+        path: "/app/chats/telegram",
+        element: <ChatsPage />,
+      },
+      {
+        path: "/app/chats/all-accounts",
+        element: <ChatsPage />,
+      },
+      {
         path: "/app/profile",
         element: <ProfilePage />,
+      },
+      {
+        path: "/app/settings",
+        element: <SettingsPage />,
+      },
+      {
+        path: "/app/subscription",
+        element: <SubscriptionPage />,
       },
       {
         path: "/app/profile/accounts",
