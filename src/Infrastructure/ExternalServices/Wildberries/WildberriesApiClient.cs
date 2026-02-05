@@ -13,7 +13,7 @@ namespace MessagingPlatform.Infrastructure.ExternalServices.Wildberries;
 internal sealed class WildberriesApiClient : IWildberriesApiClient
 {
     private const string MarketplaceApiBaseUrl = "https://marketplace-api.wildberries.ru";
-    private const string ChatApiBaseUrl = "https://openapi.wildberries.ru";
+    private const string ChatApiBaseUrl = "https://feedbacks-api.wildberries.ru";
 
     private readonly HttpClient _httpClient;
     private readonly ILogger<WildberriesApiClient> _logger;
