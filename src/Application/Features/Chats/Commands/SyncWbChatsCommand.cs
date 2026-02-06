@@ -96,6 +96,10 @@ internal sealed class SyncWbChatsCommandHandler : IRequestHandler<SyncWbChatsCom
 
         foreach (var chatData in apiChats)
         {
+            // Skip chats with empty names
+            if (string.IsNullOrWhiteSpace(chatData.CustomerName))
+                continue;
+
             if (existingChatsDict.TryGetValue(chatData.ChatId, out var existingChat))
             {
                 // Update existing chat

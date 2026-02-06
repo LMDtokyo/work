@@ -48,7 +48,7 @@ internal sealed class SendWbMessageCommandHandler : IRequestHandler<SendWbMessag
             return Result.Failure<bool>("Чат не найден или у вас нет доступа к нему");
 
         // INVARIANT: Chat must be linked to WB account
-        if (!chat.WbAccountId.HasValue || !chat.WbChatId.HasValue)
+        if (!chat.WbAccountId.HasValue || string.IsNullOrEmpty(chat.WbChatId))
             return Result.Failure<bool>("Этот чат не связан с аккаунтом Wildberries");
 
         // Get WB account and verify ownership
@@ -62,7 +62,7 @@ internal sealed class SendWbMessageCommandHandler : IRequestHandler<SendWbMessag
         {
             success = await _wbApiClient.SendMessageAsync(
                 account.ApiToken.Value,
-                chat.WbChatId.Value,
+                chat.WbChatId,
                 request.Text,
                 ct);
         }

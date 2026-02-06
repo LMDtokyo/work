@@ -12,8 +12,8 @@ namespace MessagingPlatform.Infrastructure.ExternalServices.Wildberries;
 
 internal sealed class WildberriesApiClient : IWildberriesApiClient
 {
-    private const string MarketplaceApiBaseUrl = "https://marketplace-api.wildberries.ru";
-    private const string ChatApiBaseUrl = "https://feedbacks-api.wildberries.ru";
+    private const string MarketplaceApiBaseUrl = "https://suppliers-api.wildberries.ru";
+    private const string ChatApiBaseUrl = "https://buyer-chat-api.wildberries.ru";
 
     private readonly HttpClient _httpClient;
     private readonly ILogger<WildberriesApiClient> _logger;
@@ -84,7 +84,7 @@ internal sealed class WildberriesApiClient : IWildberriesApiClient
         {
             while (true)
             {
-                var url = $"{MarketplaceApiBaseUrl}/api/v3/orders?limit=1000&next={next}&dateFrom={dateFrom:O}";
+                var url = $"{MarketplaceApiBaseUrl}/api/v3/orders/new?limit=1000&next={next}&dateFrom={dateFrom:O}";
                 var request = CreateRequest(HttpMethod.Get, url, token);
                 var response = await _httpClient.SendAsync(request, ct);
 
@@ -360,18 +360,26 @@ internal sealed class WildberriesApiClient : IWildberriesApiClient
             }
 
             var content = await response.Content.ReadAsStringAsync(ct);
+            _logger.LogInformation("Received chats response: {Content}", content.Length > 2000 ? content.Substring(0, 2000) : content);
+
             var chatsResponse = JsonSerializer.Deserialize<WbChatsResponse>(content, _jsonOptions);
+            _logger.LogInformation("Deserialized {Count} chats from WB API", chatsResponse?.Chats?.Count ?? 0);
 
             if (chatsResponse?.Chats != null)
             {
                 foreach (var chat in chatsResponse.Chats)
                 {
+                    var lastMessageText = chat.LastMessage?.Text;
+                    var lastMessageAt = chat.LastMessage != null
+                        ? DateTimeOffset.FromUnixTimeMilliseconds(chat.LastMessage.Timestamp).UtcDateTime
+                        : (DateTime?)null;
+
                     result.Add(new WbChatData(
                         chat.ChatId,
                         chat.CustomerName,
                         chat.CustomerAvatar,
-                        chat.LastMessage,
-                        chat.LastMessageAt,
+                        lastMessageText,
+                        lastMessageAt,
                         chat.UnreadCount));
                 }
             }
@@ -392,7 +400,7 @@ internal sealed class WildberriesApiClient : IWildberriesApiClient
         return result;
     }
 
-    public async Task<IReadOnlyList<WbMessageData>> GetMessagesAsync(string token, long chatId, CancellationToken ct = default)
+    public async Task<IReadOnlyList<WbMessageData>> GetMessagesAsync(string token, string chatId, CancellationToken ct = default)
     {
         var endpoint = $"/api/v1/chats/{chatId}/messages";
         var result = new List<WbMessageData>();
@@ -467,7 +475,7 @@ internal sealed class WildberriesApiClient : IWildberriesApiClient
         return result;
     }
 
-    public async Task<bool> SendMessageAsync(string token, long chatId, string text, CancellationToken ct = default)
+    public async Task<bool> SendMessageAsync(string token, string chatId, string text, CancellationToken ct = default)
     {
         const string endpoint = "/api/v1/chats/send";
 

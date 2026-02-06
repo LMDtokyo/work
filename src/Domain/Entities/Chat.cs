@@ -6,7 +6,7 @@ public sealed class Chat : AggregateRoot<Guid>
 {
     public Guid UserId { get; private set; }
     public Guid? WbAccountId { get; private set; }
-    public long? WbChatId { get; private set; }
+    public string? WbChatId { get; private set; }
     public string ContactName { get; private set; } = string.Empty;
     public string? ContactAvatar { get; private set; }
     public string? LastMessageText { get; private set; }
@@ -17,7 +17,7 @@ public sealed class Chat : AggregateRoot<Guid>
 
     private Chat() { }
 
-    private Chat(Guid id, Guid userId, string contactName, string? avatar = null, Guid? wbAccountId = null, long? wbChatId = null) : base(id)
+    private Chat(Guid id, Guid userId, string contactName, string? avatar = null, Guid? wbAccountId = null, string? wbChatId = null) : base(id)
     {
         UserId = userId;
         WbAccountId = wbAccountId;
@@ -34,7 +34,7 @@ public sealed class Chat : AggregateRoot<Guid>
         return new Chat(Guid.NewGuid(), userId, contactName.Trim(), avatar);
     }
 
-    public static Chat CreateFromWb(Guid userId, Guid wbAccountId, long wbChatId, string contactName, string? avatar = null)
+    public static Chat CreateFromWb(Guid userId, Guid wbAccountId, string wbChatId, string contactName, string? avatar = null)
     {
         if (string.IsNullOrWhiteSpace(contactName))
             throw new ArgumentException("Contact name is required", nameof(contactName));

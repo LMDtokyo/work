@@ -90,22 +90,28 @@ public sealed record WbErrorResponse
 }
 
 // Chat DTOs
+public sealed record WbLastMessageDto
+{
+    [JsonPropertyName("text")]
+    public string? Text { get; init; }
+
+    [JsonPropertyName("addTimestamp")]
+    public long Timestamp { get; init; }
+}
+
 public sealed record WbChatDto
 {
-    [JsonPropertyName("chatId")]
-    public long ChatId { get; init; }
+    [JsonPropertyName("chatID")]
+    public string ChatId { get; init; } = string.Empty;
 
-    [JsonPropertyName("customerName")]
+    [JsonPropertyName("clientName")]
     public string CustomerName { get; init; } = string.Empty;
 
-    [JsonPropertyName("customerAvatar")]
+    [JsonPropertyName("clientAvatar")]
     public string? CustomerAvatar { get; init; }
 
     [JsonPropertyName("lastMessage")]
-    public string? LastMessage { get; init; }
-
-    [JsonPropertyName("lastMessageAt")]
-    public DateTime? LastMessageAt { get; init; }
+    public WbLastMessageDto? LastMessage { get; init; }
 
     [JsonPropertyName("unreadCount")]
     public int UnreadCount { get; init; }
@@ -113,7 +119,7 @@ public sealed record WbChatDto
 
 public sealed record WbChatsResponse
 {
-    [JsonPropertyName("chats")]
+    [JsonPropertyName("result")]
     public List<WbChatDto> Chats { get; init; } = new();
 }
 
@@ -144,7 +150,7 @@ public sealed record WbMessagesResponse
 public sealed record WbSendMessageRequest
 {
     [JsonPropertyName("chatId")]
-    public long ChatId { get; init; }
+    public string ChatId { get; init; } = string.Empty;
 
     [JsonPropertyName("text")]
     public string Text { get; init; } = string.Empty;

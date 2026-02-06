@@ -38,7 +38,7 @@ async function refreshTokens(): Promise<boolean> {
 
 function shouldAttemptRefresh(config: InternalAxiosRequestConfig): boolean {
   const url = config.url || "";
-  const skipPaths = ["/login", "/register", "/refresh", "/logout", "/me"];
+  const skipPaths = ["/login", "/register", "/refresh", "/logout"];
   return !skipPaths.some((path) => url.includes(path));
 }
 
