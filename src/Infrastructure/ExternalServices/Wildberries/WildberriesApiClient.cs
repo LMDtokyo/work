@@ -449,8 +449,8 @@ internal sealed class WildberriesApiClient : IWildberriesApiClient
                     DateTimeOffset.FromUnixTimeMilliseconds(e.AddTimestamp).UtcDateTime))
                 .ToList();
 
-            var nextCursor = eventsResponse.Result.Next?.ToString();
-            return new WbEventsResult(events, nextCursor, eventsResponse.Result.TotalEvents);
+            var next = eventsResponse.Result.Next?.ToString();
+            return new WbEventsResult(events, next, eventsResponse.Result.TotalEvents);
         }
         catch (HttpRequestException ex)
         {
