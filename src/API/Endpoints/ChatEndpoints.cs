@@ -48,6 +48,22 @@ public static class ChatEndpoints
         return Results.Ok(ApiResponse<IReadOnlyList<ChatResponseDto>>.Success(dtos));
     }
 
+    public static async Task<IResult> UpdateLastMessages(
+        ClaimsPrincipal user,
+        ISender sender)
+    {
+        if (!ClaimsExtractor.TryGetUserId(user, out var userId))
+            return Results.Ok(ApiResponse<int>.Failure("Unauthorized"));
+
+        var cmd = new UpdateChatsLastMessageCommand(userId);
+        var res = await sender.Send(cmd);
+
+        if (res.IsFailure)
+            return Results.Ok(ApiResponse<int>.Failure(res.Error!));
+
+        return Results.Ok(ApiResponse<int>.Success(res.Value));
+    }
+
     public static async Task<IResult> SendMessage(
         Guid id,
         SendMessageRequest request,

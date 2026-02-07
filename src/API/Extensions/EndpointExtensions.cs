@@ -176,6 +176,12 @@ public static class EndpointExtensions
             .RequireRateLimiting("api")
             .Produces<IReadOnlyList<ChatEndpoints.MessageResponseDto>>(StatusCodes.Status200OK);
 
+        group.MapPost("/update-last-messages", ChatEndpoints.UpdateLastMessages)
+            .WithName("UpdateLastMessages")
+            .WithSummary("Update last message metadata for all chats")
+            .RequireRateLimiting("api")
+            .Produces<int>(StatusCodes.Status200OK);
+
         return app;
     }
 }
