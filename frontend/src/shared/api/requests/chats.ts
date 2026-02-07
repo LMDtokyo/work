@@ -18,7 +18,7 @@ interface ApiResponse<T> {
 
 export async function getChats(): Promise<Chat[]> {
   try {
-    const { data } = await chatApi.get<ApiResponse<Chat[]>>("/");
+    const { data } = await chatApi.get<ApiResponse<Chat[]>>("");
 
     if (!data.isSuccess) {
       const msg = data.errors?.[0]?.description || "Не удалось загрузить чаты";
@@ -35,7 +35,7 @@ export async function getChats(): Promise<Chat[]> {
 export async function markChatAsRead(chatId: string): Promise<boolean> {
   try {
     const { data } = await chatApi.put<ApiResponse<boolean>>(
-      `/${chatId}/read`
+      `${chatId}/read`
     );
 
     if (!data.isSuccess) {
@@ -61,7 +61,7 @@ export interface Message {
 export async function getChatMessages(chatId: string): Promise<Message[]> {
   try {
     const { data } = await chatApi.get<ApiResponse<Message[]>>(
-      `/${chatId}/messages`
+      `${chatId}/messages`
     );
 
     if (!data.isSuccess) {
@@ -79,7 +79,7 @@ export async function getChatMessages(chatId: string): Promise<Message[]> {
 export async function sendMessage(chatId: string, text: string): Promise<boolean> {
   try {
     const { data } = await chatApi.post<ApiResponse<boolean>>(
-      `/${chatId}/messages`,
+      `${chatId}/messages`,
       { text }
     );
 
