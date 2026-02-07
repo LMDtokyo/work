@@ -2,7 +2,7 @@ import axios from "axios";
 import { setupAuthInterceptor } from "./interceptor";
 
 export const chatApi = axios.create({
-  baseURL: "/api/Chats",
+  baseURL: "/api/v1/chats",
   timeout: 5000,
   withCredentials: true,
 });
