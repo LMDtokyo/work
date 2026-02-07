@@ -2,9 +2,16 @@ import { useRef, useState } from "react";
 import SendButton from "../SendButton/SendButton";
 import styles from "./ChatInput.module.css";
 import { Paperclip } from "lucide-react";
+import { sendMessage } from "../../api/requests/chats";
 
-function ChatInput() {
+interface ChatInputProps {
+  chatId: string;
+  onMessageSent?: () => void;
+}
+
+function ChatInput({ chatId, onMessageSent }: ChatInputProps) {
   const [value, setValue] = useState("");
+  const [sending, setSending] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const autoResize = () => {
@@ -19,6 +26,21 @@ function ChatInput() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!value.trim() || sending) return;
+
+    setSending(true);
+    try {
+      await sendMessage(chatId, value.trim());
+      setValue("");
+      if (textareaRef.current) {
+        textareaRef.current.style.height = "44px";
+      }
+      onMessageSent?.();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -34,8 +56,8 @@ function ChatInput() {
       ></textarea>
       <SendButton
         className="absolute right-1.5 bottom-2.75"
-        isLoading={false}
-        isDisabled={value === ""}
+        isLoading={sending}
+        isDisabled={value === "" || sending}
       />
     </form>
   );

@@ -41,7 +41,7 @@ internal sealed class ChatConfiguration : IEntityTypeConfiguration<Chat>
 
         builder.Property(x => x.LastMessageText)
             .HasColumnName("last_message_text")
-            .HasMaxLength(150);
+            .HasMaxLength(500);
 
         builder.Property(x => x.LastMessageAt)
             .HasColumnName("last_message_at");

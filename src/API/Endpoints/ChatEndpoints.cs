@@ -25,6 +25,12 @@ public static class ChatEndpoints
         string? LastMessageTime,
         int UnreadCount);
 
+    public sealed record MessageResponseDto(
+        string Id,
+        string Text,
+        string SentAt,
+        bool IsFromCustomer);
+
     public static async Task<IResult> GetChats(
         ClaimsPrincipal user,
         ISender sender)
@@ -75,6 +81,29 @@ public static class ChatEndpoints
             return Results.Ok(ApiResponse<bool>.Failure(res.Error!));
 
         return Results.Ok(ApiResponse<bool>.Success(true));
+    }
+
+    public static async Task<IResult> GetMessages(
+        Guid id,
+        ClaimsPrincipal user,
+        ISender sender)
+    {
+        if (!ClaimsExtractor.TryGetUserId(user, out var userId))
+            return Results.Ok(ApiResponse<IReadOnlyList<MessageResponseDto>>.Failure("Unauthorized"));
+
+        var query = new GetChatMessagesQuery(id, userId);
+        var result = await sender.Send(query);
+
+        if (result.IsFailure)
+            return Results.Ok(ApiResponse<IReadOnlyList<MessageResponseDto>>.Failure(result.Error!));
+
+        var msgs = result.Value!.Select(m => new MessageResponseDto(
+            m.Id,
+            m.Text,
+            m.SentAt.ToString("HH:mm"),
+            m.IsFromCustomer)).ToList();
+
+        return Results.Ok(ApiResponse<IReadOnlyList<MessageResponseDto>>.Success(msgs));
     }
 
     private static ChatResponseDto MapToResponse(ChatDto chat)

@@ -1,6 +1,6 @@
 services:
   frontend:
-    image: ghcr.io/lmdtokyo/work500-frontend:latest
+    image: app-frontend:latest
     container_name: app-frontend
     ports:
       - "80:80"
@@ -11,7 +11,7 @@ services:
       - app-network
 
   api:
-    image: ghcr.io/lmdtokyo/work500-api:latest
+    image: app-api:latest
     container_name: app-api
     expose:
       - "8080"

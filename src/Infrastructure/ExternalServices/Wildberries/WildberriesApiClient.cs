@@ -400,84 +400,71 @@ internal sealed class WildberriesApiClient : IWildberriesApiClient
         return result;
     }
 
-    public async Task<IReadOnlyList<WbMessageData>> GetMessagesAsync(string token, string chatId, CancellationToken ct = default)
+    public async Task<WbEventsResult> GetEventsAsync(string token, string? nextCursor = null, int limit = 100, CancellationToken ct = default)
     {
-        var endpoint = $"/api/v1/chats/{chatId}/messages";
-        var result = new List<WbMessageData>();
+        const string endpoint = "/api/v1/seller/events";
+        var emptyResult = new WbEventsResult(Array.Empty<WbEventData>(), null, 0);
 
         try
         {
-            var url = $"{ChatApiBaseUrl}{endpoint}";
+            var url = $"{ChatApiBaseUrl}{endpoint}?limit={limit}";
+            if (!string.IsNullOrEmpty(nextCursor))
+                url += $"&next={nextCursor}";
+
             var request = CreateRequest(HttpMethod.Get, url, token);
             var response = await _httpClient.SendAsync(request, ct);
 
-            // Handle authentication failures
-            if (response.StatusCode == HttpStatusCode.Unauthorized ||
-                response.StatusCode == HttpStatusCode.Forbidden)
+            if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden)
             {
-                _logger.LogWarning(
-                    "WB API authentication failed. Endpoint: {Endpoint}, StatusCode: {StatusCode}",
-                    endpoint,
-                    (int)response.StatusCode);
+                _logger.LogWarning("WB API auth failed. Endpoint: {Endpoint}, StatusCode: {StatusCode}", endpoint, (int)response.StatusCode);
                 throw new WbApiAuthenticationException("Invalid or expired API token");
             }
 
-            // Handle rate limiting
             if (response.StatusCode == HttpStatusCode.TooManyRequests)
             {
                 var retryAfter = (int)(response.Headers.RetryAfter?.Delta?.TotalSeconds ?? 60);
-                _logger.LogWarning(
-                    "WB API rate limit exceeded for {Endpoint}. Retry after {Seconds} seconds",
-                    endpoint,
-                    retryAfter);
+                _logger.LogWarning("WB API rate limit exceeded. Retry after {Seconds}s", retryAfter);
                 throw new WbApiRateLimitException($"Rate limit exceeded. Retry after {retryAfter}s", retryAfter);
             }
 
             if (!response.IsSuccessStatusCode)
             {
-                _logger.LogError(
-                    "Failed to fetch messages from Wildberries. Endpoint: {Endpoint}, ChatId: {ChatId}, StatusCode: {StatusCode}",
-                    endpoint,
-                    chatId,
-                    (int)response.StatusCode);
-                return result;
+                _logger.LogError("Failed to fetch events. StatusCode: {StatusCode}", (int)response.StatusCode);
+                return emptyResult;
             }
 
             var content = await response.Content.ReadAsStringAsync(ct);
-            var messagesResponse = JsonSerializer.Deserialize<WbMessagesResponse>(content, _jsonOptions);
+            var eventsResponse = JsonSerializer.Deserialize<WbEventsResponse>(content, _jsonOptions);
 
-            if (messagesResponse?.Messages != null)
-            {
-                foreach (var msg in messagesResponse.Messages)
-                {
-                    result.Add(new WbMessageData(
-                        msg.MessageId,
-                        msg.ChatId,
-                        msg.Text,
-                        msg.IsFromCustomer,
-                        msg.CreatedAt));
-                }
-            }
+            if (eventsResponse?.Events == null)
+                return emptyResult;
+
+            var events = eventsResponse.Events
+                .Select(e => new WbEventData(e.ChatId, e.MessageId, e.Text, e.FromClient, e.CreatedDate))
+                .ToList();
+
+            return new WbEventsResult(events, eventsResponse.Next, eventsResponse.TotalEvents);
         }
         catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "HTTP request error while fetching messages. ChatId: {ChatId}, MessagesFetched: {Count}", chatId, result.Count);
+            _logger.LogError(ex, "HTTP error while fetching events");
+            return emptyResult;
         }
         catch (TaskCanceledException ex)
         {
-            _logger.LogWarning(ex, "Request cancelled while fetching messages. ChatId: {ChatId}, MessagesFetched: {Count}", chatId, result.Count);
+            _logger.LogWarning(ex, "Request cancelled while fetching events");
+            return emptyResult;
         }
         catch (JsonException ex)
         {
-            _logger.LogError(ex, "JSON deserialization error while parsing messages. ChatId: {ChatId}, MessagesFetched: {Count}", chatId, result.Count);
+            _logger.LogError(ex, "JSON error while parsing events");
+            return emptyResult;
         }
-
-        return result;
     }
 
     public async Task<bool> SendMessageAsync(string token, string chatId, string text, CancellationToken ct = default)
     {
-        const string endpoint = "/api/v1/chats/send";
+        const string endpoint = "/api/v1/seller/chats/send";
 
         if (string.IsNullOrWhiteSpace(text))
         {

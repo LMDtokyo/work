@@ -50,3 +50,47 @@ export async function markChatAsRead(chatId: string): Promise<boolean> {
     throw error;
   }
 }
+
+export interface Message {
+  id: string;
+  text: string;
+  sentAt: string;
+  isFromCustomer: boolean;
+}
+
+export async function getChatMessages(chatId: string): Promise<Message[]> {
+  try {
+    const { data } = await chatApi.get<ApiResponse<Message[]>>(
+      `/${chatId}/messages`
+    );
+
+    if (!data.isSuccess) {
+      const msg = data.errors?.[0]?.description || "Не удалось загрузить сообщения";
+      throw new Error(msg);
+    }
+
+    return data.data || [];
+  } catch (err) {
+    handleApiError(err, "Ошибка загрузки сообщений");
+    throw err;
+  }
+}
+
+export async function sendMessage(chatId: string, text: string): Promise<boolean> {
+  try {
+    const { data } = await chatApi.post<ApiResponse<boolean>>(
+      `/${chatId}/messages`,
+      { text }
+    );
+
+    if (!data.isSuccess) {
+      const msg = data.errors?.[0]?.description || "Не удалось отправить";
+      throw new Error(msg);
+    }
+
+    return true;
+  } catch (err) {
+    handleApiError(err, "Ошибка отправки");
+    throw err;
+  }
+}

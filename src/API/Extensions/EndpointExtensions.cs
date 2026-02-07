@@ -136,6 +136,12 @@ public static class EndpointExtensions
             .RequireRateLimiting("api")
             .Produces<int>(StatusCodes.Status200OK);
 
+        group.MapPost("/accounts/{id:guid}/sync-chat-events", WildberriesEndpoints.SyncChatEvents)
+            .WithName("SyncWbChatEvents")
+            .WithSummary("Sync chat messages/events from Wildberries API")
+            .RequireRateLimiting("api")
+            .Produces<int>(StatusCodes.Status200OK);
+
         return app;
     }
 
@@ -163,6 +169,12 @@ public static class EndpointExtensions
             .WithSummary("Mark chat as read")
             .RequireRateLimiting("api")
             .Produces<bool>(StatusCodes.Status200OK);
+
+        group.MapGet("/{id:guid}/messages", ChatEndpoints.GetMessages)
+            .WithName("GetChatMessages")
+            .WithSummary("Get chat messages")
+            .RequireRateLimiting("api")
+            .Produces<IReadOnlyList<ChatEndpoints.MessageResponseDto>>(StatusCodes.Status200OK);
 
         return app;
     }

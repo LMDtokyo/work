@@ -47,6 +47,7 @@ public static class DependencyInjection
         services.AddScoped<IWbAccountRepository, WbAccountRepository>();
         services.AddScoped<IWbOrderRepository, WbOrderRepository>();
         services.AddScoped<IChatRepository, ChatRepository>();
+        services.AddScoped<IMessageRepository, MessageRepository>();
 
         return services;
     }

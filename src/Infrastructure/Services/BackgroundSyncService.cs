@@ -107,13 +107,16 @@ internal sealed class BackgroundSyncService : BackgroundService
     {
         try
         {
-            // Sync orders
             var ordersCmd = new SyncOrdersCommand(accountId, userId);
             var ordersResult = await sender.Send(ordersCmd, ct);
 
-            // Sync chats (optional)
             var chatsCmd = new SyncWbChatsCommand(accountId, userId);
             await sender.Send(chatsCmd, ct);
+
+            var eventsCmd = new SyncWbChatEventsCommand(accountId, userId);
+            var eventsResult = await sender.Send(eventsCmd, ct);
+
+            _logger.LogDebug("Events sync for {AccountId}: {Count} new messages", accountId, eventsResult.Value);
 
             return ordersResult.IsSuccess;
         }

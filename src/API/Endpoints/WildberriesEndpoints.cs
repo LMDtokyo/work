@@ -224,4 +224,21 @@ public static class WildberriesEndpoints
 
         return Results.Ok(ApiResponse<int>.Success(result.Value));
     }
+
+    public static async Task<IResult> SyncChatEvents(
+        Guid id,
+        ClaimsPrincipal user,
+        ISender sender)
+    {
+        if (!ClaimsExtractor.TryGetUserId(user, out var userId))
+            return Results.Ok(ApiResponse<int>.Failure("Unauthorized"));
+
+        var command = new SyncWbChatEventsCommand(id, userId);
+        var result = await sender.Send(command);
+
+        if (result.IsFailure)
+            return Results.Ok(ApiResponse<int>.Failure(result.Error!));
+
+        return Results.Ok(ApiResponse<int>.Success(result.Value));
+    }
 }

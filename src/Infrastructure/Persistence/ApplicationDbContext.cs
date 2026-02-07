@@ -11,6 +11,7 @@ public sealed class ApplicationDbContext : DbContext, IUnitOfWork
     public DbSet<WbAccount> WbAccounts => Set<WbAccount>();
     public DbSet<WbOrder> WbOrders => Set<WbOrder>();
     public DbSet<Chat> Chats => Set<Chat>();
+    public DbSet<Message> Messages => Set<Message>();
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 

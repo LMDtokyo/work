@@ -164,3 +164,34 @@ public sealed record WbSendMessageResponse
     [JsonPropertyName("messageId")]
     public long? MessageId { get; init; }
 }
+
+// Events API
+public sealed record WbEventDto
+{
+    [JsonPropertyName("chatId")]
+    public string ChatId { get; init; } = string.Empty;
+
+    [JsonPropertyName("messageId")]
+    public string MessageId { get; init; } = string.Empty;
+
+    [JsonPropertyName("text")]
+    public string Text { get; init; } = string.Empty;
+
+    [JsonPropertyName("createdDate")]
+    public DateTime CreatedDate { get; init; }
+
+    [JsonPropertyName("fromClient")]
+    public bool FromClient { get; init; }
+}
+
+public sealed record WbEventsResponse
+{
+    [JsonPropertyName("events")]
+    public List<WbEventDto> Events { get; init; } = new();
+
+    [JsonPropertyName("next")]
+    public string? Next { get; init; }
+
+    [JsonPropertyName("totalEvents")]
+    public int TotalEvents { get; init; }
+}

@@ -1,15 +1,18 @@
-import { useState } from "react";
 import { useChats } from "../../shared/api/hooks/useChats";
 import { markChatAsRead } from "../../shared/api/requests/chats";
 import defaultAvatar from "../../shared/assets/avatar.jpg";
 import ChatItem from "../../shared/ui/ChatItem/ChatItem";
 
-function ChatItemsList() {
+interface ChatItemsListProps {
+  selectedChat: string | null;
+  onSelectChat: (chatId: string) => void;
+}
+
+function ChatItemsList({ selectedChat, onSelectChat }: ChatItemsListProps) {
   const { data: chats, isLoading, refetch } = useChats();
-  const [selectedChat, setSelectedChat] = useState<string | null>(null);
 
   const handleChatClick = async (chatId: string) => {
-    setSelectedChat(chatId);
+    onSelectChat(chatId);
 
     try {
       await markChatAsRead(chatId);

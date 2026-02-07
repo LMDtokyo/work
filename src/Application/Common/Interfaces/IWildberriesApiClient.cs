@@ -11,7 +11,7 @@ public interface IWildberriesApiClient
 
     // Chat methods
     Task<IReadOnlyList<WbChatData>> GetChatsAsync(string token, CancellationToken ct = default);
-    Task<IReadOnlyList<WbMessageData>> GetMessagesAsync(string token, string chatId, CancellationToken ct = default);
+    Task<WbEventsResult> GetEventsAsync(string token, string? nextCursor = null, int limit = 100, CancellationToken ct = default);
     Task<bool> SendMessageAsync(string token, string chatId, string text, CancellationToken ct = default);
 }
 
@@ -41,3 +41,15 @@ public sealed record WbMessageData(
     string Text,
     bool IsFromCustomer,
     DateTime CreatedAt);
+
+public sealed record WbEventData(
+    string ChatId,
+    string MessageId,
+    string Text,
+    bool IsFromCustomer,
+    DateTime CreatedAt);
+
+public sealed record WbEventsResult(
+    IReadOnlyList<WbEventData> Events,
+    string? NextCursor,
+    int TotalEvents);
