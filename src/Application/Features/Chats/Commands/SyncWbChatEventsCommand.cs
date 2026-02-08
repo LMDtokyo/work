@@ -80,15 +80,15 @@ internal sealed class SyncWbChatEventsCommandHandler : IRequestHandler<SyncWbCha
 
         _logger.LogDebug("Found {Count} existing chats for {EventCount} events", existingChats.Count, eventsResult.Events.Count);
 
+        // load WB chats data for names/avatars
+        var wbChatsData = await _wbApi.GetChatsAsync(wbAcc.ApiToken, ct);
+        var wbChatLookup = wbChatsData.ToDictionary(c => c.ChatId, c => c);
+
         // create missing chats from events
         var missingChatIds = chatIdSet.Where(cid => !existingChats.ContainsKey(cid)).ToList();
         if (missingChatIds.Any())
         {
             _logger.LogInformation("Creating {Count} new chats from events", missingChatIds.Count);
-
-            // load real chat info from WB API to get customer names
-            var wbChatsData = await _wbApi.GetChatsAsync(wbAcc.ApiToken, ct);
-            var wbChatLookup = wbChatsData.ToDictionary(c => c.ChatId, c => c);
 
             var newChats = new List<Chat>();
             foreach (var wbChatId in missingChatIds)
@@ -109,6 +109,19 @@ internal sealed class SyncWbChatEventsCommandHandler : IRequestHandler<SyncWbCha
             }
             await _chatRepo.AddRangeAsync(newChats, ct);
             await _uow.SaveChangesAsync(ct);
+        }
+
+        // update existing chats with placeholder names
+        foreach(var (wbChatId, chat) in existingChats)
+        {
+            if(chat.ContactName is "Клиент" or "Продавец" or "Неизвестный")
+            {
+                if(wbChatLookup.TryGetValue(wbChatId, out var wbInfo))
+                {
+                    chat.UpdateContact(wbInfo.CustomerName, wbInfo.CustomerAvatar);
+                    _chatRepo.Update(chat);
+                }
+            }
         }
 
         var msgIds = eventsResult.Events.Select(e => e.MessageId).ToList();
@@ -196,13 +209,13 @@ internal sealed class SyncWbChatEventsCommandHandler : IRequestHandler<SyncWbCha
             var chatIdSet = filteredEvents.Select(e => e.ChatId).Distinct().ToList();
             var existingChats = await _chatRepo.GetByWbChatIdsAsync(wbAcc.Id, chatIdSet, ct);
 
+            // get real names from WB chats endpoint
+            var wbChatsData = await _wbApi.GetChatsAsync(wbAcc.ApiToken, ct);
+            var wbChatLookup = wbChatsData.ToDictionary(c => c.ChatId, c => c);
+
             var missingChatIds = chatIdSet.Where(cid => !existingChats.ContainsKey(cid)).ToList();
             if (missingChatIds.Any())
             {
-                // get real names from WB chats endpoint
-                var wbChatsData = await _wbApi.GetChatsAsync(wbAcc.ApiToken, ct);
-                var wbChatLookup = wbChatsData.ToDictionary(c => c.ChatId, c => c);
-
                 var newChats = new List<Chat>();
                 foreach (var wbChatId in missingChatIds)
                 {
@@ -221,6 +234,19 @@ internal sealed class SyncWbChatEventsCommandHandler : IRequestHandler<SyncWbCha
                 }
                 await _chatRepo.AddRangeAsync(newChats, ct);
                 await _uow.SaveChangesAsync(ct);
+            }
+
+            // fix old chats with placeholder names
+            foreach(var (wbChatId, chat) in existingChats)
+            {
+                if(chat.ContactName is "Клиент" or "Продавец" or "Неизвестный")
+                {
+                    if(wbChatLookup.TryGetValue(wbChatId, out var wbInfo))
+                    {
+                        chat.UpdateContact(wbInfo.CustomerName, wbInfo.CustomerAvatar);
+                        _chatRepo.Update(chat);
+                    }
+                }
             }
 
             var msgIds = filteredEvents.Select(e => e.MessageId).ToList();
