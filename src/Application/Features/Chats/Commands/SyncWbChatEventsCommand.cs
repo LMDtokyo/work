@@ -204,7 +204,8 @@ internal sealed class SyncWbChatEventsCommandHandler : IRequestHandler<SyncWbCha
         int totalLoaded = 0;
         string? cursor = null;
         int iterations = 0;
-        const int MAX_ITER = 100;
+        // process in chunks per sync cycle, save progress on rate limit
+        const int MAX_ITER = 50;
 
         while (iterations < MAX_ITER)
         {
@@ -214,24 +215,35 @@ internal sealed class SyncWbChatEventsCommandHandler : IRequestHandler<SyncWbCha
             {
                 eventsResult = await _wbApi.GetEventsAsync(wbAcc.ApiToken, cursor, 100, ct);
             }
-            catch (Common.Exceptions.WbApiRateLimitException ex)
+            catch (Common.Exceptions.WbApiRateLimitException)
             {
-                _logger.LogWarning("Rate limit hit, waiting {Seconds}s before retry", ex.RetryAfterSeconds);
-                await Task.Delay(TimeSpan.FromSeconds(ex.RetryAfterSeconds), ct);
-                continue; // retry same iteration
+                // hit limit - save cursor and bail, next cycle continues
+                _logger.LogInformation("Rate limit during history sync, saving progress at batch {Iter}", iterations);
+                if (!string.IsNullOrEmpty(cursor))
+                {
+                    wbAcc.UpdateEventCursor(cursor);
+                    _wbAccRepo.Update(wbAcc);
+                    await _uow.SaveChangesAsync(ct);
+                }
+                return Result.Success(totalLoaded);
             }
 
             if (eventsResult.Events.Count == 0) break;
 
-            // filter events >= fromDate (only new from 08.02 onwards)
             var filteredEvents = eventsResult.Events.Where(e => e.CreatedAt >= fromDate).ToList();
 
             if (filteredEvents.Count == 0)
             {
-                _logger.LogDebug("No events >= {FromDate} in this batch, continue to next", fromDate);
                 cursor = eventsResult.NextCursor;
                 iterations++;
                 if (string.IsNullOrEmpty(cursor)) break;
+                // save cursor every 10 batches so we don't redo work
+                if (iterations % 10 == 0)
+                {
+                    wbAcc.UpdateEventCursor(cursor);
+                    _wbAccRepo.Update(wbAcc);
+                    await _uow.SaveChangesAsync(ct);
+                }
                 continue;
             }
 
