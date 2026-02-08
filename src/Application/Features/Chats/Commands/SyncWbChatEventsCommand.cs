@@ -85,12 +85,24 @@ internal sealed class SyncWbChatEventsCommandHandler : IRequestHandler<SyncWbCha
         if (missingChatIds.Any())
         {
             _logger.LogInformation("Creating {Count} new chats from events", missingChatIds.Count);
+
+            // load real chat info from WB API to get customer names
+            var wbChatsData = await _wbApi.GetChatsAsync(wbAcc.ApiToken, ct);
+            var wbChatLookup = wbChatsData.ToDictionary(c => c.ChatId, c => c);
+
             var newChats = new List<Chat>();
             foreach (var wbChatId in missingChatIds)
             {
                 var firstEvent = eventsResult.Events.First(e => e.ChatId == wbChatId);
-                var chat = Chat.CreateFromWb(req.UserId, req.WbAccountId, wbChatId,
-                    firstEvent.IsFromCustomer ? "Клиент" : "Продавец", null);
+
+                string chatName = "Неизвестный";
+                string? avatar = null;
+                if(wbChatLookup.TryGetValue(wbChatId, out var wbChatInfo)) {
+                    chatName = wbChatInfo.CustomerName;
+                    avatar = wbChatInfo.CustomerAvatar;
+                }
+
+                var chat = Chat.CreateFromWb(req.UserId, req.WbAccountId, wbChatId, chatName, avatar);
                 chat.UpdateLastMessage(firstEvent.Text, firstEvent.CreatedAt);
                 newChats.Add(chat);
                 existingChats[wbChatId] = chat;
@@ -187,12 +199,23 @@ internal sealed class SyncWbChatEventsCommandHandler : IRequestHandler<SyncWbCha
             var missingChatIds = chatIdSet.Where(cid => !existingChats.ContainsKey(cid)).ToList();
             if (missingChatIds.Any())
             {
+                // get real names from WB chats endpoint
+                var wbChatsData = await _wbApi.GetChatsAsync(wbAcc.ApiToken, ct);
+                var wbChatLookup = wbChatsData.ToDictionary(c => c.ChatId, c => c);
+
                 var newChats = new List<Chat>();
                 foreach (var wbChatId in missingChatIds)
                 {
                     var firstEvent = filteredEvents.First(e => e.ChatId == wbChatId);
-                    var chat = Chat.CreateFromWb(userId, wbAcc.Id, wbChatId,
-                        firstEvent.IsFromCustomer ? "Клиент" : "Продавец", null);
+
+                    var chatName = "Неизвестный";
+                    string? avatar = null;
+                    if(wbChatLookup.TryGetValue(wbChatId, out var wbInfo)) {
+                        chatName = wbInfo.CustomerName;
+                        avatar = wbInfo.CustomerAvatar;
+                    }
+
+                    var chat = Chat.CreateFromWb(userId, wbAcc.Id, wbChatId, chatName, avatar);
                     newChats.Add(chat);
                     existingChats[wbChatId] = chat;
                 }
