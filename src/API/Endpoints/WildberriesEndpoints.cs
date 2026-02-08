@@ -241,4 +241,21 @@ public static class WildberriesEndpoints
 
         return Results.Ok(ApiResponse<int>.Success(result.Value));
     }
+
+    public static async Task<IResult> LoadFullHistory(
+        Guid id,
+        ClaimsPrincipal user,
+        ISender sender)
+    {
+        if (!ClaimsExtractor.TryGetUserId(user, out var userId))
+            return Results.Ok(ApiResponse<int>.Failure("Unauthorized"));
+
+        var cmd = new LoadFullChatHistoryCommand(id, userId);
+        var res = await sender.Send(cmd);
+
+        if (res.IsFailure)
+            return Results.Ok(ApiResponse<int>.Failure(res.Error!));
+
+        return Results.Ok(ApiResponse<int>.Success(res.Value));
+    }
 }
