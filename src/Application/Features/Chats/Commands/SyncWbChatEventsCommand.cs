@@ -142,10 +142,14 @@ internal sealed class SyncWbChatEventsCommandHandler : IRequestHandler<SyncWbCha
         _logger.LogInformation("Syncing {New} msgs, {Chats} new chats for {Account}",
             newMessages.Count, newChats.Count, req.WbAccountId);
 
-        // atomic save: chats + messages + cursor together
+        // save chats first (FK parent)
         if (newChats.Any())
+        {
             await _chatRepo.AddRangeAsync(newChats, ct);
+            await _uow.SaveChangesAsync(ct);
+        }
 
+        // then messages + cursor
         if (newMessages.Any())
         {
             await _msgRepo.AddRangeAsync(newMessages, ct);
@@ -172,7 +176,7 @@ internal sealed class SyncWbChatEventsCommandHandler : IRequestHandler<SyncWbCha
 
         await _uow.SaveChangesAsync(ct);
 
-        // notifications after successful save
+        // notifications
         foreach (var msg in newMessages)
         {
             var wbId = existingChats.FirstOrDefault(kv => kv.Value.Id == msg.ChatId).Key;
