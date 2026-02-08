@@ -1,23 +1,32 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import Searchbar from "../../../shared/ui/Searchbar/Searchbar";
 import ChatInput from "../../../shared/ui/ChatInput/ChatInput";
 import ChatsCategoryItemsList from "../../../widgets/ChatsCategoryItemsList/ChatsCateogoryItemsList";
+import type { ChatFilter } from "../../../widgets/ChatsCategoryItemsList/ChatsCateogoryItemsList";
 import ChatItemsList from "../../../widgets/ChatItemsList/ChatItemsList";
 import ChatWindow from "../../../widgets/ChatWindow/ChatWindow";
 import { useChatSocket } from "../../../shared/hooks/useChatSocket";
+import { useChats } from "../../../shared/api/hooks/useChats";
 import type { Message } from "../../../shared/api/requests/chats";
 
 export const Chats = () => {
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [lastMsg, setLastMsg] = useState<Message | null>(null);
+  const [chatFilter, setChatFilter] = useState<ChatFilter>("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const queryClient = useQueryClient();
+  const { data: chats } = useChats();
+
+  const totalCount = chats?.length ?? 0;
+  const unreadCount = useMemo(
+    () => chats?.filter(c => c.unreadCount > 0).length ?? 0,
+    [chats]
+  );
 
   const onNewMessage = useCallback((payload: { chatId: string; messageId: string; text: string; isFromCustomer: boolean; sentAt: string }) => {
-    // refresh chat list to update last message / unread
     queryClient.invalidateQueries({ queryKey: ["chats"] });
 
-    // if this message is for the currently open chat, push it live
     if (payload.chatId === selectedChatId) {
       setLastMsg({
         id: payload.messageId,
@@ -35,24 +44,28 @@ export const Chats = () => {
   useChatSocket(onNewMessage, onChatUpdated);
 
   const handleMsgSent = () => {
-    // after sending, add our message locally (will also come back via SignalR)
     queryClient.invalidateQueries({ queryKey: ["chats"] });
   };
 
-  const handleBackToList = () => {
-    setSelectedChatId(null);
-  };
+  const handleBackToList = () => setSelectedChatId(null);
 
   return (
     <div className="bg-chat-bg w-full h-svh flex gap-2 justify-center items-start overflow-hidden relative pb-4 px-2">
       <div className={`w-full max-w-md h-full flex flex-col gap-3 animate-fade-in-bottom overflow-hidden ${selectedChatId ? 'hidden md:flex' : 'flex'}`}>
-        <Searchbar />
+        <Searchbar value={searchQuery} onChange={setSearchQuery} />
         <hr className="border-border mx-2" />
-        <ChatsCategoryItemsList />
+        <ChatsCategoryItemsList
+          filter={chatFilter}
+          onFilterChange={setChatFilter}
+          totalCount={totalCount}
+          unreadCount={unreadCount}
+        />
         <div className="flex-1 overflow-hidden">
           <ChatItemsList
             selectedChat={selectedChatId}
             onSelectChat={setSelectedChatId}
+            filter={chatFilter}
+            search={searchQuery}
           />
         </div>
       </div>

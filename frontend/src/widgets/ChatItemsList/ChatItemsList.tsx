@@ -1,19 +1,41 @@
+import { useMemo } from "react";
 import { useChats } from "../../shared/api/hooks/useChats";
-import { markChatAsRead } from "../../shared/api/requests/chats";
+import { markChatAsRead, type Chat } from "../../shared/api/requests/chats";
 import defaultAvatar from "../../shared/assets/avatar.jpg";
 import ChatItem from "../../shared/ui/ChatItem/ChatItem";
+import type { ChatFilter } from "../ChatsCategoryItemsList/ChatsCateogoryItemsList";
 
 interface ChatItemsListProps {
   selectedChat: string | null;
   onSelectChat: (chatId: string) => void;
+  filter: ChatFilter;
+  search: string;
 }
 
-function ChatItemsList({ selectedChat, onSelectChat }: ChatItemsListProps) {
+function ChatItemsList({ selectedChat, onSelectChat, filter, search }: ChatItemsListProps) {
   const { data: chats, isLoading, refetch } = useChats();
+
+  const filtered = useMemo(() => {
+    if (!chats) return [];
+    let list: Chat[] = chats;
+
+    if (filter === "unread") {
+      list = list.filter(c => c.unreadCount > 0);
+    }
+
+    const q = search.trim().toLowerCase();
+    if (q) {
+      list = list.filter(c =>
+        c.name.toLowerCase().includes(q) ||
+        (c.lastMessage && c.lastMessage.toLowerCase().includes(q))
+      );
+    }
+
+    return list;
+  }, [chats, filter, search]);
 
   const handleChatClick = async (chatId: string) => {
     onSelectChat(chatId);
-
     try {
       await markChatAsRead(chatId);
       refetch();
@@ -43,9 +65,17 @@ function ChatItemsList({ selectedChat, onSelectChat }: ChatItemsListProps) {
     );
   }
 
+  if (filtered.length === 0) {
+    return (
+      <div className="w-full flex items-center justify-center py-12 text-font-secondary">
+        Ничего не найдено
+      </div>
+    );
+  }
+
   return (
     <div className="w-full h-full flex flex-col gap-2 mt-1 overflow-y-auto overflow-x-hidden pr-2">
-      {chats.map((chat) => (
+      {filtered.map((chat) => (
         <ChatItem
           key={chat.id}
           image={chat.avatar || defaultAvatar}

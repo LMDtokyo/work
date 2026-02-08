@@ -7,6 +7,7 @@ export function useChats() {
   return useQuery({
     queryKey: CHATS_KEY,
     queryFn: getChats,
-    staleTime: 30_000,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
   });
 }
