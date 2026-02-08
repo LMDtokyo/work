@@ -23,7 +23,8 @@ public static class ChatEndpoints
         string? Avatar,
         string? LastMessage,
         string? LastMessageTime,
-        int UnreadCount);
+        int UnreadCount,
+        string Platform);
 
     public sealed record MessageResponseDto(
         string Id,
@@ -138,6 +139,7 @@ public static class ChatEndpoints
             chat.ContactAvatar,
             chat.LastMessage,
             timeStr,
-            chat.UnreadCount);
+            chat.UnreadCount,
+            chat.Platform);
     }
 }

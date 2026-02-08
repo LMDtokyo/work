@@ -1,4 +1,5 @@
 import { useState, useCallback, useMemo } from "react";
+import { useLocation } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import Searchbar from "../../../shared/ui/Searchbar/Searchbar";
 import ChatInput from "../../../shared/ui/ChatInput/ChatInput";
@@ -10,18 +11,33 @@ import { useChatSocket } from "../../../shared/hooks/useChatSocket";
 import { useChats } from "../../../shared/api/hooks/useChats";
 import type { Message } from "../../../shared/api/requests/chats";
 
+function getPlatformFromPath(path: string): string | null {
+  const seg = path.replace("/app/chats/", "").replace("/app/chats", "");
+  if (!seg || seg === "all-accounts") return null;
+  return seg;
+}
+
 export const Chats = () => {
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [lastMsg, setLastMsg] = useState<Message | null>(null);
   const [chatFilter, setChatFilter] = useState<ChatFilter>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const queryClient = useQueryClient();
+  const location = useLocation();
   const { data: chats } = useChats();
 
-  const totalCount = chats?.length ?? 0;
+  const activePlatform = getPlatformFromPath(location.pathname);
+
+  const platformChats = useMemo(() => {
+    if (!chats) return [];
+    if (!activePlatform) return chats;
+    return chats.filter(c => c.platform === activePlatform);
+  }, [chats, activePlatform]);
+
+  const totalCount = platformChats.length;
   const unreadCount = useMemo(
-    () => chats?.filter(c => c.unreadCount > 0).length ?? 0,
-    [chats]
+    () => platformChats.filter(c => c.unreadCount > 0).length,
+    [platformChats]
   );
 
   const onNewMessage = useCallback((payload: { chatId: string; messageId: string; text: string; isFromCustomer: boolean; sentAt: string }) => {
@@ -66,6 +82,7 @@ export const Chats = () => {
             onSelectChat={setSelectedChatId}
             filter={chatFilter}
             search={searchQuery}
+            platformChats={platformChats}
           />
         </div>
       </div>

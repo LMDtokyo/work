@@ -6,4 +6,5 @@ public sealed record ChatDto(
     string? ContactAvatar,
     string? LastMessage,
     DateTime? LastMessageAt,
-    int UnreadCount);
+    int UnreadCount,
+    string Platform);

@@ -10,14 +10,16 @@ interface ChatItemsListProps {
   onSelectChat: (chatId: string) => void;
   filter: ChatFilter;
   search: string;
+  platformChats?: Chat[];
 }
 
-function ChatItemsList({ selectedChat, onSelectChat, filter, search }: ChatItemsListProps) {
-  const { data: chats, isLoading, refetch } = useChats();
+function ChatItemsList({ selectedChat, onSelectChat, filter, search, platformChats }: ChatItemsListProps) {
+  const { data: allChats, isLoading, refetch } = useChats();
+  const chats = platformChats ?? allChats;
 
   const filtered = useMemo(() => {
     if (!chats) return [];
-    let list: Chat[] = chats;
+    let list = [...chats];
 
     if (filter === "unread") {
       list = list.filter(c => c.unreadCount > 0);

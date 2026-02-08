@@ -26,7 +26,8 @@ internal sealed class GetUserChatsQueryHandler : IRequestHandler<GetUserChatsQue
             c.ContactAvatar,
             c.LastMessageText,
             c.LastMessageAt,
-            c.UnreadCount)).ToList();
+            c.UnreadCount,
+            c.WbAccountId.HasValue ? "wildberries" : "unknown")).ToList();
 
         return dtos;
     }

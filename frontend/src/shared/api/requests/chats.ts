@@ -8,6 +8,7 @@ export interface Chat {
   lastMessage: string | null;
   lastMessageTime: string | null;
   unreadCount: number;
+  platform: string;
 }
 
 interface ApiResponse<T> {
