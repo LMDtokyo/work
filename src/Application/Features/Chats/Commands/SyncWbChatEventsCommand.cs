@@ -113,9 +113,9 @@ internal sealed class SyncWbChatEventsCommandHandler : IRequestHandler<SyncWbCha
             {
                 var firstEvent = eventsResult.Events.First(e => e.ChatId == wbChatId);
 
-                string chatName = "Неизвестный";
+                var chatName = "Покупатель";
                 string? avatar = null;
-                if(wbChatLookup.TryGetValue(wbChatId, out var wbChatInfo)) {
+                if(wbChatLookup.TryGetValue(wbChatId, out var wbChatInfo) && !string.IsNullOrWhiteSpace(wbChatInfo.CustomerName)) {
                     chatName = wbChatInfo.CustomerName;
                     avatar = wbChatInfo.CustomerAvatar;
                 }
@@ -132,7 +132,7 @@ internal sealed class SyncWbChatEventsCommandHandler : IRequestHandler<SyncWbCha
         // update existing chats with placeholder names
         foreach(var (wbChatId, chat) in existingChats)
         {
-            if(chat.ContactName is "Клиент" or "Продавец" or "Неизвестный")
+            if(chat.ContactName is "Клиент" or "Продавец" or "Неизвестный" or "Покупатель")
             {
                 if(wbChatLookup.TryGetValue(wbChatId, out var wbInfo))
                 {
