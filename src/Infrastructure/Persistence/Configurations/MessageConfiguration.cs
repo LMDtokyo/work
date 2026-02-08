@@ -20,6 +20,11 @@ internal sealed class MessageConfiguration : IEntityTypeConfiguration<Message>
         builder.Property(x => x.CreatedAt).HasColumnName("created_at").IsRequired();
         builder.Property(x => x.SyncedAt).HasColumnName("synced_at").IsRequired();
 
+        builder.HasOne<Chat>()
+            .WithMany()
+            .HasForeignKey(x => x.ChatId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.HasIndex(x => x.ChatId).HasDatabaseName("ix_messages_chat_id");
         builder.HasIndex(x => x.WbMessageId).IsUnique().HasDatabaseName("ix_messages_wb_message_id");
         builder.HasIndex(x => new { x.ChatId, x.CreatedAt }).HasDatabaseName("ix_messages_chat_created");

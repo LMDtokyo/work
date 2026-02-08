@@ -1,16 +1,42 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import Searchbar from "../../../shared/ui/Searchbar/Searchbar";
 import ChatInput from "../../../shared/ui/ChatInput/ChatInput";
 import ChatsCategoryItemsList from "../../../widgets/ChatsCategoryItemsList/ChatsCateogoryItemsList";
 import ChatItemsList from "../../../widgets/ChatItemsList/ChatItemsList";
 import ChatWindow from "../../../widgets/ChatWindow/ChatWindow";
+import { useChatSocket } from "../../../shared/hooks/useChatSocket";
+import type { Message } from "../../../shared/api/requests/chats";
 
 export const Chats = () => {
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
-  const [msgKey, setMsgKey] = useState(0);
+  const [lastMsg, setLastMsg] = useState<Message | null>(null);
+  const queryClient = useQueryClient();
+
+  const onNewMessage = useCallback((payload: { chatId: string; messageId: string; text: string; isFromCustomer: boolean; sentAt: string }) => {
+    // refresh chat list to update last message / unread
+    queryClient.invalidateQueries({ queryKey: ["chats"] });
+
+    // if this message is for the currently open chat, push it live
+    if (payload.chatId === selectedChatId) {
+      setLastMsg({
+        id: payload.messageId,
+        text: payload.text,
+        isFromCustomer: payload.isFromCustomer,
+        sentAt: payload.sentAt,
+      });
+    }
+  }, [selectedChatId, queryClient]);
+
+  const onChatUpdated = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ["chats"] });
+  }, [queryClient]);
+
+  useChatSocket(onNewMessage, onChatUpdated);
 
   const handleMsgSent = () => {
-    setMsgKey(k => k + 1);
+    // after sending, add our message locally (will also come back via SignalR)
+    queryClient.invalidateQueries({ queryKey: ["chats"] });
   };
 
   const handleBackToList = () => {
@@ -38,7 +64,7 @@ export const Chats = () => {
                 ← Назад
               </button>
             </div>
-            <ChatWindow key={msgKey} chatId={selectedChatId} />
+            <ChatWindow chatId={selectedChatId} newMessage={lastMsg} />
           </>
         ) : (
           <div className="h-full text-font-secondary flex items-center justify-center">

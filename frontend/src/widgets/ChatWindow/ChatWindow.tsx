@@ -3,42 +3,48 @@ import { getChatMessages, type Message } from "../../shared/api/requests/chats";
 
 interface ChatWindowProps {
   chatId: string;
+  newMessage?: Message | null;
 }
 
-function ChatWindow({ chatId }: ChatWindowProps) {
+function ChatWindow({ chatId, newMessage }: ChatWindowProps) {
   const [msgs, setMsgs] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    loadMessages();
+    let cancelled = false;
+    setLoading(true);
+    getChatMessages(chatId)
+      .then((data) => {
+        if (!cancelled) {
+          setMsgs(data);
+          setTimeout(scrollToBottom, 80);
+        }
+      })
+      .catch(console.error)
+      .finally(() => { if (!cancelled) setLoading(false); });
+
+    return () => { cancelled = true; };
   }, [chatId]);
 
-  const loadMessages = async () => {
-    setLoading(true);
-    try {
-      const data = await getChatMessages(chatId);
-      setMsgs(data);
-      setTimeout(() => scrollToBottom(), 100);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // append incoming real-time messages
+  useEffect(() => {
+    if (!newMessage) return;
+    setMsgs(prev => {
+      if (prev.some(m => m.id === newMessage.id)) return prev;
+      return [...prev, newMessage];
+    });
+    setTimeout(scrollToBottom, 80);
+  }, [newMessage]);
 
   const scrollToBottom = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
+    scrollRef.current && (scrollRef.current.scrollTop = scrollRef.current.scrollHeight);
   };
 
   const formatTime = (dateStr: string) => {
     try {
       const d = new Date(dateStr);
-      const hrs = d.getHours().toString().padStart(2, '0');
-      const mins = d.getMinutes().toString().padStart(2, '0');
-      return `${hrs}:${mins}`;
+      return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
     } catch {
       return dateStr;
     }

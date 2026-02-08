@@ -27,17 +27,20 @@ internal sealed class SendWbMessageCommandHandler : IRequestHandler<SendWbMessag
     private readonly IWbAccountRepository _accountRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IWildberriesApiClient _wbApiClient;
+    private readonly IChatNotifier _notifier;
 
     public SendWbMessageCommandHandler(
         IChatRepository chatRepository,
         IWbAccountRepository accountRepository,
         IUnitOfWork unitOfWork,
-        IWildberriesApiClient wbApiClient)
+        IWildberriesApiClient wbApiClient,
+        IChatNotifier notifier)
     {
         _chatRepository = chatRepository;
         _accountRepository = accountRepository;
         _unitOfWork = unitOfWork;
         _wbApiClient = wbApiClient;
+        _notifier = notifier;
     }
 
     public async Task<Result<bool>> Handle(SendWbMessageCommand request, CancellationToken ct)
@@ -78,6 +81,8 @@ internal sealed class SendWbMessageCommandHandler : IRequestHandler<SendWbMessag
         chat.UpdateLastMessage(request.Text, DateTime.UtcNow);
         _chatRepository.Update(chat);
         await _unitOfWork.SaveChangesAsync(ct);
+
+        await _notifier.NotifyNewMessage(request.UserId, chat.Id, Guid.NewGuid().ToString(), request.Text, false, DateTime.UtcNow);
 
         return true;
     }

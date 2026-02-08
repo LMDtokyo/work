@@ -16,6 +16,7 @@ internal sealed class SyncWbChatEventsCommandHandler : IRequestHandler<SyncWbCha
     private readonly IMessageRepository _msgRepo;
     private readonly IWildberriesApiClient _wbApi;
     private readonly IUnitOfWork _uow;
+    private readonly IChatNotifier _notifier;
     private readonly ILogger<SyncWbChatEventsCommandHandler> _logger;
 
     public SyncWbChatEventsCommandHandler(
@@ -24,6 +25,7 @@ internal sealed class SyncWbChatEventsCommandHandler : IRequestHandler<SyncWbCha
         IMessageRepository msgRepo,
         IWildberriesApiClient wbApi,
         IUnitOfWork uow,
+        IChatNotifier notifier,
         ILogger<SyncWbChatEventsCommandHandler> logger)
     {
         _wbAccRepo = wbAccRepo;
@@ -31,6 +33,7 @@ internal sealed class SyncWbChatEventsCommandHandler : IRequestHandler<SyncWbCha
         _msgRepo = msgRepo;
         _wbApi = wbApi;
         _uow = uow;
+        _notifier = notifier;
         _logger = logger;
     }
 
@@ -45,20 +48,37 @@ internal sealed class SyncWbChatEventsCommandHandler : IRequestHandler<SyncWbCha
 
         if (needsFullSync)
         {
-            _logger.LogInformation("Loading events from 2026-02-08 onwards for account {AccountId}", req.WbAccountId);
-            return await LoadHistoryFromDate(wbAcc, req.UserId, new DateTime(2026, 2, 8, 0, 0, 0, DateTimeKind.Utc), ct);
+            _logger.LogInformation("Loading events from 2026-02-07 onwards for account {AccountId}", req.WbAccountId);
+            return await LoadHistoryFromDate(wbAcc, req.UserId, new DateTime(2026, 2, 7, 0, 0, 0, DateTimeKind.Utc), ct);
         }
 
         WbEventsResult eventsResult;
-
-        try
+        int retryCount = 0;
+        while (true)
         {
-            eventsResult = await _wbApi.GetEventsAsync(wbAcc.ApiToken, wbAcc.LastEventCursor, 100, ct);
-        }
-        catch (Common.Exceptions.WbApiRateLimitException ex)
-        {
-            _logger.LogWarning("Rate limit during regular sync, will retry in next cycle after {Seconds}s", ex.RetryAfterSeconds);
-            return Result.Success(0);
+            try
+            {
+                eventsResult = await _wbApi.GetEventsAsync(wbAcc.ApiToken, wbAcc.LastEventCursor, 100, ct);
+                break;
+            }
+            catch (Common.Exceptions.WbApiRateLimitException ex)
+            {
+                retryCount++;
+                if (retryCount > 3)
+                {
+                    _logger.LogWarning("Rate limit exceeded 3 times for account {AccountId}, skipping", req.WbAccountId);
+                    return Result.Success(0);
+                }
+                _logger.LogWarning("Rate limit hit, waiting {Seconds}s (attempt {Attempt}/3)", ex.RetryAfterSeconds, retryCount);
+                await Task.Delay(TimeSpan.FromSeconds(ex.RetryAfterSeconds + 2), ct);
+            }
+            catch (Common.Exceptions.WbApiAuthenticationException)
+            {
+                wbAcc.MarkTokenExpired();
+                _wbAccRepo.Update(wbAcc);
+                await _uow.SaveChangesAsync(ct);
+                return Result.Failure<int>("WB token expired");
+            }
         }
 
         _logger.LogDebug("Got {Count} events from WB API for account {AccountId}, cursor: {Cursor}",
@@ -157,6 +177,14 @@ internal sealed class SyncWbChatEventsCommandHandler : IRequestHandler<SyncWbCha
 
             await _uow.SaveChangesAsync(ct);
             _logger.LogInformation("Saved {Count} messages to DB", newMessages.Count);
+
+            // push realtime notifications
+            foreach (var msg in newMessages)
+            {
+                var chatWbId = existingChats.FirstOrDefault(kv => kv.Value.Id == msg.ChatId).Key;
+                if (chatWbId != null && existingChats.TryGetValue(chatWbId, out var ch))
+                    await _notifier.NotifyNewMessage(req.UserId, ch.Id, msg.WbMessageId, msg.Text, msg.IsFromCustomer, msg.CreatedAt);
+            }
         }
 
         // update cursor for next sync
@@ -277,6 +305,13 @@ internal sealed class SyncWbChatEventsCommandHandler : IRequestHandler<SyncWbCha
 
                 await _uow.SaveChangesAsync(ct);
                 totalLoaded += newMessages.Count;
+
+                foreach (var msg in newMessages)
+                {
+                    var chatWbId = existingChats.FirstOrDefault(kv => kv.Value.Id == msg.ChatId).Key;
+                    if (chatWbId != null && existingChats.TryGetValue(chatWbId, out var ch))
+                        await _notifier.NotifyNewMessage(userId, ch.Id, msg.WbMessageId, msg.Text, msg.IsFromCustomer, msg.CreatedAt);
+                }
             }
 
             cursor = eventsResult.NextCursor;

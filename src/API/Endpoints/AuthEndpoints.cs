@@ -51,7 +51,7 @@ public static class AuthEndpoints
         var result = await sender.Send(command);
 
         if (result.IsFailure)
-            return Results.Ok(ApiResponse<AuthResponseDto>.Failure(result.Error!));
+            return Results.BadRequest(ApiResponse<AuthResponseDto>.Failure(result.Error!));
 
         cookieService.SetTokens(httpContext, result.Value!.AccessToken, result.Value.RefreshToken, result.Value.ExpiresAt);
 
@@ -70,7 +70,7 @@ public static class AuthEndpoints
         var result = await sender.Send(command);
 
         if (result.IsFailure)
-            return Results.Ok(ApiResponse<AuthResponseDto>.Failure(result.Error!));
+            return Results.BadRequest(ApiResponse<AuthResponseDto>.Failure(result.Error!));
 
         cookieService.SetTokens(httpContext, result.Value!.AccessToken, result.Value.RefreshToken, result.Value.ExpiresAt);
 
@@ -87,7 +87,7 @@ public static class AuthEndpoints
         var refreshToken = cookieService.GetRefreshToken(httpContext);
 
         if (string.IsNullOrEmpty(refreshToken))
-            return Results.Ok(ApiResponse<AuthResponseDto>.Failure("No refresh token provided"));
+            return Results.Json(ApiResponse<AuthResponseDto>.Failure("No refresh token provided"), statusCode: 401);
 
         var command = new RefreshTokenCommand(refreshToken);
         var result = await sender.Send(command);
@@ -95,7 +95,7 @@ public static class AuthEndpoints
         if (result.IsFailure)
         {
             cookieService.ClearTokens(httpContext);
-            return Results.Ok(ApiResponse<AuthResponseDto>.Failure(result.Error!));
+            return Results.Json(ApiResponse<AuthResponseDto>.Failure(result.Error!), statusCode: 401);
         }
 
         cookieService.SetTokens(httpContext, result.Value!.AccessToken, result.Value.RefreshToken, result.Value.ExpiresAt);
@@ -108,12 +108,12 @@ public static class AuthEndpoints
     public static async Task<IResult> GetCurrentUser(ClaimsPrincipal user, IUserRepository userRepository)
     {
         if (!ClaimsExtractor.TryGetUserId(user, out var userId))
-            return Results.Ok(ApiResponse<UserResponseDto>.Failure("Unauthorized"));
+            return Results.Json(ApiResponse<UserResponseDto>.Failure("Unauthorized"), statusCode: 401);
 
         var dbUser = await userRepository.GetByIdAsync(userId);
 
         if (dbUser is null)
-            return Results.Ok(ApiResponse<UserResponseDto>.Failure("User not found"));
+            return Results.NotFound(ApiResponse<UserResponseDto>.Failure("User not found"));
 
         return Results.Ok(ApiResponse<UserResponseDto>.Success(new UserResponseDto(
             dbUser.Id,

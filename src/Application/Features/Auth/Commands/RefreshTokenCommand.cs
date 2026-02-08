@@ -53,7 +53,10 @@ internal sealed class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenC
         var newRefreshTokenValue = _jwtProvider.GenerateRefreshToken();
         existingToken.Revoke(replacedByToken: newRefreshTokenValue);
 
-        var newRefreshToken = RefreshToken.Create(user.Id, newRefreshTokenValue, 7);
+        // keep original expiry window — if user had 30d (rememberMe), preserve that
+        var originalLifespan = (existingToken.ExpiresAt - existingToken.CreatedAt).TotalDays;
+        var days = (int)Math.Max(originalLifespan, 7);
+        var newRefreshToken = RefreshToken.Create(user.Id, newRefreshTokenValue, days);
         var accessToken = _jwtProvider.GenerateAccessToken(user);
 
         await _refreshTokenRepository.AddAsync(newRefreshToken, ct);

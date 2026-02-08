@@ -7,6 +7,8 @@ using MessagingPlatform.Application.Features.Wildberries.DTOs;
 using MessagingPlatform.Domain.Entities;
 using MessagingPlatform.Domain.Repositories;
 using MessagingPlatform.Domain.ValueObjects;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace MessagingPlatform.Application.Features.Wildberries.Commands;
 
@@ -39,20 +41,23 @@ internal sealed class AddWbAccountCommandHandler : IRequestHandler<AddWbAccountC
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IWildberriesApiClient _wbApiClient;
-    private readonly IInitialSyncService _initialSyncService;
+    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly ILogger<AddWbAccountCommandHandler> _log;
 
     public AddWbAccountCommandHandler(
         IWbAccountRepository accountRepository,
         IUserRepository userRepository,
         IUnitOfWork unitOfWork,
         IWildberriesApiClient wbApiClient,
-        IInitialSyncService initialSyncService)
+        IServiceScopeFactory scopeFactory,
+        ILogger<AddWbAccountCommandHandler> log)
     {
         _accountRepository = accountRepository;
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
         _wbApiClient = wbApiClient;
-        _initialSyncService = initialSyncService;
+        _scopeFactory = scopeFactory;
+        _log = log;
     }
 
     public async Task<Result<WbAccountDto>> Handle(AddWbAccountCommand request, CancellationToken ct)
@@ -76,16 +81,20 @@ internal sealed class AddWbAccountCommandHandler : IRequestHandler<AddWbAccountC
         await _accountRepository.AddAsync(account, ct);
         await _unitOfWork.SaveChangesAsync(ct);
 
-        // Fire-and-forget initial sync - user will see data appear within seconds
+        var accId = account.Id;
+        var uid = request.UserId;
         _ = Task.Run(async () =>
         {
+            using var scope = _scopeFactory.CreateScope();
+            var syncSvc = scope.ServiceProvider.GetRequiredService<IInitialSyncService>();
             try
             {
-                await _initialSyncService.PerformInitialSyncAsync(account.Id, request.UserId, CancellationToken.None);
+                await syncSvc.PerformInitialSyncAsync(accId, uid, CancellationToken.None);
             }
-            catch
+            catch (Exception ex)
             {
-                // Silently fail - user can manually trigger sync later if needed
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<AddWbAccountCommandHandler>>();
+                logger.LogWarning(ex, "Initial sync failed for account {AccId}", accId);
             }
         }, CancellationToken.None);
 

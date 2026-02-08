@@ -12,7 +12,7 @@ internal sealed class BackgroundSyncService : BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<BackgroundSyncService> _logger;
-    private static readonly TimeSpan SyncInterval = TimeSpan.FromMinutes(7);
+    private static readonly TimeSpan SyncInterval = TimeSpan.FromMinutes(2);
     private const int BatchSize = 10; // Reduced to respect WB API rate limits
     private const int DelayBetweenAccountsMs = 300; // 300ms between accounts
     private const int DelayBetweenBatchesMs = 5000; // 5 seconds between batches
@@ -30,7 +30,7 @@ internal sealed class BackgroundSyncService : BackgroundService
         _logger.LogInformation("BackgroundSyncService started. Sync interval: {Interval} minutes", SyncInterval.TotalMinutes);
 
         // Wait a bit before first sync to let app stabilize
-        await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
+        await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
 
         while (!stoppingToken.IsCancellationRequested)
         {

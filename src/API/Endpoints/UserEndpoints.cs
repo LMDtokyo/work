@@ -32,13 +32,13 @@ public static class UserEndpoints
         ISender sender)
     {
         if (!ClaimsExtractor.TryGetUserId(user, out var userId))
-            return Results.Ok(ApiResponse<ThemeResponseDto>.Failure("Unauthorized"));
+            return Results.Json(ApiResponse<ThemeResponseDto>.Failure("Unauthorized"), statusCode: 401);
 
         var command = new UpdateThemeCommand(userId, request.Theme);
         var result = await sender.Send(command);
 
         if (result.IsFailure)
-            return Results.Ok(ApiResponse<ThemeResponseDto>.Failure(result.Error!));
+            return Results.BadRequest(ApiResponse<ThemeResponseDto>.Failure(result.Error!));
 
         return Results.Ok(ApiResponse<ThemeResponseDto>.Success(
             new ThemeResponseDto(result.Value.ToString().ToLowerInvariant())));
@@ -50,13 +50,13 @@ public static class UserEndpoints
         ISender sender)
     {
         if (!ClaimsExtractor.TryGetUserId(user, out var userId))
-            return Results.Ok(ApiResponse<bool>.Failure("Unauthorized"));
+            return Results.Json(ApiResponse<bool>.Failure("Unauthorized"), statusCode: 401);
 
         var command = new ChangePasswordCommand(userId, request.OldPassword, request.NewPassword);
         var result = await sender.Send(command);
 
         if (result.IsFailure)
-            return Results.Ok(ApiResponse<bool>.Failure(result.Error!));
+            return Results.BadRequest(ApiResponse<bool>.Failure(result.Error!));
 
         return Results.Ok(ApiResponse<bool>.Success(true));
     }

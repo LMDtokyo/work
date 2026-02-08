@@ -74,13 +74,13 @@ public static class WildberriesEndpoints
         ISender sender)
     {
         if (!ClaimsExtractor.TryGetUserId(user, out var userId))
-            return Results.Ok(ApiResponse<AccountResponseDto>.Failure("Unauthorized"));
+            return Results.Json(ApiResponse<AccountResponseDto>.Failure("Unauthorized"), statusCode: 401);
 
         var command = new AddWbAccountCommand(userId, request.ApiToken, request.ShopName);
         var result = await sender.Send(command);
 
         if (result.IsFailure)
-            return Results.Ok(ApiResponse<AccountResponseDto>.Failure(result.Error!));
+            return Results.BadRequest(ApiResponse<AccountResponseDto>.Failure(result.Error!));
 
         var dto = MapToAccountResponse(result.Value!);
         return Results.Ok(ApiResponse<AccountResponseDto>.Success(dto));
@@ -91,13 +91,13 @@ public static class WildberriesEndpoints
         ISender sender)
     {
         if (!ClaimsExtractor.TryGetUserId(user, out var userId))
-            return Results.Ok(ApiResponse<IReadOnlyList<AccountResponseDto>>.Failure("Unauthorized"));
+            return Results.Json(ApiResponse<IReadOnlyList<AccountResponseDto>>.Failure("Unauthorized"), statusCode: 401);
 
         var query = new GetUserWbAccountsQuery(userId);
         var result = await sender.Send(query);
 
         if (result.IsFailure)
-            return Results.Ok(ApiResponse<IReadOnlyList<AccountResponseDto>>.Failure(result.Error!));
+            return Results.BadRequest(ApiResponse<IReadOnlyList<AccountResponseDto>>.Failure(result.Error!));
 
         var dtos = result.Value!.Select(MapToAccountResponse).ToList();
         return Results.Ok(ApiResponse<IReadOnlyList<AccountResponseDto>>.Success(dtos));
@@ -109,13 +109,13 @@ public static class WildberriesEndpoints
         ISender sender)
     {
         if (!ClaimsExtractor.TryGetUserId(user, out var userId))
-            return Results.Ok(ApiResponse.Failure("Unauthorized"));
+            return Results.Json(ApiResponse.Failure("Unauthorized"), statusCode: 401);
 
         var command = new RemoveWbAccountCommand(userId, id);
         var result = await sender.Send(command);
 
         if (result.IsFailure)
-            return Results.Ok(ApiResponse.Failure(result.Error!));
+            return Results.BadRequest(ApiResponse.Failure(result.Error!));
 
         return Results.Ok(ApiResponse.Success());
     }
@@ -127,13 +127,13 @@ public static class WildberriesEndpoints
         ISender sender)
     {
         if (!ClaimsExtractor.TryGetUserId(user, out var userId))
-            return Results.Ok(ApiResponse<AccountResponseDto>.Failure("Unauthorized"));
+            return Results.Json(ApiResponse<AccountResponseDto>.Failure("Unauthorized"), statusCode: 401);
 
         var command = new UpdateWbAccountTokenCommand(userId, id, request.ApiToken);
         var result = await sender.Send(command);
 
         if (result.IsFailure)
-            return Results.Ok(ApiResponse<AccountResponseDto>.Failure(result.Error!));
+            return Results.BadRequest(ApiResponse<AccountResponseDto>.Failure(result.Error!));
 
         var dto = MapToAccountResponse(result.Value!);
         return Results.Ok(ApiResponse<AccountResponseDto>.Success(dto));
@@ -145,13 +145,13 @@ public static class WildberriesEndpoints
         ISender sender)
     {
         if (!ClaimsExtractor.TryGetUserId(user, out var userId))
-            return Results.Ok(ApiResponse<SyncResultDto>.Failure("Unauthorized"));
+            return Results.Json(ApiResponse<SyncResultDto>.Failure("Unauthorized"), statusCode: 401);
 
         var command = new SyncOrdersCommand(id, userId);
         var result = await sender.Send(command);
 
         if (result.IsFailure)
-            return Results.Ok(ApiResponse<SyncResultDto>.Failure(result.Error!));
+            return Results.BadRequest(ApiResponse<SyncResultDto>.Failure(result.Error!));
 
         return Results.Ok(ApiResponse<SyncResultDto>.Success(new SyncResultDto(result.Value)));
     }
@@ -164,13 +164,13 @@ public static class WildberriesEndpoints
         ISender sender)
     {
         if (!ClaimsExtractor.TryGetUserId(user, out var userId))
-            return Results.Ok(ApiResponse<PaginatedOrdersDto>.Failure("Unauthorized"));
+            return Results.Json(ApiResponse<PaginatedOrdersDto>.Failure("Unauthorized"), statusCode: 401);
 
         var query = new GetWbOrdersQuery(id, userId, skip, take > 0 ? take : 50);
         var result = await sender.Send(query);
 
         if (result.IsFailure)
-            return Results.Ok(ApiResponse<PaginatedOrdersDto>.Failure(result.Error!));
+            return Results.BadRequest(ApiResponse<PaginatedOrdersDto>.Failure(result.Error!));
 
         var dto = MapToPaginatedOrders(result.Value!);
         return Results.Ok(ApiResponse<PaginatedOrdersDto>.Success(dto));
@@ -214,13 +214,13 @@ public static class WildberriesEndpoints
         ISender sender)
     {
         if (!ClaimsExtractor.TryGetUserId(user, out var userId))
-            return Results.Ok(ApiResponse<int>.Failure("Unauthorized"));
+            return Results.Json(ApiResponse<int>.Failure("Unauthorized"), statusCode: 401);
 
         var command = new SyncWbChatsCommand(id, userId);
         var result = await sender.Send(command);
 
         if (result.IsFailure)
-            return Results.Ok(ApiResponse<int>.Failure(result.Error!));
+            return Results.BadRequest(ApiResponse<int>.Failure(result.Error!));
 
         return Results.Ok(ApiResponse<int>.Success(result.Value));
     }
@@ -231,13 +231,13 @@ public static class WildberriesEndpoints
         ISender sender)
     {
         if (!ClaimsExtractor.TryGetUserId(user, out var userId))
-            return Results.Ok(ApiResponse<int>.Failure("Unauthorized"));
+            return Results.Json(ApiResponse<int>.Failure("Unauthorized"), statusCode: 401);
 
         var command = new SyncWbChatEventsCommand(id, userId);
         var result = await sender.Send(command);
 
         if (result.IsFailure)
-            return Results.Ok(ApiResponse<int>.Failure(result.Error!));
+            return Results.BadRequest(ApiResponse<int>.Failure(result.Error!));
 
         return Results.Ok(ApiResponse<int>.Success(result.Value));
     }

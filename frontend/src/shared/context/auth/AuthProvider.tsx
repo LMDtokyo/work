@@ -12,6 +12,7 @@ import { initWbApiInterceptor } from "../../config/api/wildberriesApi";
 import { initChatApiInterceptor } from "../../config/api/chatApi";
 import { AuthContext } from "./context";
 import type { User, Theme } from "./types";
+import { disconnectChatSocket } from "../../hooks/useChatSocket";
 
 function applyTheme(theme: Theme): void {
   document.documentElement.setAttribute("data-theme", theme);
@@ -43,6 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const interceptorsReady = useRef<boolean | null>(null);
 
   const handleAuthFailure = useCallback(() => {
+    disconnectChatSocket();
     queryClient.setQueryData(["auth", "me"], null);
     queryClient.clear();
   }, [queryClient]);
@@ -116,6 +118,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(async () => {
     await authApi.post("/logout").catch(() => {});
+    disconnectChatSocket();
     queryClient.setQueryData(["auth", "me"], null);
     queryClient.clear();
     localStorage.removeItem("user");

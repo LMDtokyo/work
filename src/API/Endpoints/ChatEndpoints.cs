@@ -36,13 +36,13 @@ public static class ChatEndpoints
         ISender sender)
     {
         if (!ClaimsExtractor.TryGetUserId(user, out var userId))
-            return Results.Ok(ApiResponse<IReadOnlyList<ChatResponseDto>>.Failure("Unauthorized"));
+            return Results.Json(ApiResponse<IReadOnlyList<ChatResponseDto>>.Failure("Unauthorized"), statusCode: 401);
 
         var query = new GetUserChatsQuery(userId);
         var result = await sender.Send(query);
 
         if (result.IsFailure)
-            return Results.Ok(ApiResponse<IReadOnlyList<ChatResponseDto>>.Failure(result.Error!));
+            return Results.BadRequest(ApiResponse<IReadOnlyList<ChatResponseDto>>.Failure(result.Error!));
 
         var dtos = result.Value!.Select(MapToResponse).ToList();
         return Results.Ok(ApiResponse<IReadOnlyList<ChatResponseDto>>.Success(dtos));
@@ -53,13 +53,12 @@ public static class ChatEndpoints
         ISender sender)
     {
         if (!ClaimsExtractor.TryGetUserId(user, out var userId))
-            return Results.Ok(ApiResponse<int>.Failure("Unauthorized"));
+            return Results.Json(ApiResponse<int>.Failure("Unauthorized"), statusCode: 401);
 
         var cmd = new UpdateChatsLastMessageCommand(userId);
         var res = await sender.Send(cmd);
-
         if (res.IsFailure)
-            return Results.Ok(ApiResponse<int>.Failure(res.Error!));
+            return Results.BadRequest(ApiResponse<int>.Failure(res.Error!));
 
         return Results.Ok(ApiResponse<int>.Success(res.Value));
     }
@@ -71,13 +70,13 @@ public static class ChatEndpoints
         ISender sender)
     {
         if (!ClaimsExtractor.TryGetUserId(user, out var userId))
-            return Results.Ok(ApiResponse<bool>.Failure("Unauthorized"));
+            return Results.Json(ApiResponse<bool>.Failure("Unauthorized"), statusCode: 401);
 
         var command = new SendWbMessageCommand(id, userId, request.Text);
         var result = await sender.Send(command);
 
         if (result.IsFailure)
-            return Results.Ok(ApiResponse<bool>.Failure(result.Error!));
+            return Results.BadRequest(ApiResponse<bool>.Failure(result.Error!));
 
         return Results.Ok(ApiResponse<bool>.Success(true));
     }
@@ -88,13 +87,12 @@ public static class ChatEndpoints
         ISender sender)
     {
         if (!ClaimsExtractor.TryGetUserId(user, out var userId))
-            return Results.Ok(ApiResponse<bool>.Failure("Unauthorized"));
+            return Results.Json(ApiResponse<bool>.Failure("Unauthorized"), statusCode: 401);
 
         var cmd = new MarkChatAsReadCommand(id, userId);
         var res = await sender.Send(cmd);
-
         if (res.IsFailure)
-            return Results.Ok(ApiResponse<bool>.Failure(res.Error!));
+            return Results.BadRequest(ApiResponse<bool>.Failure(res.Error!));
 
         return Results.Ok(ApiResponse<bool>.Success(true));
     }
@@ -105,13 +103,13 @@ public static class ChatEndpoints
         ISender sender)
     {
         if (!ClaimsExtractor.TryGetUserId(user, out var userId))
-            return Results.Ok(ApiResponse<IReadOnlyList<MessageResponseDto>>.Failure("Unauthorized"));
+            return Results.Json(ApiResponse<IReadOnlyList<MessageResponseDto>>.Failure("Unauthorized"), statusCode: 401);
 
         var query = new GetChatMessagesQuery(id, userId);
         var result = await sender.Send(query);
 
         if (result.IsFailure)
-            return Results.Ok(ApiResponse<IReadOnlyList<MessageResponseDto>>.Failure(result.Error!));
+            return Results.BadRequest(ApiResponse<IReadOnlyList<MessageResponseDto>>.Failure(result.Error!));
 
         var msgs = result.Value!.Select(m => new MessageResponseDto(
             m.Id,

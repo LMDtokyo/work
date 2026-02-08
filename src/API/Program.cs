@@ -3,8 +3,10 @@ using System.Threading.RateLimiting;
 using MessagingPlatform.API.Extensions;
 using MessagingPlatform.API.Infrastructure;
 using MessagingPlatform.API.Middleware;
+using MessagingPlatform.API.Hubs;
 using MessagingPlatform.API.Services;
 using MessagingPlatform.Application;
+using MessagingPlatform.Application.Common.Interfaces;
 using MessagingPlatform.Infrastructure;
 using MessagingPlatform.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -64,6 +66,18 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddSingleton<ICookieAuthService, CookieAuthService>();
 
+builder.Services.AddSignalR();
+builder.Services.AddScoped<IChatNotifier, ChatNotifier>();
+
+builder.Services.AddCors(opts =>
+{
+    opts.AddDefaultPolicy(p => p
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials()
+        .SetIsOriginAllowed(_ => true));
+});
+
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 
@@ -77,6 +91,7 @@ using (var scope = app.Services.CreateScope())
 
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseRateLimiter();
+app.UseCors();
 app.UseMiddleware<CookieAuthMiddleware>();
 
 if (app.Environment.IsDevelopment())
@@ -97,5 +112,6 @@ app.MapAuthEndpoints();
 app.MapUserEndpoints();
 app.MapWildberriesEndpoints();
 app.MapChatEndpoints();
+app.MapHub<ChatHub>("/hubs/chat");
 
 app.Run();

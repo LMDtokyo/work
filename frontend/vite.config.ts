@@ -7,7 +7,11 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     proxy: {
-      "/api": "http://91.207.183.204:8081"
+      "/api": "http://91.207.183.204:8081",
+      "/hubs": {
+        target: "http://91.207.183.204:8081",
+        ws: true,
+      }
     }
   }
 })

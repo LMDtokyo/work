@@ -11,11 +11,15 @@ internal sealed class MessageRepository : IMessageRepository
     public MessageRepository(ApplicationDbContext ctx) => _ctx = ctx;
 
     public async Task<IReadOnlyList<Message>> GetByChatIdAsync(Guid chatId, int limit = 100, CancellationToken ct = default)
-        => await _ctx.Messages
+    {
+        var msgs = await _ctx.Messages
             .Where(x => x.ChatId == chatId)
-            .OrderBy(x => x.CreatedAt)
+            .OrderByDescending(x => x.CreatedAt)
             .Take(limit)
             .ToListAsync(ct);
+        msgs.Reverse();
+        return msgs;
+    }
 
     public async Task<Message?> GetByWbMessageIdAsync(string wbMessageId, CancellationToken ct = default)
         => await _ctx.Messages.FirstOrDefaultAsync(x => x.WbMessageId == wbMessageId, ct);
