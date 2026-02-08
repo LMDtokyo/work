@@ -142,8 +142,24 @@ internal sealed class SyncWbChatEventsCommandHandler : IRequestHandler<SyncWbCha
         var ourChatIds = existingChats.Values.Select(c => c.Id).ToList();
         var existing = await _msgRepo.GetExistingMessageIdsAsync(ourChatIds, msgIds, ct);
 
-        var newMsgs = events
-            .Where(e => !existing.Contains(e.MessageId))
+        var filtered = events.Where(e => !existing.Contains(e.MessageId)).ToList();
+
+        // dedup seller msgs we saved locally with "sent_" prefix
+        var sellerEvts = filtered.Where(e => !e.IsFromCustomer).ToList();
+        var sentTexts = new HashSet<(Guid, string)>();
+        if (sellerEvts.Count > 0)
+        {
+            foreach (var cid in sellerEvts.Select(e => existingChats[e.ChatId].Id).Distinct())
+            {
+                var recent = await _msgRepo.GetByChatIdAsync(cid, 30, ct);
+                foreach (var m in recent.Where(m => m.WbMessageId.StartsWith("sent_")))
+                    sentTexts.Add((cid, m.Text));
+            }
+            if (sentTexts.Count > 0)
+                filtered = filtered.Where(e => e.IsFromCustomer || !sentTexts.Contains((existingChats[e.ChatId].Id, e.Text))).ToList();
+        }
+
+        var newMsgs = filtered
             .Select(e => Message.Create(existingChats[e.ChatId].Id, e.MessageId, e.Text, e.IsFromCustomer, e.CreatedAt))
             .ToList();
 

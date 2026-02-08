@@ -2,6 +2,7 @@ using FluentValidation;
 using MediatR;
 using MessagingPlatform.Application.Common.Interfaces;
 using MessagingPlatform.Application.Common.Models;
+using MessagingPlatform.Domain.Entities;
 using MessagingPlatform.Domain.Repositories;
 
 namespace MessagingPlatform.Application.Features.Chats.Commands;
@@ -16,74 +17,79 @@ public sealed class SendWbMessageCommandValidator : AbstractValidator<SendWbMess
     public SendWbMessageCommandValidator()
     {
         RuleFor(x => x.Text)
-            .NotEmpty().WithMessage("Текст сообщения не может быть пустым")
-            .MaximumLength(4000).WithMessage("Сообщение не может превышать 4000 символов");
+            .NotEmpty().WithMessage("Текст не может быть пустым")
+            .MaximumLength(1000).WithMessage("Макс 1000 символов");
     }
 }
 
 internal sealed class SendWbMessageCommandHandler : IRequestHandler<SendWbMessageCommand, Result<bool>>
 {
-    private readonly IChatRepository _chatRepository;
-    private readonly IWbAccountRepository _accountRepository;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IWildberriesApiClient _wbApiClient;
-    private readonly IChatNotifier _notifier;
+    readonly IChatRepository _chats;
+    readonly IMessageRepository _messages;
+    readonly IWbAccountRepository _accounts;
+    readonly IUnitOfWork _uow;
+    readonly IWildberriesApiClient _wb;
+    readonly IChatNotifier _notifier;
 
     public SendWbMessageCommandHandler(
-        IChatRepository chatRepository,
-        IWbAccountRepository accountRepository,
-        IUnitOfWork unitOfWork,
-        IWildberriesApiClient wbApiClient,
+        IChatRepository chats,
+        IMessageRepository messages,
+        IWbAccountRepository accounts,
+        IUnitOfWork uow,
+        IWildberriesApiClient wb,
         IChatNotifier notifier)
     {
-        _chatRepository = chatRepository;
-        _accountRepository = accountRepository;
-        _unitOfWork = unitOfWork;
-        _wbApiClient = wbApiClient;
+        _chats = chats;
+        _messages = messages;
+        _accounts = accounts;
+        _uow = uow;
+        _wb = wb;
         _notifier = notifier;
     }
 
-    public async Task<Result<bool>> Handle(SendWbMessageCommand request, CancellationToken ct)
+    public async Task<Result<bool>> Handle(SendWbMessageCommand req, CancellationToken ct)
     {
-        // Get chat and verify it belongs to user
-        var chat = await _chatRepository.GetByIdWithUserAsync(request.ChatId, request.UserId, ct);
+        var chat = await _chats.GetByIdWithUserAsync(req.ChatId, req.UserId, ct);
         if (chat is null)
-            return Result.Failure<bool>("Чат не найден или у вас нет доступа к нему");
+            return Result.Failure<bool>("Чат не найден");
 
-        // INVARIANT: Chat must be linked to WB account
         if (!chat.WbAccountId.HasValue || string.IsNullOrEmpty(chat.WbChatId))
-            return Result.Failure<bool>("Этот чат не связан с аккаунтом Wildberries");
+            return Result.Failure<bool>("Чат не привязан к WB");
 
-        // Get WB account and verify ownership
-        var account = await _accountRepository.GetByIdWithUserAsync(chat.WbAccountId.Value, request.UserId, ct);
-        if (account is null)
-            return Result.Failure<bool>("Аккаунт Wildberries не найден или у вас нет доступа к нему");
+        var acc = await _accounts.GetByIdWithUserAsync(chat.WbAccountId.Value, req.UserId, ct);
+        if (acc is null)
+            return Result.Failure<bool>("WB аккаунт не найден");
 
-        // Send message via WB API
-        bool success;
+        // fetch replySign from WB
+        var wbChats = await _wb.GetChatsAsync(acc.ApiToken, ct);
+        var target = wbChats.FirstOrDefault(c => c.ChatId == chat.WbChatId);
+        if (target == null || string.IsNullOrEmpty(target.ReplySign))
+            return Result.Failure<bool>("Не удалось получить replySign");
+
+        bool ok;
         try
         {
-            success = await _wbApiClient.SendMessageAsync(
-                account.ApiToken.Value,
-                chat.WbChatId,
-                request.Text,
-                ct);
+            ok = await _wb.SendMessageAsync(acc.ApiToken, target.ReplySign, req.Text, ct);
         }
         catch (Exception)
         {
-            return Result.Failure<bool>("Не удалось отправить сообщение через Wildberries API");
+            return Result.Failure<bool>("Ошибка WB API");
         }
 
-        if (!success)
-            return Result.Failure<bool>("Wildberries API вернул ошибку при отправке сообщения");
+        if (!ok)
+            return Result.Failure<bool>("WB не принял сообщение");
 
-        // Update last message in chat
-        chat.UpdateLastMessage(request.Text, DateTime.UtcNow);
-        _chatRepository.Update(chat);
-        await _unitOfWork.SaveChangesAsync(ct);
+        // save sent message to DB
+        var now = DateTime.UtcNow;
+        var msgId = "sent_" + Guid.NewGuid().ToString("N")[..12];
+        var msg = Message.Create(chat.Id, msgId, req.Text, false, now);
+        await _messages.AddAsync(msg, ct);
 
-        await _notifier.NotifyNewMessage(request.UserId, chat.Id, Guid.NewGuid().ToString(), request.Text, false, DateTime.UtcNow);
+        chat.UpdateLastMessage(req.Text, now);
+        _chats.Update(chat);
+        await _uow.SaveChangesAsync(ct);
 
+        await _notifier.NotifyNewMessage(req.UserId, chat.Id, msgId, req.Text, false, now);
         return true;
     }
 }

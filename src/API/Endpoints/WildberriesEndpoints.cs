@@ -208,6 +208,24 @@ public static class WildberriesEndpoints
             result.HasPreviousPage,
             result.HasNextPage);
 
+    public static async Task<IResult> GetAllOrders(
+        int skip,
+        int take,
+        ClaimsPrincipal user,
+        ISender sender)
+    {
+        if (!ClaimsExtractor.TryGetUserId(user, out var userId))
+            return Results.Json(ApiResponse<PaginatedOrdersDto>.Failure("Unauthorized"), statusCode: 401);
+
+        var q = new GetUserOrdersQuery(userId, skip, take > 0 ? take : 50);
+        var result = await sender.Send(q);
+
+        if (result.IsFailure)
+            return Results.BadRequest(ApiResponse<PaginatedOrdersDto>.Failure(result.Error!));
+
+        return Results.Ok(ApiResponse<PaginatedOrdersDto>.Success(MapToPaginatedOrders(result.Value!)));
+    }
+
     public static async Task<IResult> SyncChats(
         Guid id,
         ClaimsPrincipal user,

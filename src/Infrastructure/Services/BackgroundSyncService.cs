@@ -77,8 +77,6 @@ internal sealed class BackgroundSyncService : BackgroundService
 
         foreach (var batch in batches)
         {
-            // CRITICAL: Sequential processing to respect WB API rate limits
-            // Parallel execution causes 429 Too Many Requests
             foreach (var account in batch)
             {
                 var success = await SyncAccountAsync(account.Id, account.UserId, sender, ct);
@@ -87,12 +85,10 @@ internal sealed class BackgroundSyncService : BackgroundService
                 else
                     totalFailed++;
 
-                // Delay between individual accounts (300ms - WB recommends ~200ms)
                 if (account != batch.Last())
                     await Task.Delay(DelayBetweenAccountsMs, ct);
             }
 
-            // Longer delay between batches to allow rate limit buckets to refill
             if (batch != batches.Last())
                 await Task.Delay(DelayBetweenBatchesMs, ct);
         }

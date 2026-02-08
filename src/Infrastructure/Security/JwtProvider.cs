@@ -54,23 +54,16 @@ internal sealed class JwtProvider : IJwtProvider
 
     public Guid? ValidateRefreshToken(string token)
     {
-        // Refresh token is a cryptographically secure random string (Base64)
-        // Validation happens at DB level (check if exists, not revoked, not expired)
-        // This method validates format only
         if (string.IsNullOrWhiteSpace(token))
             return null;
 
         try
         {
-            // Verify it's valid Base64
             var bytes = Convert.FromBase64String(token);
-
-            // Refresh tokens should be 64 bytes (512 bits)
             if (bytes.Length != 64)
                 return null;
 
-            // Format is valid, actual validation happens in RefreshTokenRepository
-            return Guid.Empty; // Placeholder - actual userId comes from DB lookup
+            return Guid.Empty;
         }
         catch (FormatException)
         {

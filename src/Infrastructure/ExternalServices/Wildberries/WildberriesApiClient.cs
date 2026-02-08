@@ -88,7 +88,6 @@ internal sealed class WildberriesApiClient : IWildberriesApiClient
                 var request = CreateRequest(HttpMethod.Get, url, token);
                 var response = await _httpClient.SendAsync(request, ct);
 
-                // CRITICAL: Handle authentication failures explicitly
                 if (response.StatusCode == HttpStatusCode.Unauthorized ||
                     response.StatusCode == HttpStatusCode.Forbidden)
                 {
@@ -98,7 +97,6 @@ internal sealed class WildberriesApiClient : IWildberriesApiClient
                     throw new WbApiAuthenticationException("Invalid or expired API token");
                 }
 
-                // Handle rate limiting
                 if (response.StatusCode == HttpStatusCode.TooManyRequests)
                 {
                     var retryAfter = (int)(response.Headers.RetryAfter?.Delta?.TotalSeconds ?? 60);
@@ -178,7 +176,6 @@ internal sealed class WildberriesApiClient : IWildberriesApiClient
             var request = CreateRequest(HttpMethod.Get, url, token);
             var response = await _httpClient.SendAsync(request, ct);
 
-            // Handle authentication failures
             if (response.StatusCode == HttpStatusCode.Unauthorized ||
                 response.StatusCode == HttpStatusCode.Forbidden)
             {
@@ -189,7 +186,6 @@ internal sealed class WildberriesApiClient : IWildberriesApiClient
                 throw new WbApiAuthenticationException("Invalid or expired API token");
             }
 
-            // Handle rate limiting
             if (response.StatusCode == HttpStatusCode.TooManyRequests)
             {
                 var retryAfter = (int)(response.Headers.RetryAfter?.Delta?.TotalSeconds ?? 60);
@@ -245,9 +241,7 @@ internal sealed class WildberriesApiClient : IWildberriesApiClient
             ? order.Subject
             : order.Article;
 
-        // CRITICAL: Price conversion - WB API returns price in kopecks (cents)
-        // Example: 12345 kopecks = 123.45 RUB
-        decimal price = order.ConvertedPrice / 100m;
+        decimal price = order.ConvertedPrice / 100m; // копейки → рубли
 
         return new WbOrderData(
             order.Id,
@@ -307,7 +301,6 @@ internal sealed class WildberriesApiClient : IWildberriesApiClient
 
             var jwtToken = handler.ReadJwtToken(token);
 
-            // ValidTo is already in UTC
             return jwtToken.ValidTo != DateTime.MinValue ? jwtToken.ValidTo : null;
         }
         catch (Exception ex)
@@ -328,7 +321,6 @@ internal sealed class WildberriesApiClient : IWildberriesApiClient
             var request = CreateRequest(HttpMethod.Get, url, token);
             var response = await _httpClient.SendAsync(request, ct);
 
-            // Handle authentication failures
             if (response.StatusCode == HttpStatusCode.Unauthorized ||
                 response.StatusCode == HttpStatusCode.Forbidden)
             {
@@ -339,7 +331,6 @@ internal sealed class WildberriesApiClient : IWildberriesApiClient
                 throw new WbApiAuthenticationException("Invalid or expired API token");
             }
 
-            // Handle rate limiting
             if (response.StatusCode == HttpStatusCode.TooManyRequests)
             {
                 var retryAfter = (int)(response.Headers.RetryAfter?.Delta?.TotalSeconds ?? 60);
@@ -380,7 +371,8 @@ internal sealed class WildberriesApiClient : IWildberriesApiClient
                         chat.CustomerAvatar,
                         lastMessageText,
                         lastMessageAt,
-                        chat.UnreadCount));
+                        chat.UnreadCount,
+                        chat.ReplySign));
                 }
             }
         }
@@ -469,82 +461,62 @@ internal sealed class WildberriesApiClient : IWildberriesApiClient
         }
     }
 
-    public async Task<bool> SendMessageAsync(string token, string chatId, string text, CancellationToken ct = default)
+    public async Task<bool> SendMessageAsync(string token, string replySign, string text, CancellationToken ct = default)
     {
-        const string endpoint = "/api/v1/seller/chats/send";
-
         if (string.IsNullOrWhiteSpace(text))
-        {
-            _logger.LogWarning("Attempted to send empty message. ChatId: {ChatId}", chatId);
             return false;
-        }
 
         try
         {
-            var url = $"{ChatApiBaseUrl}{endpoint}";
-            var payload = new WbSendMessageRequest { ChatId = chatId, Text = text };
-            var jsonContent = JsonSerializer.Serialize(payload, _jsonOptions);
-            var httpContent = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+            var url = $"{ChatApiBaseUrl}/api/v1/seller/message";
 
-            var request = new HttpRequestMessage(HttpMethod.Post, url)
-            {
-                Content = httpContent
-            };
+            using var form = new MultipartFormDataContent();
+            form.Add(new StringContent(replySign), "replySign");
+            form.Add(new StringContent(text), "message");
+
+            var request = new HttpRequestMessage(HttpMethod.Post, url) { Content = form };
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             var response = await _httpClient.SendAsync(request, ct);
 
-            // Handle authentication failures
             if (response.StatusCode == HttpStatusCode.Unauthorized ||
                 response.StatusCode == HttpStatusCode.Forbidden)
             {
-                _logger.LogWarning(
-                    "WB API authentication failed. Endpoint: {Endpoint}, StatusCode: {StatusCode}",
-                    endpoint,
-                    (int)response.StatusCode);
+                _logger.LogWarning("WB send auth fail: {Code}", (int)response.StatusCode);
                 throw new WbApiAuthenticationException("Invalid or expired API token");
             }
 
-            // Handle rate limiting
             if (response.StatusCode == HttpStatusCode.TooManyRequests)
             {
-                var retryAfter = (int)(response.Headers.RetryAfter?.Delta?.TotalSeconds ?? 60);
-                _logger.LogWarning(
-                    "WB API rate limit exceeded for {Endpoint}. Retry after {Seconds} seconds",
-                    endpoint,
-                    retryAfter);
-                throw new WbApiRateLimitException($"Rate limit exceeded. Retry after {retryAfter}s", retryAfter);
+                var wait = (int)(response.Headers.RetryAfter?.Delta?.TotalSeconds ?? 10);
+                throw new WbApiRateLimitException($"Rate limit. Retry after {wait}s", wait);
             }
 
             if (!response.IsSuccessStatusCode)
             {
-                _logger.LogError(
-                    "Failed to send message to Wildberries. Endpoint: {Endpoint}, ChatId: {ChatId}, StatusCode: {StatusCode}",
-                    endpoint,
-                    chatId,
-                    (int)response.StatusCode);
+                var body = await response.Content.ReadAsStringAsync(ct);
+                _logger.LogError("WB send failed ({Code}): {Body}", (int)response.StatusCode, body);
                 return false;
             }
 
             var content = await response.Content.ReadAsStringAsync(ct);
-            var sendResponse = JsonSerializer.Deserialize<WbSendMessageResponse>(content, _jsonOptions);
+            var resp = JsonSerializer.Deserialize<WbSendMsgResponse>(content, _jsonOptions);
 
-            return sendResponse?.Success ?? false;
+            if (resp?.Errors != null && resp.Errors.Count > 0)
+            {
+                _logger.LogWarning("WB send errors: {Errors}", string.Join("; ", resp.Errors));
+                return false;
+            }
+
+            return resp?.Result != null;
         }
         catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "HTTP request error while sending message. ChatId: {ChatId}", chatId);
+            _logger.LogError(ex, "HTTP error sending msg");
             return false;
         }
-        catch (TaskCanceledException ex)
+        catch (TaskCanceledException)
         {
-            _logger.LogWarning(ex, "Request cancelled while sending message. ChatId: {ChatId}", chatId);
-            return false;
-        }
-        catch (JsonException ex)
-        {
-            _logger.LogError(ex, "JSON error while sending message. ChatId: {ChatId}", chatId);
             return false;
         }
     }

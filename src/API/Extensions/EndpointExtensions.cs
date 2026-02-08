@@ -130,6 +130,12 @@ public static class EndpointExtensions
             .RequireRateLimiting("api")
             .Produces<WildberriesEndpoints.PaginatedOrdersDto>(StatusCodes.Status200OK);
 
+        group.MapGet("/orders", WildberriesEndpoints.GetAllOrders)
+            .WithName("GetAllOrders")
+            .WithSummary("Get orders across all user accounts")
+            .RequireRateLimiting("api")
+            .Produces<WildberriesEndpoints.PaginatedOrdersDto>(StatusCodes.Status200OK);
+
         group.MapPost("/accounts/{id:guid}/sync-chats", WildberriesEndpoints.SyncChats)
             .WithName("SyncWbChats")
             .WithSummary("Sync chats from Wildberries API")

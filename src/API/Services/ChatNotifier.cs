@@ -24,4 +24,13 @@ internal sealed class ChatNotifier : IChatNotifier
 
     public Task NotifyChatUpdated(Guid userId, Guid chatId)
         => _hub.Clients.Group($"user_{userId}").SendAsync("ChatUpdated", new { chatId = chatId.ToString() });
+
+    public Task NotifyNewOrder(Guid userId, Guid orderId, string? productName, decimal price, string status)
+        => _hub.Clients.Group($"user_{userId}").SendAsync("NewOrder", new
+        {
+            orderId = orderId.ToString(),
+            productName,
+            price,
+            status
+        });
 }

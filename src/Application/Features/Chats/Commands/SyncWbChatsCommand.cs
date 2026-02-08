@@ -45,7 +45,6 @@ internal sealed class SyncWbChatsCommandHandler : IRequestHandler<SyncWbChatsCom
         }
         catch (WbApiAuthenticationException ex)
         {
-            // CRITICAL: Mark token as expired
             account.MarkTokenExpired();
             _accountRepository.Update(account);
             await _unitOfWork.SaveChangesAsync(ct);
@@ -65,7 +64,6 @@ internal sealed class SyncWbChatsCommandHandler : IRequestHandler<SyncWbChatsCom
                 request.WbAccountId,
                 ex.RetryAfterSeconds);
 
-            // Don't mark as error - temporary condition
             return Result.Failure<int>($"Превышен лимит запросов WB API. Повторите через {ex.RetryAfterSeconds} секунд.");
         }
         catch (Exception ex)
@@ -89,20 +87,17 @@ internal sealed class SyncWbChatsCommandHandler : IRequestHandler<SyncWbChatsCom
 
         var apiChatIds = apiChats.Select(c => c.ChatId).ToList();
 
-        // Single DB query to fetch all existing chats - batch loading to avoid N+1
         var existingChatsDict = await _chatRepository.GetByWbChatIdsAsync(request.WbAccountId, apiChatIds, ct);
 
         var newChats = new List<Chat>();
 
         foreach (var chatData in apiChats)
         {
-            // Skip chats with empty names
             if (string.IsNullOrWhiteSpace(chatData.CustomerName))
                 continue;
 
             if (existingChatsDict.TryGetValue(chatData.ChatId, out var existingChat))
             {
-                // Update existing chat
                 existingChat.SyncFromWb(
                     chatData.CustomerName,
                     chatData.CustomerAvatar,
@@ -113,7 +108,6 @@ internal sealed class SyncWbChatsCommandHandler : IRequestHandler<SyncWbChatsCom
             }
             else
             {
-                // Create new chat
                 var newChat = Chat.CreateFromWb(
                     request.UserId,
                     request.WbAccountId,

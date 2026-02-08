@@ -104,6 +104,9 @@ public sealed record WbChatDto
     [JsonPropertyName("chatID")]
     public string ChatId { get; init; } = string.Empty;
 
+    [JsonPropertyName("replySign")]
+    public string? ReplySign { get; init; }
+
     [JsonPropertyName("clientName")]
     public string CustomerName { get; init; } = string.Empty;
 
@@ -147,22 +150,22 @@ public sealed record WbMessagesResponse
     public List<WbMessageDto> Messages { get; init; } = new();
 }
 
-public sealed record WbSendMessageRequest
+public sealed record WbSendMsgResultDto
 {
-    [JsonPropertyName("chatId")]
-    public string ChatId { get; init; } = string.Empty;
+    [JsonPropertyName("addTime")]
+    public long AddTime { get; init; }
 
-    [JsonPropertyName("text")]
-    public string Text { get; init; } = string.Empty;
+    [JsonPropertyName("chatID")]
+    public string? ChatId { get; init; }
 }
 
-public sealed record WbSendMessageResponse
+public sealed record WbSendMsgResponse
 {
-    [JsonPropertyName("success")]
-    public bool Success { get; init; }
+    [JsonPropertyName("result")]
+    public WbSendMsgResultDto? Result { get; init; }
 
-    [JsonPropertyName("messageId")]
-    public long? MessageId { get; init; }
+    [JsonPropertyName("errors")]
+    public List<string>? Errors { get; init; }
 }
 
 // Events API

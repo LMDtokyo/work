@@ -57,6 +57,24 @@ internal sealed class WbOrderRepository : IWbOrderRepository
         return orders.ToDictionary(x => x.WbOrderId);
     }
 
+    public async Task<IReadOnlyList<WbOrder>> GetByAccountIdsAsync(
+        IEnumerable<Guid> accountIds, int skip, int take, CancellationToken ct = default)
+    {
+        var ids = accountIds.ToList();
+        return await _context.WbOrders
+            .Where(x => ids.Contains(x.WbAccountId))
+            .OrderByDescending(x => x.WbCreatedAt)
+            .Skip(skip).Take(take)
+            .ToListAsync(ct);
+    }
+
+    public async Task<int> CountByAccountIdsAsync(
+        IEnumerable<Guid> accountIds, CancellationToken ct = default)
+    {
+        var ids = accountIds.ToList();
+        return await _context.WbOrders.CountAsync(x => ids.Contains(x.WbAccountId), ct);
+    }
+
     public async Task AddAsync(WbOrder order, CancellationToken ct = default)
         => await _context.WbOrders.AddAsync(order, ct);
 

@@ -14,7 +14,6 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// SECURITY: Configure logging to prevent sensitive data leakage
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole(options =>
 {
@@ -23,7 +22,6 @@ builder.Logging.AddConsole(options =>
 builder.Logging.AddConsoleFormatter<SecureConsoleFormatter, Microsoft.Extensions.Logging.Console.SimpleConsoleFormatterOptions>();
 builder.Logging.AddFilter((category, level) =>
 {
-    // Never log at Trace level (too verbose, may leak sensitive data)
     if (level == LogLevel.Trace)
         return false;
 

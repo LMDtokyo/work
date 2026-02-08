@@ -17,6 +17,7 @@ internal sealed class SyncOrdersCommandHandler : IRequestHandler<SyncOrdersComma
     private readonly IWbOrderRepository _orderRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IWildberriesApiClient _wbApiClient;
+    private readonly IChatNotifier _notifier;
     private readonly ILogger<SyncOrdersCommandHandler> _logger;
 
     public SyncOrdersCommandHandler(
@@ -24,12 +25,14 @@ internal sealed class SyncOrdersCommandHandler : IRequestHandler<SyncOrdersComma
         IWbOrderRepository orderRepository,
         IUnitOfWork unitOfWork,
         IWildberriesApiClient wbApiClient,
+        IChatNotifier notifier,
         ILogger<SyncOrdersCommandHandler> logger)
     {
         _accountRepository = accountRepository;
         _orderRepository = orderRepository;
         _unitOfWork = unitOfWork;
         _wbApiClient = wbApiClient;
+        _notifier = notifier;
         _logger = logger;
     }
 
@@ -46,7 +49,6 @@ internal sealed class SyncOrdersCommandHandler : IRequestHandler<SyncOrdersComma
         }
         catch (WbApiAuthenticationException ex)
         {
-            // CRITICAL: Mark token as expired
             account.MarkTokenExpired();
             _accountRepository.Update(account);
             await _unitOfWork.SaveChangesAsync(ct);
@@ -66,7 +68,6 @@ internal sealed class SyncOrdersCommandHandler : IRequestHandler<SyncOrdersComma
                 request.AccountId,
                 ex.RetryAfterSeconds);
 
-            // Don't mark as error - temporary condition
             return Result.Failure<int>($"Превышен лимит запросов WB API. Повторите через {ex.RetryAfterSeconds} секунд.");
         }
         catch (Exception ex)
@@ -93,7 +94,6 @@ internal sealed class SyncOrdersCommandHandler : IRequestHandler<SyncOrdersComma
 
         var apiOrderIds = apiOrders.Select(o => o.OrderId).ToList();
 
-        // Single DB query to fetch all existing orders that need updates
         var existingOrdersDict = await _orderRepository.GetByWbOrderIdsAsync(request.AccountId, apiOrderIds, ct);
 
         var newOrders = new List<WbOrder>();
@@ -102,8 +102,6 @@ internal sealed class SyncOrdersCommandHandler : IRequestHandler<SyncOrdersComma
         {
             if (existingOrdersDict.TryGetValue(orderData.OrderId, out var existingOrder))
             {
-                // Update existing order with new fields
-                // Handle Delivered status with FinishedAt
                 if (orderData.Status == WbOrderStatus.Delivered && orderData.FinishedAt.HasValue)
                 {
                     existingOrder.MarkAsDelivered(orderData.FinishedAt.Value);
@@ -127,7 +125,6 @@ internal sealed class SyncOrdersCommandHandler : IRequestHandler<SyncOrdersComma
             }
             else
             {
-                // Create new order with all fields
                 var newOrder = WbOrder.Create(
                     request.AccountId,
                     orderData.OrderId,
@@ -140,7 +137,6 @@ internal sealed class SyncOrdersCommandHandler : IRequestHandler<SyncOrdersComma
                     orderData.Article,
                     orderData.Rid);
 
-                // Set FinishedAt if order is already delivered
                 if (orderData.Status == WbOrderStatus.Delivered && orderData.FinishedAt.HasValue)
                 {
                     newOrder.MarkAsDelivered(orderData.FinishedAt.Value);
@@ -156,6 +152,17 @@ internal sealed class SyncOrdersCommandHandler : IRequestHandler<SyncOrdersComma
         account.MarkSynced();
         _accountRepository.Update(account);
         await _unitOfWork.SaveChangesAsync(ct);
+
+        foreach (var ord in newOrders)
+        {
+            try
+            {
+                await _notifier.NotifyNewOrder(
+                    request.UserId, ord.Id, ord.ProductName,
+                    ord.TotalPrice, ord.Status.ToString().ToLowerInvariant());
+            }
+            catch { /* не блокируем sync из-за уведомлений */ }
+        }
 
         return newOrders.Count;
     }
