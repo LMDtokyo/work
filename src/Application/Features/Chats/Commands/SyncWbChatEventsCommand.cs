@@ -40,13 +40,13 @@ internal sealed class SyncWbChatEventsCommandHandler : IRequestHandler<SyncWbCha
         if (wbAcc is null)
             return Result.Failure<int>("WB аккаунт не найден");
 
-        // if cursor is null or 'initial' - load full history until 2026-02-07
+        // if cursor is null or 'initial' - load only new events from 2026-02-08 onwards
         var needsFullSync = string.IsNullOrEmpty(wbAcc.LastEventCursor) || wbAcc.LastEventCursor == "initial";
 
         if (needsFullSync)
         {
-            _logger.LogInformation("Loading full history until 2026-02-07 for account {AccountId}", req.WbAccountId);
-            return await LoadHistoryUntilDate(wbAcc, req.UserId, new DateTime(2026, 2, 7, 23, 59, 59, DateTimeKind.Utc), ct);
+            _logger.LogInformation("Loading events from 2026-02-08 onwards for account {AccountId}", req.WbAccountId);
+            return await LoadHistoryFromDate(wbAcc, req.UserId, new DateTime(2026, 2, 8, 0, 0, 0, DateTimeKind.Utc), ct);
         }
 
         WbEventsResult eventsResult;
@@ -145,7 +145,7 @@ internal sealed class SyncWbChatEventsCommandHandler : IRequestHandler<SyncWbCha
         return Result.Success(newMessages.Count);
     }
 
-    private async Task<Result<int>> LoadHistoryUntilDate(WbAccount wbAcc, Guid userId, DateTime untilDate, CancellationToken ct)
+    private async Task<Result<int>> LoadHistoryFromDate(WbAccount wbAcc, Guid userId, DateTime fromDate, CancellationToken ct)
     {
         int totalLoaded = 0;
         string? cursor = null;
@@ -169,13 +169,16 @@ internal sealed class SyncWbChatEventsCommandHandler : IRequestHandler<SyncWbCha
 
             if (eventsResult.Events.Count == 0) break;
 
-            // filter events до untilDate
-            var filteredEvents = eventsResult.Events.Where(e => e.CreatedAt <= untilDate).ToList();
+            // filter events >= fromDate (only new from 08.02 onwards)
+            var filteredEvents = eventsResult.Events.Where(e => e.CreatedAt >= fromDate).ToList();
 
             if (filteredEvents.Count == 0)
             {
-                _logger.LogInformation("Reached events after {UntilDate}, stopping history load", untilDate);
-                break;
+                _logger.LogDebug("No events >= {FromDate} in this batch, continue to next", fromDate);
+                cursor = eventsResult.NextCursor;
+                iterations++;
+                if (string.IsNullOrEmpty(cursor)) break;
+                continue;
             }
 
             var chatIdSet = filteredEvents.Select(e => e.ChatId).Distinct().ToList();
