@@ -3,8 +3,7 @@ import {
   getWbAccounts,
   addWbAccount,
   removeWbAccount,
-  syncWbOrders,
-  loadFullHistory
+  syncWbOrders
 } from "../requests/wildberries";
 import type { WbAccount } from "../requests/wildberries";
 
@@ -60,11 +59,5 @@ export function useSyncWbOrders() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: WB_ACCOUNTS_KEY });
     },
-  });
-}
-
-export function useLoadFullHistory() {
-  return useMutation({
-    mutationFn: loadFullHistory
   });
 }

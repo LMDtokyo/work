@@ -142,12 +142,6 @@ public static class EndpointExtensions
             .RequireRateLimiting("api")
             .Produces<int>(StatusCodes.Status200OK);
 
-        group.MapPost("/accounts/{id:guid}/load-full-history", WildberriesEndpoints.LoadFullHistory)
-            .WithName("LoadFullHistory")
-            .WithSummary("Load full chat history")
-            .RequireRateLimiting("api")
-            .Produces<int>(StatusCodes.Status200OK);
-
         return app;
     }
 

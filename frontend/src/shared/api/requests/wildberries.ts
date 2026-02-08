@@ -95,21 +95,3 @@ export async function syncWbOrders(accountId: string): Promise<number> {
     throw error;
   }
 }
-
-export async function loadFullHistory(accountId: string): Promise<number> {
-  try {
-    const { data } = await wbApi.post<ApiResponse<number>>(
-      `/accounts/${accountId}/load-full-history`,
-    );
-
-    if (!data.isSuccess || data.data === null) {
-      const msg = data.errors?.[0]?.description || "Не удалось загрузить историю";
-      throw new Error(msg);
-    }
-
-    return data.data;
-  } catch (error) {
-    handleApiError(error, "Ошибка загрузки истории");
-    throw error;
-  }
-}

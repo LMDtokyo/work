@@ -40,6 +40,14 @@ internal sealed class SyncWbChatEventsCommandHandler : IRequestHandler<SyncWbCha
         if (wbAcc is null)
             return Result.Failure<int>("WB аккаунт не найден");
 
+        var isFirstSync = string.IsNullOrEmpty(wbAcc.LastEventCursor);
+
+        if (isFirstSync)
+        {
+            _logger.LogInformation("First sync for account {AccountId}, loading full history", req.WbAccountId);
+            return await LoadFullHistoryAndSync(wbAcc, req.UserId, ct);
+        }
+
         // use cursor to get only new events
         var eventsResult = await _wbApi.GetEventsAsync(wbAcc.ApiToken, wbAcc.LastEventCursor, 100, ct);
 
@@ -48,7 +56,6 @@ internal sealed class SyncWbChatEventsCommandHandler : IRequestHandler<SyncWbCha
 
         if (eventsResult.Events.Count == 0)
         {
-            // still update cursor even if no events
             if (!string.IsNullOrEmpty(eventsResult.NextCursor))
             {
                 wbAcc.UpdateEventCursor(eventsResult.NextCursor);
@@ -126,5 +133,88 @@ internal sealed class SyncWbChatEventsCommandHandler : IRequestHandler<SyncWbCha
         }
 
         return Result.Success(newMessages.Count);
+    }
+
+    private async Task<Result<int>> LoadFullHistoryAndSync(WbAccount wbAcc, Guid userId, CancellationToken ct)
+    {
+        int totalLoaded = 0;
+        string? cursor = null;
+        int iterations = 0;
+        const int MAX_ITER = 50;
+
+        while (iterations < MAX_ITER)
+        {
+            var eventsResult = await _wbApi.GetEventsAsync(wbAcc.ApiToken, cursor, 100, ct);
+
+            if (eventsResult.Events.Count == 0) break;
+
+            var chatIdSet = eventsResult.Events.Select(e => e.ChatId).Distinct().ToList();
+            var existingChats = await _chatRepo.GetByWbChatIdsAsync(wbAcc.Id, chatIdSet, ct);
+
+            var missingChatIds = chatIdSet.Where(cid => !existingChats.ContainsKey(cid)).ToList();
+            if (missingChatIds.Any())
+            {
+                var newChats = new List<Chat>();
+                foreach (var wbChatId in missingChatIds)
+                {
+                    var firstEvent = eventsResult.Events.First(e => e.ChatId == wbChatId);
+                    var chat = Chat.CreateFromWb(userId, wbAcc.Id, wbChatId,
+                        firstEvent.IsFromCustomer ? "Клиент" : "Продавец", null);
+                    newChats.Add(chat);
+                    existingChats[wbChatId] = chat;
+                }
+                await _chatRepo.AddRangeAsync(newChats, ct);
+                await _uow.SaveChangesAsync(ct);
+            }
+
+            var msgIds = eventsResult.Events.Select(e => e.MessageId).ToList();
+            var existingMsgIds = await _msgRepo.GetExistingMessageIdsAsync(msgIds, ct);
+
+            var newMessages = eventsResult.Events
+                .Where(e => !existingMsgIds.Contains(e.MessageId))
+                .Select(e => Message.Create(existingChats[e.ChatId].Id, e.MessageId, e.Text, e.IsFromCustomer, e.CreatedAt))
+                .ToList();
+
+            if (newMessages.Any())
+            {
+                await _msgRepo.AddRangeAsync(newMessages, ct);
+
+                var chatUpdates = newMessages
+                    .GroupBy(m => m.ChatId)
+                    .Select(g => new { ChatId = g.Key, LatestMsg = g.OrderByDescending(x => x.CreatedAt).First() });
+
+                foreach (var upd in chatUpdates)
+                {
+                    var chatWbId = existingChats.FirstOrDefault(kv => kv.Value.Id == upd.ChatId).Key;
+                    if (chatWbId != null && existingChats.TryGetValue(chatWbId, out var chat))
+                    {
+                        chat.UpdateLastMessage(upd.LatestMsg.Text, upd.LatestMsg.CreatedAt);
+                        _chatRepo.Update(chat);
+                    }
+                }
+
+                await _uow.SaveChangesAsync(ct);
+                totalLoaded += newMessages.Count;
+            }
+
+            cursor = eventsResult.NextCursor;
+            iterations++;
+
+            if (string.IsNullOrEmpty(cursor)) break;
+
+            _logger.LogDebug("Full history batch {Iter}, loaded {Count} messages", iterations, newMessages.Count);
+        }
+
+        if (!string.IsNullOrEmpty(cursor))
+        {
+            wbAcc.UpdateEventCursor(cursor);
+            _wbAccRepo.Update(wbAcc);
+            await _uow.SaveChangesAsync(ct);
+        }
+
+        _logger.LogInformation("Full history sync completed for account {AccountId}, loaded {Total} messages in {Iterations} batches",
+            wbAcc.Id, totalLoaded, iterations);
+
+        return Result.Success(totalLoaded);
     }
 }

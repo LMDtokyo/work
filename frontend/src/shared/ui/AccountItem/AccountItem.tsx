@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { EllipsisVertical, Trash2, Download } from "lucide-react";
+import { EllipsisVertical, Trash2 } from "lucide-react";
 import WildberriesIcon from "../../assets/WildberriesIcon";
 
 interface AccountItemProps {
@@ -8,7 +8,6 @@ interface AccountItemProps {
   lastSyncAt: string | null;
   tokenExpiresAt: string | null;
   onDelete?: () => void;
-  onLoadHistory?: () => void;
 }
 
 function getTokenExpiryInfo(expiresAt: string | null): {
@@ -78,8 +77,7 @@ function AccountItem({
   status,
   lastSyncAt,
   tokenExpiresAt,
-  onDelete,
-  onLoadHistory
+  onDelete
 }: AccountItemProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -100,11 +98,6 @@ function AccountItem({
   const handleDelete = () => {
     setMenuOpen(false);
     onDelete?.();
-  };
-
-  const handleLoadHistory = () => {
-    setMenuOpen(false);
-    onLoadHistory?.();
   };
 
   return (
@@ -128,13 +121,6 @@ function AccountItem({
           </button>
           {menuOpen && (
             <div className="absolute right-0 top-8 bg-chat-secondary-bg border border-primary-border rounded-lg shadow-lg z-10 min-w-35 py-1">
-              <button
-                onClick={handleLoadHistory}
-                className="w-full flex items-center gap-2 px-4 py-2 text-font-primary hover:bg-chat-tertiary-bg transition-colors text-sm"
-              >
-                <Download className="w-4 h-4" />
-                Загрузить историю
-              </button>
               <button
                 onClick={handleDelete}
                 className="w-full flex items-center gap-2 px-4 py-2 text-red-400 hover:bg-chat-tertiary-bg transition-colors text-sm"
