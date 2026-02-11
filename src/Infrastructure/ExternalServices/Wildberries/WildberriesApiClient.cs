@@ -12,7 +12,8 @@ namespace MessagingPlatform.Infrastructure.ExternalServices.Wildberries;
 
 internal sealed class WildberriesApiClient : IWildberriesApiClient
 {
-    private const string MarketplaceApiBaseUrl = "https://suppliers-api.wildberries.ru";
+    private const string MarketplaceApiBaseUrl = "https://marketplace-api.wildberries.ru";
+    private const string StatsApiBaseUrl = "https://statistics-api.wildberries.ru";
     private const string ChatApiBaseUrl = "https://buyer-chat-api.wildberries.ru";
 
     private readonly HttpClient _httpClient;
@@ -78,82 +79,70 @@ internal sealed class WildberriesApiClient : IWildberriesApiClient
     {
         var result = new List<WbOrderData>();
         var dateFrom = from ?? DateTime.UtcNow.AddDays(-30);
-        long next = 0;
 
         try
         {
+            // statistics API - все заказы, не только FBS
             while (true)
             {
-                var url = $"{MarketplaceApiBaseUrl}/api/v3/orders/new?limit=1000&next={next}&dateFrom={dateFrom:O}";
+                var url = $"{StatsApiBaseUrl}/api/v1/supplier/orders?dateFrom={dateFrom:yyyy-MM-ddTHH:mm:ss}";
                 var request = CreateRequest(HttpMethod.Get, url, token);
                 var response = await _httpClient.SendAsync(request, ct);
 
                 if (response.StatusCode == HttpStatusCode.Unauthorized ||
                     response.StatusCode == HttpStatusCode.Forbidden)
                 {
-                    _logger.LogWarning(
-                        "WB API authentication failed. Endpoint: /api/v3/orders, StatusCode: {StatusCode}",
-                        (int)response.StatusCode);
+                    _logger.LogWarning("Stats API auth fail: {Code}", (int)response.StatusCode);
                     throw new WbApiAuthenticationException("Invalid or expired API token");
                 }
 
                 if (response.StatusCode == HttpStatusCode.TooManyRequests)
                 {
-                    var retryAfter = (int)(response.Headers.RetryAfter?.Delta?.TotalSeconds ?? 60);
-                    _logger.LogWarning(
-                        "WB API rate limit exceeded for /api/v3/orders. Retry after {Seconds} seconds",
-                        retryAfter);
-                    throw new WbApiRateLimitException($"Rate limit exceeded. Retry after {retryAfter}s", retryAfter);
+                    var wait = (int)(response.Headers.RetryAfter?.Delta?.TotalSeconds ?? 60);
+                    _logger.LogWarning("Stats orders rate limit, retry {Sec}s", wait);
+                    throw new WbApiRateLimitException($"Rate limit exceeded. Retry after {wait}s", wait);
                 }
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    _logger.LogError(
-                        "Failed to fetch orders from Wildberries. Endpoint: {Endpoint}, StatusCode: {StatusCode}, Next: {Next}, DateFrom: {DateFrom}",
-                        url,
-                        (int)response.StatusCode,
-                        next,
-                        dateFrom);
+                    var body = await response.Content.ReadAsStringAsync(ct);
+                    _logger.LogError("Stats orders failed ({Code}): {Body}", (int)response.StatusCode, body);
                     break;
                 }
 
                 var content = await response.Content.ReadAsStringAsync(ct);
-                var ordersResponse = JsonSerializer.Deserialize<WbOrdersResponse>(content, _jsonOptions);
+                var orders = JsonSerializer.Deserialize<List<WbStatsOrderDto>>(content, _jsonOptions);
 
-                if (ordersResponse?.Orders == null || ordersResponse.Orders.Count == 0)
+                if (orders == null || orders.Count == 0)
                     break;
 
-                foreach (var order in ordersResponse.Orders)
-                {
-                    result.Add(MapToWbOrderData(order));
-                }
+                var unique = orders
+                    .Where(x => !string.IsNullOrEmpty(x.Srid))
+                    .GroupBy(x => x.Srid)
+                    .Select(g => g.OrderByDescending(x => x.LastChangeDate).First())
+                    .ToList();
 
-                if (ordersResponse.Next == 0)
+                foreach (var o in unique)
+                    result.Add(MapStatsOrder(o));
+
+                // пагинация: если пришло ~80к строк, запрос ещё
+                if (orders.Count < 50000)
                     break;
 
-                next = ordersResponse.Next;
+                dateFrom = orders[^1].LastChangeDate;
             }
         }
         catch (HttpRequestException ex)
         {
-            _logger.LogError(ex,
-                "HTTP request error while fetching orders. DateFrom: {DateFrom}, OrdersFetched: {Count}",
-                dateFrom,
-                result.Count);
+            _logger.LogError(ex, "HTTP error fetching stats orders. Got: {Count}", result.Count);
         }
         catch (TaskCanceledException ex)
         {
-            _logger.LogWarning(ex,
-                "Request cancelled while fetching orders. DateFrom: {DateFrom}, OrdersFetched: {Count}",
-                dateFrom,
-                result.Count);
+            _logger.LogWarning(ex, "Cancelled fetching stats orders. Got: {Count}", result.Count);
         }
         catch (JsonException ex)
         {
-            _logger.LogError(ex,
-                "JSON deserialization error while parsing orders. DateFrom: {DateFrom}, OrdersFetched: {Count}",
-                dateFrom,
-                result.Count);
+            _logger.LogError(ex, "JSON error parsing stats orders. Got: {Count}", result.Count);
         }
 
         return result;
@@ -254,6 +243,35 @@ internal sealed class WildberriesApiClient : IWildberriesApiClient
             1,
             order.CreatedAt,
             order.CancelDt); // CancelDt can serve as FinishedAt for cancelled orders
+    }
+
+    static WbOrderData MapStatsOrder(WbStatsOrderDto o)
+    {
+        var st = o.IsCancel ? WbOrderStatus.Cancelled
+            : o.IsRealization ? WbOrderStatus.Delivered
+            : WbOrderStatus.New;
+
+        var name = o.Subject ?? o.SupplierArticle ?? "—";
+        var cur = string.IsNullOrEmpty(o.CurrencyCode) ? "RUB" : o.CurrencyCode;
+        var dt = DateTime.SpecifyKind(o.Date, DateTimeKind.Utc);
+
+        // 0001-01-01 = дефолт, не реальная дата отмены
+        DateTime? cancelDt = null;
+        if (o.CancelDate.HasValue && o.CancelDate.Value.Year > 2000)
+            cancelDt = DateTime.SpecifyKind(o.CancelDate.Value, DateTimeKind.Utc);
+
+        long orderId = 0;
+        if (!string.IsNullOrEmpty(o.Srid))
+        {
+            var bytes = System.Text.Encoding.UTF8.GetBytes(o.Srid);
+            orderId = Math.Abs(BitConverter.ToInt64(
+                System.Security.Cryptography.SHA256.HashData(bytes), 0));
+        }
+
+        return new WbOrderData(
+            orderId, st, o.SupplierArticle, null,
+            o.PriceWithDisc > 0 ? o.PriceWithDisc : o.TotalPrice,
+            cur, name, 1, dt, cancelDt);
     }
 
     private static string MapCurrencyCode(int currencyCode)

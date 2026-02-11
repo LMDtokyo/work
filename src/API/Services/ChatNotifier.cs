@@ -33,4 +33,7 @@ internal sealed class ChatNotifier : IChatNotifier
             price,
             status
         });
+
+    public Task NotifySyncDone(Guid userId, int orderCount, int chatCount)
+        => _hub.Clients.Group($"user_{userId}").SendAsync("SyncDone", new { orderCount, chatCount });
 }

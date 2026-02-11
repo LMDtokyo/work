@@ -82,9 +82,9 @@ export const Chats = () => {
   }, []);
 
   return (
-    <div className="bg-chat-primary-bg w-full h-svh flex gap-2 justify-center items-start overflow-hidden relative pb-4 px-2">
+    <div className="w-full h-full flex gap-2 items-start overflow-hidden relative">
       <div
-        className={`w-full max-w-md h-full flex flex-col gap-3 animate-fade-in-bottom overflow-hidden ${selectedChatId ? "hidden md:flex" : "flex"}`}
+        className={`w-full md:w-[380px] md:min-w-[380px] h-full flex flex-col gap-3 animate-fade-in-bottom overflow-hidden ${selectedChatId ? "hidden md:flex" : "flex"}`}
       >
         <Searchbar value={searchQuery} onChange={setSearchQuery} />
         <hr className="border-chat-primary-border mx-2" />
@@ -105,7 +105,7 @@ export const Chats = () => {
         </div>
       </div>
       <div
-        className={`flex flex-col w-full max-w-4xl h-full bg-chat-tertiary-bg rounded-2xl p-4 py-3 pb-2 border border-chat-primary-border animate-fade-in-bottom ${!selectedChatId ? "hidden md:flex" : "flex"}`}
+        className={`flex flex-col w-full h-full bg-chat-tertiary-bg rounded-2xl p-4 py-3 pb-2 border border-chat-primary-border animate-fade-in-bottom ${!selectedChatId ? "hidden md:flex" : "flex"}`}
       >
         {selectedChatId ? (
           <>

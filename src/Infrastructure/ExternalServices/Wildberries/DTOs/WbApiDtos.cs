@@ -77,6 +77,82 @@ public sealed record WbOrdersResponse
     public List<WbOrderDto> Orders { get; init; } = new();
 }
 
+// Statistics API - все заказы (не только FBS)
+public sealed record WbStatsOrderDto
+{
+    [JsonPropertyName("date")]
+    public DateTime Date { get; init; }
+
+    [JsonPropertyName("lastChangeDate")]
+    public DateTime LastChangeDate { get; init; }
+
+    [JsonPropertyName("supplierArticle")]
+    public string? SupplierArticle { get; init; }
+
+    [JsonPropertyName("techSize")]
+    public string? TechSize { get; init; }
+
+    [JsonPropertyName("barcode")]
+    public string? Barcode { get; init; }
+
+    [JsonPropertyName("totalPrice")]
+    public decimal TotalPrice { get; init; }
+
+    [JsonPropertyName("discountPercent")]
+    public int DiscountPercent { get; init; }
+
+    [JsonPropertyName("warehouseName")]
+    public string? WarehouseName { get; init; }
+
+    [JsonPropertyName("oblast")]
+    public string? Oblast { get; init; }
+
+    [JsonPropertyName("incomeID")]
+    public long IncomeId { get; init; }
+
+    [JsonPropertyName("odid")]
+    public long Odid { get; init; }
+
+    [JsonPropertyName("nmId")]
+    public long NmId { get; init; }
+
+    [JsonPropertyName("subject")]
+    public string? Subject { get; init; }
+
+    [JsonPropertyName("category")]
+    public string? Category { get; init; }
+
+    [JsonPropertyName("brand")]
+    public string? Brand { get; init; }
+
+    [JsonPropertyName("isCancel")]
+    public bool IsCancel { get; init; }
+
+    [JsonPropertyName("isRealization")]
+    public bool IsRealization { get; init; }
+
+    [JsonPropertyName("cancelDate")]
+    public DateTime? CancelDate { get; init; }
+
+    [JsonPropertyName("gNumber")]
+    public string? GNumber { get; init; }
+
+    [JsonPropertyName("sticker")]
+    public string? Sticker { get; init; }
+
+    [JsonPropertyName("srid")]
+    public string? Srid { get; init; }
+
+    [JsonPropertyName("orderType")]
+    public string? OrderType { get; init; }
+
+    [JsonPropertyName("priceWithDisc")]
+    public decimal PriceWithDisc { get; init; }
+
+    [JsonPropertyName("currencyCode")]
+    public string? CurrencyCode { get; init; }
+}
+
 public sealed record WbErrorResponse
 {
     [JsonPropertyName("code")]

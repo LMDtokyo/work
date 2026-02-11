@@ -1,4 +1,5 @@
 using MediatR;
+using MessagingPlatform.Application.Common.Interfaces;
 using MessagingPlatform.Application.Common.Services;
 using MessagingPlatform.Application.Features.Chats.Commands;
 using MessagingPlatform.Application.Features.Wildberries.Commands;
@@ -9,11 +10,13 @@ namespace MessagingPlatform.Infrastructure.Services;
 internal sealed class InitialSyncService : IInitialSyncService
 {
     private readonly ISender _sender;
-    private readonly ILogger<InitialSyncService> _logger;
+    private readonly IChatNotifier _notifier;
+    readonly ILogger<InitialSyncService> _logger;
 
-    public InitialSyncService(ISender sender, ILogger<InitialSyncService> logger)
+    public InitialSyncService(ISender sender, IChatNotifier notifier, ILogger<InitialSyncService> logger)
     {
         _sender = sender;
+        _notifier = notifier;
         _logger = logger;
     }
 
@@ -21,58 +24,43 @@ internal sealed class InitialSyncService : IInitialSyncService
     {
         try
         {
-            _logger.LogInformation(
-                "Starting initial sync for WB account {WbAccountId}, User {UserId}",
-                wbAccountId,
-                userId);
+            _logger.LogInformation("Initial sync started: account {Acc}, user {Usr}", wbAccountId, userId);
 
-            // Sync orders first (more important for users)
-            var ordersCommand = new SyncOrdersCommand(wbAccountId, userId);
-            var ordersResult = await _sender.Send(ordersCommand, ct);
+            // 1. заказы
+            var ordersCmd = new SyncOrdersCommand(wbAccountId, userId);
+            var ordersRes = await _sender.Send(ordersCmd, ct);
+            int orderCount = ordersRes.IsSuccess ? ordersRes.Value : 0;
 
-            if (ordersResult.IsFailure)
-            {
-                _logger.LogWarning(
-                    "Failed to sync orders during initial sync. WbAccountId: {WbAccountId}, Error: {Error}",
-                    wbAccountId,
-                    ordersResult.Error);
-            }
-            else
-            {
-                _logger.LogInformation(
-                    "Initial orders sync completed. WbAccountId: {WbAccountId}, NewOrders: {Count}",
-                    wbAccountId,
-                    ordersResult.Value);
-            }
+            if (ordersRes.IsFailure)
+                _logger.LogWarning("Initial orders sync fail: {Err}", ordersRes.Error);
 
-            // Sync chats (optional, don't fail if this fails)
-            var chatsCommand = new SyncWbChatsCommand(wbAccountId, userId);
-            var chatsResult = await _sender.Send(chatsCommand, ct);
+            await Task.Delay(500, ct); // rate limit
 
-            if (chatsResult.IsFailure)
-            {
-                _logger.LogWarning(
-                    "Failed to sync chats during initial sync. WbAccountId: {WbAccountId}, Error: {Error}",
-                    wbAccountId,
-                    chatsResult.Error);
-            }
-            else
-            {
-                _logger.LogInformation(
-                    "Initial chats sync completed. WbAccountId: {WbAccountId}, NewChats: {Count}",
-                    wbAccountId,
-                    chatsResult.Value);
-            }
+            // 2. чаты
+            var chatsCmd = new SyncWbChatsCommand(wbAccountId, userId);
+            var chatsRes = await _sender.Send(chatsCmd, ct);
+            int chatCount = chatsRes.IsSuccess ? chatsRes.Value : 0;
 
-            // Consider success if at least orders synced successfully
-            return ordersResult.IsSuccess;
+            if (chatsRes.IsFailure)
+                _logger.LogWarning("Initial chats sync fail: {Err}", chatsRes.Error);
+
+            await Task.Delay(400, ct);
+
+            // 3. инициализация курсора событий (cursor = now)
+            var eventsCmd = new SyncWbChatEventsCommand(wbAccountId, userId);
+            await _sender.Send(eventsCmd, ct);
+
+            _logger.LogInformation("Initial sync done: {Orders} orders, {Chats} chats", orderCount, chatCount);
+
+            // уведомить фронт
+            try { await _notifier.NotifySyncDone(userId, orderCount, chatCount); }
+            catch { /* не блокируем */ }
+
+            return ordersRes.IsSuccess;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex,
-                "Unexpected error during initial sync. WbAccountId: {WbAccountId}, UserId: {UserId}",
-                wbAccountId,
-                userId);
+            _logger.LogError(ex, "Initial sync error: account {Acc}", wbAccountId);
             return false;
         }
     }

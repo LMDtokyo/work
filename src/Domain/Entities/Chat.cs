@@ -36,10 +36,8 @@ public sealed class Chat : AggregateRoot<Guid>
 
     public static Chat CreateFromWb(Guid userId, Guid wbAccountId, string wbChatId, string contactName, string? avatar = null)
     {
-        if (string.IsNullOrWhiteSpace(contactName))
-            throw new ArgumentException("Contact name is required", nameof(contactName));
-
-        return new Chat(Guid.NewGuid(), userId, contactName.Trim(), avatar, wbAccountId, wbChatId);
+        var name = string.IsNullOrWhiteSpace(contactName) ? "Покупатель" : contactName.Trim();
+        return new Chat(Guid.NewGuid(), userId, name, avatar, wbAccountId, wbChatId);
     }
 
     public void UpdateLastMessage(string text, DateTime timestamp)

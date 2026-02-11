@@ -27,7 +27,7 @@ public sealed class AddWbAccountCommandValidator : AbstractValidator<AddWbAccoun
         RuleFor(x => x.ApiToken)
             .NotEmpty().WithMessage("API токен обязателен")
             .MinimumLength(32).WithMessage("API токен должен содержать минимум 32 символа")
-            .MaximumLength(512).WithMessage("API токен не может превышать 512 символов");
+            .MaximumLength(1024).WithMessage("API токен не может превышать 1024 символов");
 
         RuleFor(x => x.ShopName)
             .NotEmpty().WithMessage("Название магазина обязательно")

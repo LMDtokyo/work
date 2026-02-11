@@ -102,15 +102,16 @@ internal sealed class SyncOrdersCommandHandler : IRequestHandler<SyncOrdersComma
         {
             if (existingOrdersDict.TryGetValue(orderData.OrderId, out var existingOrder))
             {
-                if (orderData.Status == WbOrderStatus.Delivered && orderData.FinishedAt.HasValue)
+                if (orderData.Status == WbOrderStatus.Delivered)
                 {
-                    existingOrder.MarkAsDelivered(orderData.FinishedAt.Value);
+                    existingOrder.MarkAsDelivered(orderData.FinishedAt ?? orderData.CreatedAt);
                 }
                 else if (orderData.Status == WbOrderStatus.Cancelled)
                 {
                     existingOrder.MarkAsCancelled();
                 }
-                else
+                else if (existingOrder.Status != WbOrderStatus.Delivered
+                    && existingOrder.Status != WbOrderStatus.Cancelled)
                 {
                     existingOrder.Update(
                         orderData.Status,
@@ -137,9 +138,9 @@ internal sealed class SyncOrdersCommandHandler : IRequestHandler<SyncOrdersComma
                     orderData.Article,
                     orderData.Rid);
 
-                if (orderData.Status == WbOrderStatus.Delivered && orderData.FinishedAt.HasValue)
+                if (orderData.Status == WbOrderStatus.Delivered)
                 {
-                    newOrder.MarkAsDelivered(orderData.FinishedAt.Value);
+                    newOrder.MarkAsDelivered(orderData.FinishedAt ?? orderData.CreatedAt);
                 }
 
                 newOrders.Add(newOrder);

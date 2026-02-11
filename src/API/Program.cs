@@ -92,16 +92,13 @@ app.UseRateLimiter();
 app.UseCors();
 app.UseMiddleware<CookieAuthMiddleware>();
 
-if (app.Environment.IsDevelopment())
+app.MapOpenApi();
+app.MapScalarApiReference(options =>
 {
-    app.MapOpenApi();
-    app.MapScalarApiReference(options =>
-    {
-        options.Title = "MessagingPlatform API";
-        options.Theme = ScalarTheme.BluePlanet;
-        options.DefaultHttpClient = new(ScalarTarget.CSharp, ScalarClient.HttpClient);
-    });
-}
+    options.Title = "MessagingPlatform API";
+    options.Theme = ScalarTheme.BluePlanet;
+    options.DefaultHttpClient = new(ScalarTarget.JavaScript, ScalarClient.Fetch);
+});
 
 app.UseAuthentication();
 app.UseAuthorization();

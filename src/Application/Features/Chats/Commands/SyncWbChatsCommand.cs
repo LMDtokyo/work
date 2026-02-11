@@ -93,13 +93,13 @@ internal sealed class SyncWbChatsCommandHandler : IRequestHandler<SyncWbChatsCom
 
         foreach (var chatData in apiChats)
         {
-            if (string.IsNullOrWhiteSpace(chatData.CustomerName))
-                continue;
+            var cName = string.IsNullOrWhiteSpace(chatData.CustomerName)
+                ? "Покупатель" : chatData.CustomerName;
 
             if (existingChatsDict.TryGetValue(chatData.ChatId, out var existingChat))
             {
                 existingChat.SyncFromWb(
-                    chatData.CustomerName,
+                    cName,
                     chatData.CustomerAvatar,
                     chatData.LastMessage,
                     chatData.LastMessageAt,
@@ -112,7 +112,7 @@ internal sealed class SyncWbChatsCommandHandler : IRequestHandler<SyncWbChatsCom
                     request.UserId,
                     request.WbAccountId,
                     chatData.ChatId,
-                    chatData.CustomerName,
+                    cName,
                     chatData.CustomerAvatar);
 
                 if (!string.IsNullOrWhiteSpace(chatData.LastMessage) && chatData.LastMessageAt.HasValue)

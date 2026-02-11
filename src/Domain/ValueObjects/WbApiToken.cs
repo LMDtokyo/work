@@ -6,7 +6,7 @@ namespace MessagingPlatform.Domain.ValueObjects;
 public sealed class WbApiToken : ValueObject
 {
     private const int MinLength = 32;
-    private const int MaxLength = 512;
+    private const int MaxLength = 1024;
 
     public string Value { get; }
 
