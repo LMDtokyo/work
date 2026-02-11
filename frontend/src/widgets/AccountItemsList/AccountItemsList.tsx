@@ -1,7 +1,7 @@
 import AccountItem from "../../shared/ui/AccountItem/AccountItem";
 import {
   useWbAccounts,
-  useRemoveWbAccount
+  useRemoveWbAccount,
 } from "../../shared/api/hooks/useWbAccounts";
 
 interface AccountItemsListProps {
@@ -16,7 +16,10 @@ function AccountItemsList({ limit }: AccountItemsListProps) {
     return (
       <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-2">
         {[1, 2].map((i) => (
-          <div key={i} className="animate-pulse bg-chat-secondary-bg rounded-xl h-24" />
+          <div
+            key={i}
+            className="animate-pulse bg-chat-secondary-bg rounded-xl h-24"
+          />
         ))}
       </div>
     );
@@ -25,7 +28,7 @@ function AccountItemsList({ limit }: AccountItemsListProps) {
   if (!accounts || accounts.length === 0) {
     return (
       <div className="flex items-center justify-center py-8">
-        <p className="text-font-secondary">Нет подключённых аккаунтов</p>
+        <p className="text-secondary-font">Нет подключённых аккаунтов</p>
       </div>
     );
   }

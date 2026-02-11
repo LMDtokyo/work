@@ -19,17 +19,17 @@ function TransactionsFilter({ selected, onChange }: Props) {
     <div className="flex flex-col relative" ref={dropdownRef}>
       <div
         onClick={() => setIsOpened(!isOpened)}
-        className="inline-flex justify-center items-center gap-3 py-2 px-3 bg-chat-tertiary-bg rounded-md text-font-primary cursor-pointer"
+        className="inline-flex justify-center items-center gap-3 py-2 px-3 bg-chat-tertiary-bg rounded-md text-primary-font cursor-pointer"
       >
-        <ArrowDownWideNarrow />
-        <span className="font-semibold select-none">
+        <ArrowDownWideNarrow className="w-5 md:w-6" />
+        <span className="font-semibold select-none text-sm md:text-[16px]">
           {filterItems[selected]}
         </span>
-        <ChevronDown />
+        <ChevronDown className="w-5 md:w-6" />
       </div>
       {isOpened && (
         <div
-          className={`flex flex-col gap-1 bg-chat-tertiary-bg absolute top-12 right-0 text-font-primary rounded-md z-50 p-1 w-30 ${isOpened && "animate-fade-in-bottom"}`}
+          className={`flex flex-col gap-1 bg-chat-tertiary-bg absolute top-12 right-0 text-primary-font rounded-md z-50 p-1 w-30 ${isOpened && "animate-fade-in-bottom"}`}
         >
           {filterItems.map((item, i) => (
             <button

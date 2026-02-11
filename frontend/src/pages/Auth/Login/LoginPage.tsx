@@ -4,31 +4,31 @@ import LoginForm from "../../../widgets/Forms/LoginForm/LoginForm";
 
 export const Login = () => {
   return (
-    <div className="w-full h-svh flex flex-col justify-center items-center bg-auth-bg overflow-hidden relative duration-150 px-4 sm:px-6">
+    <div className="w-full h-svh flex flex-col justify-center items-center bg-landing-primary-bg overflow-hidden relative duration-150 px-4 sm:px-6">
       <BackButton
         className="absolute left-4 sm:left-6 md:left-8 top-4 sm:top-5 md:top-6"
         link="/"
       />
       <LoginForm />
-      <p className="text-font-primary absolute bottom-4 w-full max-w-[320px] sm:max-w-[400px] md:max-w-[480px] text-center text-xs sm:text-sm px-4">
+      <p className="text-primary-font absolute bottom-4 w-full max-w-[320px] sm:max-w-100 md:max-w-120 text-center text-xs sm:text-sm px-4">
         Нажимая кнопку, вы соглашаетесь с{" "}
         <Link
           to="/offer"
-          className="text-font-contrast underline-offset-2 underline hover:text-hover-font-contrast"
+          className="text-contrast underline-offset-2 underline hover:text-contrast-hover"
         >
           Условиями использования
         </Link>
         , даете согласие на{" "}
         <Link
           to="/privacy-policy"
-          className="text-font-contrast underline-offset-2 underline hover:text-hover-font-contrast"
+          className="text-contrast underline-offset-2 underline hover:text-contrast-hover"
         >
           обработку данных
         </Link>{" "}
         и принимаете{" "}
         <Link
           to="/offer"
-          className="text-font-contrast underline-offset-2 underline hover:text-hover-font-contrast"
+          className="text-contrast underline-offset-2 underline hover:text-contrast-hover"
         >
           оферту
         </Link>{" "}

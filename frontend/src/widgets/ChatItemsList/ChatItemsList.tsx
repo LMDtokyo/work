@@ -13,7 +13,13 @@ interface ChatItemsListProps {
   platformChats?: Chat[];
 }
 
-function ChatItemsList({ selectedChat, onSelectChat, filter, search, platformChats }: ChatItemsListProps) {
+function ChatItemsList({
+  selectedChat,
+  onSelectChat,
+  filter,
+  search,
+  platformChats,
+}: ChatItemsListProps) {
   const { data: allChats, isLoading, refetch } = useChats();
   const chats = platformChats ?? allChats;
 
@@ -22,14 +28,15 @@ function ChatItemsList({ selectedChat, onSelectChat, filter, search, platformCha
     let list = [...chats];
 
     if (filter === "unread") {
-      list = list.filter(c => c.unreadCount > 0);
+      list = list.filter((c) => c.unreadCount > 0);
     }
 
     const q = search.trim().toLowerCase();
     if (q) {
-      list = list.filter(c =>
-        c.name.toLowerCase().includes(q) ||
-        (c.lastMessage && c.lastMessage.toLowerCase().includes(q))
+      list = list.filter(
+        (c) =>
+          c.name.toLowerCase().includes(q) ||
+          (c.lastMessage && c.lastMessage.toLowerCase().includes(q)),
       );
     }
 
@@ -61,7 +68,7 @@ function ChatItemsList({ selectedChat, onSelectChat, filter, search, platformCha
 
   if (!chats || chats.length === 0) {
     return (
-      <div className="w-full flex items-center justify-center py-12 text-font-secondary">
+      <div className="w-full flex items-center justify-center py-12 text-secondary-font">
         Нет чатов
       </div>
     );
@@ -69,7 +76,7 @@ function ChatItemsList({ selectedChat, onSelectChat, filter, search, platformCha
 
   if (filtered.length === 0) {
     return (
-      <div className="w-full flex items-center justify-center py-12 text-font-secondary">
+      <div className="w-full flex items-center justify-center py-12 text-secondary-font">
         Ничего не найдено
       </div>
     );

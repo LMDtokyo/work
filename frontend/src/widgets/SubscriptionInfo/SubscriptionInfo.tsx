@@ -27,37 +27,26 @@ const infoItems = [
 
 function SubscriptionInfo() {
   return (
-    <div className="flex flex-col gap-10 justify-between bg-chat-secondary-bg rounded-4xl w-full py-8 px-12 pr-15 animate-fade-in-bottom">
-      <div className="flex justify-between items-center">
+    <div className="flex flex-col gap-4 justify-between bg-chat-secondary-bg rounded-4xl w-full py-6 px-6 md:px-10 md:py-8 animate-fade-in-bottom border border-chat-primary-border">
+      <div className="flex flex-col gap-5 items-start md:flex-row md:items-center md:justify-between">
         <div>
-            <h1 className="text-font-primary text-2xl font-semibold">Подписка</h1>
-            <p className="text-font-primary/50">
+          <h1 className="text-primary-font text-xl md:text-2xl font-semibold">
+            Подписка
+          </h1>
+          <p className="text-primary-font/50 text-sm md:text-base">
             Cледите за информацией о своей подписке
-            </p>
+          </p>
         </div>
         <PeriodSwitcher />
       </div>
-      <div className="flex justify-between items-center">
-        {infoItems.map((item, i) => (
-          <>
-            {i === 0 ? (
-                <div className="bg-chat-tertiary-bg py-2 px-2 pr-10 rounded-full border border-secondary-border">
-                    <SubscriptionInfoItem
-                      key={item.title}
-                      icon={item.icon}
-                      title={item.title}
-                      value={item.value}
-                    />
-                </div>
-            ) : (
-              <SubscriptionInfoItem
-                key={item.title}
-                icon={item.icon}
-                title={item.title}
-                value={item.value}
-              />
-            )}
-          </>
+      <div className="flex flex-wrap justify-centerg gap-7 md:justify-between items-center bg-chat-tertiary-bg py-6 px-8 pr-10 rounded-3xl border border-chat-secondary-border">
+        {infoItems.map((item) => (
+          <SubscriptionInfoItem
+            key={item.title}
+            icon={item.icon}
+            title={item.title}
+            value={item.value}
+          />
         ))}
       </div>
     </div>

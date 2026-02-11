@@ -5,10 +5,10 @@ export const NotFound = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="w-full h-svh bg-auth-bg flex flex-col justify-center items-center relative overflow-hidden">
+    <div className="w-full h-svh bg-landing-primary-bg flex flex-col justify-center items-center relative overflow-hidden">
       <div className="flex flex-col gap-4 justify-center items-center">
-        <h1 className="font-bold text-6xl text-font-primary">404</h1>
-        <h3 className="text-2xl font-medium text-font-primary">
+        <h1 className="font-bold text-6xl text-primary-font">404</h1>
+        <h3 className="text-2xl font-medium text-primary-font">
           Такой страницы не существует
         </h3>
       </div>

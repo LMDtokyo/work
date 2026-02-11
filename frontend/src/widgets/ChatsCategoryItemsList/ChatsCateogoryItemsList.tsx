@@ -10,7 +10,12 @@ interface Props {
   unreadCount: number;
 }
 
-function ChatsCategoryItemsList({ filter, onFilterChange, totalCount, unreadCount }: Props) {
+function ChatsCategoryItemsList({
+  filter,
+  onFilterChange,
+  totalCount,
+  unreadCount,
+}: Props) {
   return (
     <div className="flex gap-2 animate-fade-in-right">
       <ChatsCategoryItem

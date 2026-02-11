@@ -13,7 +13,7 @@ function PrimaryButton({
   return (
     <button
       onClick={onClick}
-      className={`bg-linear-to-b from-button-gradient-start to-button-gradient-end text-font-tertiary px-6 sm:px-8 py-2.5 sm:py-3 rounded-xl outline-none font-semibold cursor-pointer w-full hover:shadow-[0_3px_8px_var(--color-hover-shadow)] duration-200 text-sm sm:text-base ${className}`}
+      className={`bg-contrast text-tertiary-font px-6 sm:px-8 py-2.5 sm:py-3 rounded-xl outline-none font-semibold cursor-pointer w-full hover:shadow-[0_3px_8px_var(--color-hover-shadow)] duration-200 text-sm sm:text-base ${className}`}
       {...props}
     >
       {text}

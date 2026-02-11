@@ -45,14 +45,14 @@ function AddAccountModal({ setIsModalOpen }: IAddAccountModal) {
     <>
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col gap-4 bg-chat-secondary-bg rounded-2xl py-8 pb-11 px-10 z-99 animate-fade-in-bottom min-w-150">
         <div className="flex items-center gap-4 mb-3">
-          <span className="p-2.5 bg-chat-tertiary-bg/80 rounded-md text-font-contrast">
+          <span className="p-2.5 bg-chat-tertiary-bg/80 rounded-md text-contrast">
             <Unplug width={20} />
           </span>
           <div className="flex flex-col justify-center">
-            <h2 className="text-font-primary font-semibold text-lg">
+            <h2 className="text-primary-font font-semibold text-lg">
               Подключение аккаунта
             </h2>
-            <p className="text-font-secondary text-sm">
+            <p className="text-secondary-font text-sm">
               Введите данные для подключения к API маркетплейса
             </p>
           </div>
@@ -96,7 +96,7 @@ function AddAccountModal({ setIsModalOpen }: IAddAccountModal) {
           width={32}
           height={32}
           onClick={() => setIsModalOpen(false)}
-          className="absolute right-5 top-5 text-font-primary cursor-pointer rounded-full hover:bg-chat-tertiary-bg p-1 duration-100"
+          className="absolute right-5 top-5 text-primary-font cursor-pointer rounded-full hover:bg-chat-tertiary-bg p-1 duration-100"
         />
       </div>
       <div

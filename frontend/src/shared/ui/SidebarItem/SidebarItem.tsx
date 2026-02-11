@@ -17,7 +17,7 @@ function SidebarItem({
   onClick,
 }: ISidebarItem) {
   const cls = cx(
-    `flex justify-center items-center w-15 h-15 rounded-xl cursor-pointer text-font-primary hover:text-font-primary-hover hover:shadow-[0_2px_4px_#00000025] hover:bg-chat-selected-bg duration-150 select-none ${isSelected ? "bg-chat-selected-bg shadow-[0_2px_4px_#00000025] text-font-primary-hover" : "bg-chat-secondary-bg"}`,
+    `flex justify-center items-center w-15 h-15 rounded-xl cursor-pointer text-primary-font hover:text-primary-font-hover hover:shadow-[0_2px_4px_#00000025] hover:bg-chat-tertiary-bg duration-150 select-none ${isSelected ? "bg-chat-tertiary-bg shadow-[0_2px_4px_#00000025] text-primary-font-hover" : "bg-chat-secondary-bg"}`,
   );
 
   if (isButton) {

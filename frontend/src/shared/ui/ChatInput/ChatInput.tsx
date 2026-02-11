@@ -45,10 +45,10 @@ function ChatInput({ chatId, onMessageSent }: ChatInputProps) {
 
   return (
     <form onSubmit={handleSubmit} className="relative w-full">
-      <Paperclip className="text-font-secondary cursor-pointer absolute left-4 bottom-4.5" />
+      <Paperclip className="text-secondary-font cursor-pointer absolute left-4 bottom-4.5" />
       <textarea
         ref={textareaRef}
-        className={`bg-chat-selected-bg rounded-3xl text-font-primary shadow-[0_1px_2px_#00000025] placeholder:text-font-secondary w-full py-2.5 px-14 outline-none resize-none min-h-12 max-h-75 h-12 ${styles["input-area"]}`}
+        className={`bg-chat-secondary-bg rounded-3xl text-primary-font shadow-[0_1px_2px_#00000025] placeholder:text-secondary-font w-full py-2.5 px-14 outline-none resize-none min-h-12 max-h-75 h-12 ${styles["input-area"]}`}
         placeholder="Введите сообщение..."
         onInput={autoResize}
         value={value}

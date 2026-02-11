@@ -44,7 +44,7 @@ const menuItems = [
     icon: <Crown />,
   },
   {
-    link: "/app/profile/transactions",
+    link: "/app/transactions",
     title: "Транзакции",
     icon: <ArrowLeftRight size={20} />,
   },
@@ -59,13 +59,13 @@ function Sidebar() {
   return (
     <div
       ref={menuRef}
-      className="flex flex-col bg-chat-secondary-bg items-center border border-primary-border rounded-2xl relative"
+      className="flex flex-col bg-chat-secondary-bg items-center border border-chat-primary-border rounded-xl md:rounded-2xl relative"
     >
       <button
         onClick={() => setMenuOpen(!menuOpen)}
-        className="flex items-center justify-center h-16 w-full border border-transparent border-b-primary-border rounded-t-xl cursor-pointer hover:bg-primary-border duration-100"
+        className="flex items-center justify-center h-14 md:h-16 w-full border border-transparent border-b-chat-primary-border rounded-t-xl cursor-pointer hover:bg-chat-tertiary-bg duration-100"
       >
-        <Menu className="text-font-primary" width={28} height={28} />
+        <Menu className="text-primary-font w-6 h-6 md:w-7 md:h-7" />
       </button>
       <div className="flex flex-col">
         {items.map((item, i) => (
@@ -80,7 +80,7 @@ function Sidebar() {
       </div>
       {menuOpen && (
         <div
-          className={`absolute flex flex-col rounded-xl border border-primary-border left-18 -top-px bg-chat-secondary-bg z-99 overflow-hidden ${menuOpen && "animate-fade-in-bottom"}`}
+          className={`absolute flex flex-col rounded-xl border border-chat-primary-border left-18 -top-px bg-chat-secondary-bg z-99 overflow-hidden ${menuOpen && "animate-fade-in-bottom"}`}
         >
           {menuItems.map((item) => (
             <NavLink
@@ -88,7 +88,7 @@ function Sidebar() {
               to={item.link}
               onClick={() => setMenuOpen(false)}
               className={({ isActive }) =>
-                `flex gap-2 text-font-primary py-3 px-4 hover:bg-primary-border duration-100 ${isActive && "bg-primary-border"}`
+                `flex gap-2 text-primary-font py-3 px-4 hover:bg-chat-tertiary-bg duration-100 ${isActive && "bg-chat-tertiary-bg"}`
               }
             >
               {item.icon}

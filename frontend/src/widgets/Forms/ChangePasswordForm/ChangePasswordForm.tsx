@@ -9,7 +9,9 @@ import { changePassword } from "../../../shared/api/requests/user";
 import { useState } from "react";
 
 function ChangePasswordForm() {
-  const [status, setStatus] = useState<"idle" | "loading" | "ok" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "ok" | "error">(
+    "idle",
+  );
   const [errorMsg, setErrorMsg] = useState("");
 
   const {
@@ -31,24 +33,26 @@ function ChangePasswordForm() {
       reset();
       setTimeout(() => setStatus("idle"), 3000);
     } catch (err: any) {
-      const msg = err?.response?.data?.errors?.[0]?.description
-        || err?.message || "Не удалось сменить пароль";
+      const msg =
+        err?.response?.data?.errors?.[0]?.description ||
+        err?.message ||
+        "Не удалось сменить пароль";
       setErrorMsg(msg);
       setStatus("error");
     }
   }
 
   return (
-    <div className="flex flex-col bg-chat-secondary-bg px-8 py-6 pb-7 border border-primary-border rounded-2xl w-full animate-fade-in-bottom">
+    <div className="flex flex-col bg-chat-secondary-bg px-6 md:px-8 py-6 pb-7 border border-chat-primary-border rounded-2xl w-full animate-fade-in-bottom">
       <div className="flex items-center gap-4 mb-5">
-        <span className="p-2.5 bg-chat-tertiary-bg/80 rounded-md text-font-primary">
+        <span className="p-2.5 bg-chat-tertiary-bg/80 rounded-lg text-primary-font border border-chat-secondary-border">
           <KeyRound width={20} />
         </span>
         <div className="flex flex-col justify-center">
-          <h2 className="text-font-primary font-semibold text-lg">
+          <h2 className="text-primary-font font-semibold text-lg">
             Изменить пароль
           </h2>
-          <p className="text-font-secondary text-sm">
+          <p className="text-secondary-font text-sm">
             Обновите пароль для защиты аккаунта
           </p>
         </div>

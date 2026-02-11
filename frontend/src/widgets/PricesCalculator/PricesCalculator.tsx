@@ -14,7 +14,7 @@ function PricesCalculator() {
           <h2 className="font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-font-primary">
             {accounts}
           </h2>
-          <p className="text-font-secondary text-xl sm:text-2xl md:text-3xl lg:text-4xl mb-0.5 sm:mb-1">
+          <p className="text-secondary-font text-xl sm:text-2xl md:text-3xl lg:text-4xl mb-0.5 sm:mb-1">
             аккаунтов
           </p>
         </div>
@@ -22,7 +22,7 @@ function PricesCalculator() {
           <h2 className="font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl bg-linear-to-r from-button-gradient-start to-button-gradient-end bg-clip-text text-transparent">
             {price}
           </h2>
-          <p className="text-font-secondary text-xl sm:text-2xl md:text-3xl lg:text-4xl mb-0.5 sm:mb-1">
+          <p className="text-secondary-font text-xl sm:text-2xl md:text-3xl lg:text-4xl mb-0.5 sm:mb-1">
             ₽/мес.
           </p>
         </div>
@@ -32,8 +32,8 @@ function PricesCalculator() {
           {oneAccountPrice} ₽ за аккаунт
         </h3>
         <div className="flex gap-2 sm:gap-3 items-center justify-center bg-bg-contrast-20 rounded-lg px-4 sm:px-5 py-2 sm:py-3">
-          <Sparkles className="text-font-contrast w-5 h-5 sm:w-6 sm:h-6" />
-          <h3 className="text-font-contrast text-base sm:text-lg md:text-xl font-medium">
+          <Sparkles className="text-contrast w-5 h-5 sm:w-6 sm:h-6" />
+          <h3 className="text-contrast text-base sm:text-lg md:text-xl font-medium">
             Экономия {economyPercentage}%
           </h3>
         </div>
@@ -42,7 +42,7 @@ function PricesCalculator() {
       <AccountsCountButtonsList />
       <Link
         to="/login"
-        className="text-center text-lg sm:text-xl md:text-2xl p-4 sm:p-5 bg-linear-to-b from-button-gradient-start to-button-gradient-end text-font-tertiary px-6 sm:px-8 py-2.5 sm:py-3 rounded-xl outline-none font-semibold cursor-pointer shadow-[0_2px_4px_var(--color-hover-shadow)] hover:shadow-[0_3px_8px_var(--color-hover-shadow)] duration-150 mt-5 sm:mt-6 md:mt-7"
+        className="text-center text-lg sm:text-xl md:text-2xl p-4 sm:p-5 bg-linear-to-b from-button-gradient-start to-button-gradient-end text-tertiary-font px-6 sm:px-8 py-2.5 sm:py-3 rounded-xl outline-none font-semibold cursor-pointer shadow-[0_2px_4px_var(--color-hover-shadow)] hover:shadow-[0_3px_8px_var(--color-hover-shadow)] duration-150 mt-5 sm:mt-6 md:mt-7"
       >
         Подключить {accounts} аккаунтов
       </Link>

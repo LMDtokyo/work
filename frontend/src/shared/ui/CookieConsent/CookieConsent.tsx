@@ -30,20 +30,20 @@ function CookieConsent() {
         mounted ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
       }`}
     >
-      <div className="max-w-4xl mx-auto bg-chat-secondary-bg border border-primary-border rounded-2xl shadow-lg overflow-hidden">
+      <div className="max-w-4xl mx-auto bg-chat-secondary-bg border border-chat-primary-border rounded-2xl shadow-lg overflow-hidden">
         <div className="p-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex-1">
             <div className="flex items-start gap-3">
               <div className="flex-1">
-                <h3 className="text-font-primary font-semibold text-base mb-2">
+                <h3 className="text-primary-font font-semibold text-base mb-2">
                   Мы используем cookies
                 </h3>
-                <p className="text-font-secondary text-sm leading-relaxed">
+                <p className="text-secondary-font text-sm leading-relaxed">
                   Для обеспечения работы сервиса и авторизации мы используем
                   файлы cookie. Продолжая использовать сайт, вы соглашаетесь с{" "}
                   <a
                     href="/privacy-policy"
-                    className="text-font-contrast hover:text-hover-font-contrast underline transition-colors"
+                    className="text-contrast hover:text-contrast-hover underline transition-colors"
                   >
                     политикой конфиденциальности
                   </a>
@@ -52,7 +52,7 @@ function CookieConsent() {
               </div>
               <button
                 onClick={() => handleClose(false)}
-                className="text-font-secondary hover:text-font-primary transition-colors p-1 md:hidden"
+                className="text-secondary-font hover:text-primary-font transition-colors p-1 md:hidden"
                 aria-label="Закрыть"
               >
                 <X size={20} />
@@ -62,13 +62,13 @@ function CookieConsent() {
           <div className="flex gap-3 shrink-0">
             <button
               onClick={() => handleClose(false)}
-              className="hidden md:block px-5 py-2.5 text-font-primary text-sm font-medium border border-primary-border rounded-full hover:bg-chat-tertiary-bg-hover transition-colors cursor-pointer"
+              className="hidden md:block px-5 py-2.5 text-primary-font text-sm font-medium border border-chat-primary-border rounded-full hover:bg-chat-tertiary-bg-hover transition-colors cursor-pointer"
             >
               Отклонить
             </button>
             <button
               onClick={() => handleClose(true)}
-              className="flex-1 md:flex-none px-6 py-2.5 bg-linear-to-b from-button-gradient-start to-button-gradient-end text-font-tertiary text-sm font-semibold rounded-full shadow-[0_2px_4px_var(--color-hover-shadow)] hover:shadow-[0_3px_8px_var(--color-hover-shadow)] transition-shadow cursor-pointer"
+              className="flex-1 md:flex-none px-6 py-2.5 bg-contrast text-tertiary-font text-sm font-semibold rounded-full shadow-[0_2px_4px_var(--color-hover-shadow)] hover:shadow-[0_3px_8px_var(--color-hover-shadow)] transition-shadow cursor-pointer"
             >
               Принять
             </button>

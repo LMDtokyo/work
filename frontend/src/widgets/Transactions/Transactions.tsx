@@ -16,18 +16,19 @@ function Transactions() {
   const { data, isLoading } = useOrders(0, 10);
 
   const items = data?.items ?? [];
-  const filtered = filter === 0
-    ? items
-    : items.filter((o) => statusGroups[filter]?.includes(o.status));
+  const filtered =
+    filter === 0
+      ? items
+      : items.filter((o) => statusGroups[filter]?.includes(o.status));
 
   return (
-    <div className="flex flex-col gap-3 py-6 pb-4 px-8 bg-chat-secondary-bg rounded-2xl border border-primary-border w-full h-full overflow-hidden animate-fade-in-bottom">
-      <div className="flex justify-between items-center">
+    <div className="flex flex-col gap-3 py-6 pb-4 px-4 md:px-6 lg:px-8 bg-chat-secondary-bg rounded-2xl border border-chat-primary-border w-full min-h-125 h-full overflow-hidden animate-fade-in-bottom">
+      <div className="flex flex-col gap-3 items-start md:items-center md:flex-row justify-between">
         <div>
-          <h2 className="text-font-primary text-2xl font-semibold">
+          <h2 className="text-primary-font text-lg md:text-xl lg:text-2xl font-semibold">
             История транзакций
           </h2>
-          <p className="text-font-secondary">Все операции по вашим площадкам</p>
+          <p className="text-secondary-font">Все операции по вашим площадкам</p>
         </div>
         <TransactionsFilter selected={filter} onChange={setFilter} />
       </div>
@@ -35,7 +36,10 @@ function Transactions() {
         {isLoading ? (
           <div className="flex flex-col gap-2">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="animate-pulse bg-chat-tertiary-bg rounded-xl h-14" />
+              <div
+                key={i}
+                className="animate-pulse bg-chat-tertiary-bg rounded-xl h-14"
+              />
             ))}
           </div>
         ) : (
@@ -43,10 +47,10 @@ function Transactions() {
         )}
       </div>
       <div className="flex flex-col">
-        <hr className="h-px border-none bg-linear-to-r from-chat-secondary-bg via-primary-border to-chat-secondary-bg mb-3" />
+        <hr className="h-px border-none bg-linear-to-r from-chat-secondary-bg via-chat-secondary-border to-chat-secondary-bg mb-3" />
         <Link
-          to="/app/profile/transactions"
-          className="text-font-contrast text-center hover:text-hover-font-contrast"
+          to="/app/transactions"
+          className="text-contrast text-center hover:text-contrast-hover"
         >
           Смотреть все
         </Link>

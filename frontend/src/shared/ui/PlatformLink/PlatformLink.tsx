@@ -20,10 +20,8 @@ function PlatformLink({
       to={to}
       onClick={onClick}
       className={({ isActive }) =>
-        `duration-100 p-1.5 transition-colors flex items-center justify-center ${
-          isActive
-            ? "bg-primary-border"
-            : "hover:bg-primary-border hover:bg-opacity-80"
+        `duration-100 p-1.5 max-w-14 max-h-14 md:max-w-16 md:max-h-16 transition-colors flex items-center justify-center ${
+          isActive ? "bg-chat-tertiary-bg-hover" : "hover:bg-chat-tertiary-bg"
         } ${className}`
       }
       {...props}

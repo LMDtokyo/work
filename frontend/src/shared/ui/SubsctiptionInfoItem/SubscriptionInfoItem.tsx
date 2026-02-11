@@ -7,12 +7,14 @@ interface ISubscriptionInfoItem {
 function SubscriptionInfoItem({ icon, title, value }: ISubscriptionInfoItem) {
   return (
     <div className="flex gap-4 items-center">
-      <span className="bg-chat-tertiary-bg-hover p-5 rounded-full text-font-primary">
+      <span className="bg-chat-tertiary-bg-hover border border-chat-secondary-border p-5 rounded-full text-primary-font">
         {icon}
       </span>
       <div className="flex flex-col">
-        <h3 className="text-font-primary/50">{title}</h3>
-        <h2 className="text-font-primary text-xl">{value}</h2>
+        <h3 className="text-primary-font/50 text-sm md:text-base">{title}</h3>
+        <h2 className="text-primary-font text-lg md:text-xl font-semibold">
+          {value}
+        </h2>
       </div>
     </div>
   );

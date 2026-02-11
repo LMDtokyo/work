@@ -84,7 +84,7 @@ export const router = createBrowserRouter([
     element: (
       <PrivateRoute>
         <App />
-      </PrivateRoute> 
+      </PrivateRoute>
     ),
     errorElement: <ErrorPage />,
     children: [
@@ -125,11 +125,11 @@ export const router = createBrowserRouter([
         element: <SubscriptionPage />,
       },
       {
-        path: "/app/profile/accounts",
+        path: "/app/accounts",
         element: <AccountsPage />,
       },
       {
-        path: "/app/profile/transactions",
+        path: "/app/transactions",
         element: <TransactionsPage />,
       },
     ],

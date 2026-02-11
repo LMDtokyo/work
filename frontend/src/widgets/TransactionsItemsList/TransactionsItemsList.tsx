@@ -3,9 +3,15 @@ import type { OrderItem } from "../../shared/api/requests/wildberries";
 
 function formatDate(iso: string) {
   const d = new Date(iso);
-  return d.toLocaleDateString("ru-RU", {
-    day: "numeric", month: "short", year: "numeric",
-  }) + ", " + d.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
+  return (
+    d.toLocaleDateString("ru-RU", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    }) +
+    ", " +
+    d.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" })
+  );
 }
 
 interface Props {
@@ -15,7 +21,7 @@ interface Props {
 function TransactionsItemsList({ orders }: Props) {
   if (!orders.length) {
     return (
-      <div className="flex items-center justify-center h-40 text-font-secondary">
+      <div className="flex items-center justify-center h-40 text-secondary-font">
         Нет заказов
       </div>
     );

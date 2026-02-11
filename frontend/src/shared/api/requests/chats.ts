@@ -35,13 +35,10 @@ export async function getChats(): Promise<Chat[]> {
 
 export async function markChatAsRead(chatId: string): Promise<boolean> {
   try {
-    const { data } = await chatApi.put<ApiResponse<boolean>>(
-      `${chatId}/read`
-    );
+    const { data } = await chatApi.put<ApiResponse<boolean>>(`${chatId}/read`);
 
     if (!data.isSuccess) {
-      const msg =
-        data.errors?.[0]?.description || "Не удалось отметить чат";
+      const msg = data.errors?.[0]?.description || "Не удалось отметить чат";
       throw new Error(msg);
     }
 
@@ -62,11 +59,12 @@ export interface Message {
 export async function getChatMessages(chatId: string): Promise<Message[]> {
   try {
     const { data } = await chatApi.get<ApiResponse<Message[]>>(
-      `${chatId}/messages`
+      `${chatId}/messages`,
     );
 
     if (!data.isSuccess) {
-      const msg = data.errors?.[0]?.description || "Не удалось загрузить сообщения";
+      const msg =
+        data.errors?.[0]?.description || "Не удалось загрузить сообщения";
       throw new Error(msg);
     }
 
@@ -77,11 +75,14 @@ export async function getChatMessages(chatId: string): Promise<Message[]> {
   }
 }
 
-export async function sendMessage(chatId: string, text: string): Promise<boolean> {
+export async function sendMessage(
+  chatId: string,
+  text: string,
+): Promise<boolean> {
   try {
     const { data } = await chatApi.post<ApiResponse<boolean>>(
       `${chatId}/messages`,
-      { text }
+      { text },
     );
 
     if (!data.isSuccess) {

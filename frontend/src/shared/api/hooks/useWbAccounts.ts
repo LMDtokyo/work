@@ -3,7 +3,7 @@ import {
   getWbAccounts,
   addWbAccount,
   removeWbAccount,
-  syncWbOrders
+  syncWbOrders,
 } from "../requests/wildberries";
 import type { WbAccount } from "../requests/wildberries";
 

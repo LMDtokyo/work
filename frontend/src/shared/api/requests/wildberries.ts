@@ -100,11 +100,18 @@ export interface PaginatedOrders {
   hasNextPage: boolean;
 }
 
-export async function getUserOrders(skip = 0, take = 50): Promise<PaginatedOrders> {
+export async function getUserOrders(
+  skip = 0,
+  take = 50,
+): Promise<PaginatedOrders> {
   try {
-    const { data } = await wbApi.get<ApiResponse<PaginatedOrders>>(`/orders?skip=${skip}&take=${take}`);
+    const { data } = await wbApi.get<ApiResponse<PaginatedOrders>>(
+      `/orders?skip=${skip}&take=${take}`,
+    );
     if (!data.isSuccess || !data.data) {
-      throw new Error(data.errors?.[0]?.description || "Не удалось загрузить заказы");
+      throw new Error(
+        data.errors?.[0]?.description || "Не удалось загрузить заказы",
+      );
     }
     return data.data;
   } catch (error) {

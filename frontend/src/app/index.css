@@ -2,9 +2,34 @@
 
 :root,
 [data-theme="light"] {
-  --color-landing-bg: #ecf5ff;
-  --color-landing-secondary-bg: #ffffff80;
+  /* ----- Landing colors ----- */
+  --color-landing-primary-bg: #ecf5ff;
+  --color-landing-secondary-bg: #ffffff;
+  --color-landing-border: #a2caff;
 
+  /* ----- Auth colors ----- */
+  --color-auth-secondary-bg: #fff;
+
+  /* ----- Chat colors ----- */
+  --color-chat-primary-bg: #c6d2eb;
+  --color-chat-secondary-bg: #e2e8f3;
+  --color-chat-tertiary-bg: #f4f6fa;
+  --color-chat-tertiary-bg-hover: #fff;
+  --color-chat-primary-border: #b7c6e1;
+  --color-chat-secondary-border: #c3cee4;
+  --color-chat-msg-out: #d6dcff;
+  --color-chat-msg-in: #ffffff;
+
+  /* ----- Font colors ----- */
+  --color-primary-font: #000000;
+  --color-secondary-font: #00000050;
+
+  /* ----- Contrast colors ----- */
+  --color-contrast: #0048ff;
+  --color-contrast-20: #0048ff20;
+  --color-contrast-hover: #1a5bff;
+
+  /* ----- Subscription colors ----- */
   --color-subscription-light-purple-bg: #d3dcff;
   --color-subscription-yellow-bg: #f8b21a;
   --color-subscription-blue-bg: #1a89f8;
@@ -14,41 +39,42 @@
   --color-subscription-purple-bg: #a3a9ff;
   --color-subscription-violet-bg: #dcafff;
 
-  --color-auth-bg: #ecf5ff;
-  --color-auth-input-bg: #ffffff;
-
-  --color-chat-bg: #d9ddf2;
-  --color-chat-gradient-bg-1: #f7f8fd;
-  --color-chat-gradient-bg-2: #eceef9;
-  --color-chat-secondary-bg: #eceef9;
-  --color-chat-tertiary-bg: #ffffff;
-  --color-chat-tertiary-bg-hover: #efefef;
-  --color-chat-selected-bg: #f3f5fb;
-  --color-chat-msg-out: #d6dcff;
-  --color-chat-msg-in: #ffffff;
-
-  --color-font-primary: #000000;
-  --color-font-primary-hover: #31324f;
-  --color-font-secondary: #9192aa;
-  --color-font-primary-hover: #5054ce;
-
-  --color-glare: #6f98ff;
-
-  --color-primary-border: #c4c7db;
-  --color-secondary-border: #ced1df;
-  --color-tertiary-border: #b9cbff;
-  --color-border: #a6a8bb;
-
-  --color-theme-button: #edefff;
-
+  /* ----- Addition colors ----- */
+  --color-glare: #a4caff;
   --color-hover-shadow: #00000025;
+  --color-theme-button: #fff;
 }
 
 [data-theme="dark"] {
-  --color-landing-bg: #0a0a10;
-  --color-landing-secondary-bg: #1d1f30;
+  /* ----- Landing colors ----- */
+  --color-landing-primary-bg: #000a14;
+  --color-landing-secondary-bg: #00113c50;
+  --color-landing-border: #001e6b;
 
-  --color-subscription-purple-bg: #5f6b99;
+  /* ----- Auth colors ----- */
+  --color-auth-secondary-bg: #121b30;
+
+  /* ----- Chat colors ----- */
+  --color-chat-primary-bg: #000a14;
+  --color-chat-secondary-bg: #121b30;
+  --color-chat-tertiary-bg: #1c294a;
+  --color-chat-tertiary-bg-hover: #23345d;
+  --color-chat-primary-border: #1c2a4a;
+  --color-chat-secondary-border: #23345d;
+  --color-chat-msg-out: #3b4070;
+  --color-chat-msg-in: #252845;
+
+  /* ----- Font colors ----- */
+  --color-primary-font: #fff;
+  --color-secondary-font: #ffffff50;
+
+  /* ----- Contrast colors ----- */
+  --color-contrast: #366fff;
+  --color-contrast-20: #366fff20;
+  --color-contrast-hover: #4d7fff;
+
+  /* ----- Subscription colors ----- */
+  --color-subscription-light-purple-bg: #5f6b99;
   --color-subscription-yellow-bg: #9a6c09;
   --color-subscription-blue-bg: #2178d0;
   --color-subscription-sea-blue-bg: #00c0c7;
@@ -57,40 +83,42 @@
   --color-subscription-purple-bg: #4951cd;
   --color-subscription-violet-bg: #7b2bb8;
 
-  --color-auth-bg: #0a0a10;
-  --color-auth-input-bg: #0f1126;
-
-  --color-chat-bg: #0a0a10;
-  --color-chat-gradient-bg-1: #262940;
-  --color-chat-gradient-bg-2: #1d1f30;
-  --color-chat-secondary-bg: #1d1f30;
-  --color-chat-tertiary-bg: #30334f;
-  --color-chat-tertiary-bg-hover: #474b74;
-  --color-chat-selected-bg: #262940;
-  --color-chat-msg-out: #3b4070;
-  --color-chat-msg-in: #252845;
-
-  --color-font-primary: #ffffff;
-  --color-font-primary-hover: #dfe1ec;
-  --color-font-secondary: #ffffff80;
-  --color-font-primary-hover: rgb(234, 237, 255);
-
-  --color-glare: rgb(18, 22, 69);
-
-  --color-primary-border: #32354e;
-  --color-secondary-border: #404468;
-  --color-tertiary-border: #32354e;
-  --color-border: #434764;
-
-  --color-theme-button: #2e3160;
-
+  /* ----- Addition colors ----- */
+  --color-glare: #000f2f;
   --color-hover-shadow: rgb(48, 15, 132);
+  --color-theme-button: #081946;
 }
 
 @theme {
-  --color-landing-bg: var(--color-landing-bg);
+  /* ----- Landing colors ----- */
+  --color-landing-primary-bg: var(--color-landing-primary-bg);
   --color-landing-secondary-bg: var(--color-landing-secondary-bg);
+  --color-landing-border: var(--color-landing-bg);
 
+  /* ----- Auth colors ----- */
+  --color-auth-secondary-bg: var(--color-auth-secondary-bg);
+
+  /* ----- Chat colors ----- */
+  --color-chat-primary-bg: var(--color-chat-primary-bg);
+  --color-chat-secondary-bg: var(--color-chat-secondary-bg);
+  --color-chat-tertiary-bg: var(--color-chat-tertiary-bg);
+  --color-chat-tertiary-bg-hover: var(--color-chat-tertiary-bg-hover);
+  --color-chat-primary-border: var(--color-chat-primary-border);
+  --color-chat-secondary-border: var(--color-chat-secondary-border);
+  --color-chat-msg-out: var(--color-chat-msg-out);
+  --color-chat-msg-in: var(--color-chat-msg-in);
+
+  /* ----- Font colors ----- */
+  --color-primary-font: var(--color-primary-font);
+  --color-secondary-font: var(--color-secondary-font);
+  --color-tertiary-font: #fff;
+
+  /* ----- Contrast colors ----- */
+  --color-contrast: var(--color-contrast);
+  --color-contrast-20: var(--color-contrast-20);
+  --color-contrast-hover: var(--color-contrast-hover);
+
+  /* ----- Subscription colors ----- */
   --color-subscription-light-purple-bg: var(
     --color-subscription-light-purple-bg
   );
@@ -103,44 +131,7 @@
   --color-subscription-violet-bg: var(--color-subscription-violet-bg);
   --color-current-tarif: #5f6b99;
 
-  --color-auth-bg: var(--color-auth-bg);
-  --color-auth-input-bg: var(--color-auth-input-bg);
-
-  --color-chat-bg: var(--color-chat-bg);
-  --color-chat-gradient-bg-1: var(--color-chat-gradient-bg-1);
-  --color-chat-gradient-bg-2: var(--color-chat-gradient-bg-2);
-  --color-chat-secondary-bg: var(--color-chat-secondary-bg);
-  --color-chat-tertiary-bg: var(--color-chat-tertiary-bg);
-  --color-chat-tertiary-bg-hover: var(--color-chat-tertiary-bg-hover);
-  --color-chat-selected-bg: var(--color-chat-selected-bg);
-  --color-chat-msg-out: var(--color-chat-msg-out);
-  --color-chat-msg-in: var(--color-chat-msg-in);
-
-  --color-font-primary: var(--color-font-primary);
-  --color-font-primary-hover: var(--color-font-primary-hover);
-  --color-font-secondary: var(--color-font-secondary);
-  --color-font-tertiary: #ffffff;
-  --color-font-contrast: #003dd8;
-  --color-hover-font-contrast: #0048ff;
-  --color-font-primary-hover: var(--color-font-primary-hover);
-
-  --color-button-gradient-start: #8090ff;
-  --color-button-gradient-end: #6777e4;
-
-  --color-glare: var(--color-glare);
-
-  --color-primary-border: var(--color-primary-border);
-  --color-secondary-border: var(--color-secondary-border);
-  --color-tertiary-border: var(--color-tertiary-border);
-  --color-border: var(--color-border);
-
-  --color-theme-button: var(--color-theme-button);
-
-  --color-hover-shadow: var(--color-hover-shadow);
-
-  --color-bg-contrast-20: #8090ff20;
-  --color-contrast: #0048ff;
-
+  /* ----- Default colors ----- */
   --color-red-bg-20: #c7555520;
   --color-red-bg-30: #c7555530;
   --color-red-bg: #c75555;
@@ -149,10 +140,12 @@
   --color-green-bg-30: #21c45d30;
   --color-green-bg: #21c45d;
 
-  --color-yellow-bg-20: #f59f0920;
-  --color-yellow-bg-30: #f59f0930;
-  --color-yellow-bg: #f59f09;
+  /* ----- Addition colors ----- */
+  --color-glare: var(--color-glare);
+  --color-hover-shadow: var(--color-hover-shadow);
+  --color-theme-button: var(--color-theme-button);
 
+  /* ----- Animations ----- */
   --animate-fade-in: fadeIn 0.4s ease;
   --animate-fade-in-right: fadeInRight 0.4s ease;
   --animate-fade-in-bottom: fadeInBottom 0.4s ease;

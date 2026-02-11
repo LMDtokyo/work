@@ -14,7 +14,7 @@ function SendButton({
   className = "",
 }: ISendButton) {
   const cls = cx(
-    `bg-font-contrast rounded-full p-2.5 
+    `bg-contrast rounded-full p-2.5 
          hover:bg-contrast-hover duration-150 cursor-pointer 
          disabled:opacity-50 
          disabled:cursor-default 
@@ -31,7 +31,7 @@ function SendButton({
           width={18}
           height={18}
           strokeWidth={3}
-          className="text-font-tertiary"
+          className="text-tertiary-font"
         />
       )}
     </button>

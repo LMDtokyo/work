@@ -35,15 +35,13 @@ export const Transactions = () => {
   }, [data, filter]);
 
   return (
-    <div className="flex flex-col gap-6 py-6 px-8 bg-chat-secondary-bg rounded-2xl border border-primary-border w-full h-full overflow-hidden animate-fade-in-bottom">
-      <div className="flex justify-between items-center">
+    <div className="flex flex-col gap-6 py-6 px-6 md:px-8 bg-chat-secondary-bg rounded-2xl border border-chat-primary-border w-full h-full overflow-hidden animate-fade-in-bottom">
+      <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center justify-between">
         <div>
-          <h2 className="text-font-primary text-2xl font-semibold">
+          <h2 className="text-primary-font text-2xl font-semibold">
             История транзакций
           </h2>
-          <p className="text-font-secondary">
-            Все заказы с ваших аккаунтов WB
-          </p>
+          <p className="text-secondary-font">Все заказы с ваших аккаунтов WB</p>
         </div>
         <TransactionsFilter selected={filter} onChange={setFilter} />
       </div>
@@ -51,7 +49,10 @@ export const Transactions = () => {
         {isLoading ? (
           <div className="flex flex-col gap-3 py-2">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="animate-pulse bg-chat-tertiary-bg rounded-xl h-16" />
+              <div
+                key={i}
+                className="animate-pulse bg-chat-tertiary-bg rounded-xl h-16"
+              />
             ))}
           </div>
         ) : (
@@ -63,17 +64,17 @@ export const Transactions = () => {
           <button
             disabled={!data.hasPreviousPage}
             onClick={() => setPage((p) => p - 1)}
-            className="px-3 py-1 rounded bg-chat-tertiary-bg text-font-primary disabled:opacity-40 cursor-pointer disabled:cursor-default"
+            className="px-3 py-1 rounded bg-chat-tertiary-bg text-primary-font disabled:opacity-40 cursor-pointer disabled:cursor-default"
           >
             Назад
           </button>
-          <span className="text-font-secondary self-center text-sm">
+          <span className="text-secondary-font self-center text-sm">
             {data.page} / {data.totalPages}
           </span>
           <button
             disabled={!data.hasNextPage}
             onClick={() => setPage((p) => p + 1)}
-            className="px-3 py-1 rounded bg-chat-tertiary-bg text-font-primary disabled:opacity-40 cursor-pointer disabled:cursor-default"
+            className="px-3 py-1 rounded bg-chat-tertiary-bg text-primary-font disabled:opacity-40 cursor-pointer disabled:cursor-default"
           >
             Далее
           </button>

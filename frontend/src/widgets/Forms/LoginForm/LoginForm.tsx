@@ -34,10 +34,10 @@ function LoginForm() {
       className="animate-fade-in-bottom w-full max-w-[320px] sm:max-w-100 md:max-w-125"
     >
       <div className="flex flex-col gap-1 items-center">
-        <h1 className="text-font-primary font-bold text-xl sm:text-2xl md:text-[28px] lg:text-[32px] text-center">
+        <h1 className="text-primary-font font-bold text-xl sm:text-2xl md:text-[28px] lg:text-[32px] text-center">
           Рады снова вас видеть!
         </h1>
-        <h3 className="text-font-secondary font-normal text-sm sm:text-base text-center">
+        <h3 className="text-secondary-font font-normal text-sm sm:text-base text-center">
           Давайте начнем! Введите свои данные
         </h3>
       </div>
@@ -62,18 +62,18 @@ function LoginForm() {
         <RememberCheckbox checked={remember} onChange={setRemember} />
         <Link
           to="/recovery-password"
-          className="text-font-contrast underline-offset-2 underline text-xs sm:text-sm hover:text-hover-font-contrast"
+          className="text-contrast underline-offset-2 underline text-xs sm:text-sm hover:text-contrast/90"
         >
           Забыли пароль?
         </Link>
       </div>
       {isError && <FormError message={error.message} />}
       <AuthButton text={isPending ? "Вход..." : "Войти"} />
-      <p className="text-font-primary text-xs sm:text-sm mt-4 sm:mt-5 text-center">
+      <p className="text-primary-font text-xs sm:text-sm mt-4 sm:mt-5 text-center">
         Вы здесь впервые?{" "}
         <Link
           to="/signup"
-          className="text-font-contrast underline-offset-2 underline hover:text-hover-font-contrast"
+          className="text-contrast underline-offset-2 underline hover:text-contrast-hover"
         >
           Зарегистрироваться
         </Link>

@@ -17,11 +17,7 @@ function RememberCheckbox({ checked, onChange }: RememberCheckboxProps) {
         />
         <div
           className={`w-4 h-4 border-2 rounded-sm transition-all duration-200
-          ${
-            checked
-              ? "bg-font-contrast border-font-contrast"
-              : "border-font-contrast"
-          }`}
+          ${checked ? "bg-contrast border-contrast" : "border-contrast"}`}
         >
           {checked && (
             <Check
@@ -31,7 +27,7 @@ function RememberCheckbox({ checked, onChange }: RememberCheckboxProps) {
           )}
         </div>
       </div>
-      <span className="text-font-primary select-none text-sm">
+      <span className="text-primary-font select-none text-sm">
         Запомнить меня
       </span>
     </label>

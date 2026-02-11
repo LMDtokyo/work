@@ -17,6 +17,7 @@ interface ISubscribeItem {
   price: number;
   accounts: number;
   advantages: string[];
+  color: string;
 }
 
 function SubscribeItem({
@@ -25,15 +26,18 @@ function SubscribeItem({
   price,
   accounts,
   advantages,
+  color,
 }: ISubscribeItem) {
   return (
     <div
-      className={`flex flex-col gap-7 bg-landing-secondary-bg border border-tertiary-border rounded-4xl relative p-8 min-w-82.5 overflow-hidden ${type === SubscriptionType.PRO_MAX && "scale-105"}`}
+      className={`flex flex-col gap-7 border rounded-4xl relative p-8 min-w-82.5 w-full md:w-82.5 overflow-hidden ${color === "landing" ? "bg-landing-secondary-bg border-landing-border" : "bg-chat-secondary-bg border-chat-primary-border"}`}
     >
-      <div className="absolute top-0 left-0 px-7 py-5 w-full h-22 flex justify-between overflow-hidden items-center border-b border-b-tertiary-border z-99">
-        <h2 className="text-font-primary text-xl font-bold z-99">{title}</h2>
+      <div
+        className={`absolute top-0 left-0 px-7 py-5 w-full h-22 flex justify-between overflow-hidden items-center border-b z-99 ${color === "landing" ? "border-b-landing-border" : "border-b-chat-primary-border"}`}
+      >
+        <h2 className="text-primary-font text-xl font-bold z-99">{title}</h2>
         <span
-          className={`text-font-primary/20 text-[100px] absolute right-10 -bottom-11 font-bold z-99 ${type === SubscriptionType.VIP && "text-font-primary/70"}`}
+          className={`text-primary-font/20 text-[100px] absolute right-10 -bottom-11 font-bold z-99 ${type === SubscriptionType.VIP && "text-primary-font/70"}`}
         >
           {type}
         </span>
@@ -55,12 +59,12 @@ function SubscribeItem({
       </div>
 
       <div className="flex flex-col gap-1 mt-25 z-99">
-        <h2 className="text-font-primary text-2xl font-semibold">
+        <h2 className="text-primary-font text-2xl font-semibold">
           {type === 1 ? "Бесплатно" : "₽" + price}
         </h2>
-        <p className="text-font-primary">
+        <p className="text-primary-font">
           {accounts}{" "}
-          <span className="text-font-primary/50">
+          <span className="text-primary-font/50">
             {type === SubscriptionType.BASIC ? "аккаунта" : "аккаунтов"}
           </span>
         </p>
@@ -68,7 +72,7 @@ function SubscribeItem({
 
       <Link
         to=""
-        className={`flex items-center justify-center w-full rounded-full py-4 font-semibold text-font-tertiary z-99 ${type === SubscriptionType.BASIC ? "bg-current-tarif cursor-default touch-none" : "bg-contrast cursor-pointer"}`}
+        className={`flex items-center justify-center w-full rounded-full py-4 font-semibold text-tertiary-font z-99 ${type === SubscriptionType.BASIC ? "bg-current-tarif cursor-default touch-none" : "bg-contrast cursor-pointer"}`}
       >
         {type === SubscriptionType.BASIC
           ? "Текущий план"
@@ -80,7 +84,7 @@ function SubscribeItem({
       </Link>
 
       <div className="flex flex-col gap-3 z-99">
-        <h3 className="text-font-primary text-md">
+        <h3 className="text-primary-font text-base">
           {type === SubscriptionType.BASIC
             ? "Для малого бизнеса"
             : type === SubscriptionType.PRO
@@ -93,7 +97,7 @@ function SubscribeItem({
           {advantages.map((advantage) => (
             <div className="flex items-center gap-2">
               <CircleCheck strokeWidth={1} className="text-contrast" />
-              <p className="text-font-primary text-sm">{advantage}</p>
+              <p className="text-primary-font text-sm">{advantage}</p>
             </div>
           ))}
         </div>

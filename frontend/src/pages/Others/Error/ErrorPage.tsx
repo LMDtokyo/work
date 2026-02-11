@@ -24,15 +24,15 @@ export const ErrorPage = () => {
   };
 
   return (
-    <div className="w-full h-svh bg-auth-bg flex flex-col justify-center items-center relative overflow-hidden px-4">
+    <div className="w-full h-svh bg-landing-primary-bg flex flex-col justify-center items-center relative overflow-hidden px-4">
       <div className="flex flex-col gap-4 justify-center items-center text-center">
-        <h1 className="font-bold text-4xl sm:text-5xl md:text-6xl text-font-primary">
+        <h1 className="font-bold text-4xl sm:text-5xl md:text-6xl text-primary-font">
           {errorCode}
         </h1>
-        <h3 className="text-lg sm:text-xl md:text-2xl font-medium text-font-primary max-w-md">
+        <h3 className="text-lg sm:text-xl md:text-2xl font-medium text-primary-font max-w-md">
           {errorMessage}
         </h3>
-        <p className="text-sm text-font-secondary max-w-sm">
+        <p className="text-sm text-secondary-font max-w-sm">
           Попробуйте обновить страницу или вернуться назад
         </p>
       </div>

@@ -3,7 +3,11 @@ interface SkeletonProps {
 }
 
 function Skeleton({ className = "" }: SkeletonProps) {
-  return <div className={`animate-pulse bg-chat-secondary-bg rounded-xl ${className}`} />;
+  return (
+    <div
+      className={`animate-pulse bg-chat-secondary-bg rounded-xl ${className}`}
+    />
+  );
 }
 
 export default Skeleton;

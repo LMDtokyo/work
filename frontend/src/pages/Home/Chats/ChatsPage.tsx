@@ -32,26 +32,29 @@ export const Chats = () => {
   const platformChats = useMemo(() => {
     if (!chats) return [];
     if (!activePlatform) return chats;
-    return chats.filter(c => c.platform === activePlatform);
+    return chats.filter((c) => c.platform === activePlatform);
   }, [chats, activePlatform]);
 
   const totalCount = platformChats.length;
   const unreadCount = useMemo(
-    () => platformChats.filter(c => c.unreadCount > 0).length,
-    [platformChats]
+    () => platformChats.filter((c) => c.unreadCount > 0).length,
+    [platformChats],
   );
 
   const selectedChat = useMemo(
-    () => chats?.find(c => c.id === selectedChatId) ?? null,
+    () => chats?.find((c) => c.id === selectedChatId) ?? null,
     [chats, selectedChatId],
   );
 
-  const onNewMessage = useCallback((payload: { chatId: string }) => {
-    queryClient.invalidateQueries({ queryKey: ["chats"] });
-    if (payload.chatId === selectedChatId) {
-      setMsgRefresh(n => n + 1);
-    }
-  }, [selectedChatId, queryClient]);
+  const onNewMessage = useCallback(
+    (payload: { chatId: string }) => {
+      queryClient.invalidateQueries({ queryKey: ["chats"] });
+      if (payload.chatId === selectedChatId) {
+        setMsgRefresh((n) => n + 1);
+      }
+    },
+    [selectedChatId, queryClient],
+  );
 
   const onChatUpdated = useCallback(() => {
     queryClient.invalidateQueries({ queryKey: ["chats"] });
@@ -60,7 +63,7 @@ export const Chats = () => {
   useChatSocket(onNewMessage, onChatUpdated);
 
   const handleMsgSent = () => {
-    setMsgRefresh(n => n + 1);
+    setMsgRefresh((n) => n + 1);
     queryClient.invalidateQueries({ queryKey: ["chats"] });
   };
 
@@ -79,10 +82,12 @@ export const Chats = () => {
   }, []);
 
   return (
-    <div className="bg-chat-bg w-full h-svh flex gap-2 justify-center items-start overflow-hidden relative pb-4 px-2">
-      <div className={`w-full max-w-md h-full flex flex-col gap-3 animate-fade-in-bottom overflow-hidden ${selectedChatId ? 'hidden md:flex' : 'flex'}`}>
+    <div className="bg-chat-primary-bg w-full h-svh flex gap-2 justify-center items-start overflow-hidden relative pb-4 px-2">
+      <div
+        className={`w-full max-w-md h-full flex flex-col gap-3 animate-fade-in-bottom overflow-hidden ${selectedChatId ? "hidden md:flex" : "flex"}`}
+      >
         <Searchbar value={searchQuery} onChange={setSearchQuery} />
-        <hr className="border-border mx-2" />
+        <hr className="border-chat-primary-border mx-2" />
         <ChatsCategoryItemsList
           filter={chatFilter}
           onFilterChange={setChatFilter}
@@ -99,19 +104,25 @@ export const Chats = () => {
           />
         </div>
       </div>
-      <div className={`flex flex-col w-full max-w-4xl h-full bg-linear-to-b from-chat-gradient-bg-1 to-chat-gradient-bg-2 rounded-2xl p-4 py-3 pb-2 border border-primary-border animate-fade-in-bottom ${!selectedChatId ? 'hidden md:flex' : 'flex'}`}>
+      <div
+        className={`flex flex-col w-full max-w-4xl h-full bg-chat-tertiary-bg rounded-2xl p-4 py-3 pb-2 border border-chat-primary-border animate-fade-in-bottom ${!selectedChatId ? "hidden md:flex" : "flex"}`}
+      >
         {selectedChatId ? (
           <>
             <div className="flex items-center gap-2 mb-3 md:hidden">
-              <button onClick={closeChat} className="text-font-primary">
+              <button onClick={closeChat} className="text-primary-font">
                 ← Назад
               </button>
             </div>
-            <ChatWindow chatId={selectedChatId} customerName={selectedChat?.name || "Покупатель"} refreshKey={msgRefresh} />
+            <ChatWindow
+              chatId={selectedChatId}
+              customerName={selectedChat?.name || "Покупатель"}
+              refreshKey={msgRefresh}
+            />
             <ChatInput chatId={selectedChatId} onMessageSent={handleMsgSent} />
           </>
         ) : (
-          <div className="h-full text-font-secondary flex items-center justify-center">
+          <div className="h-full text-secondary-font flex items-center justify-center">
             Пока что здесь пусто...
           </div>
         )}

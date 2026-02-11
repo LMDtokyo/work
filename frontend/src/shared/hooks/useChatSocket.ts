@@ -83,7 +83,10 @@ export function useChatSocket(
   }, []);
 
   const disconnect = useCallback(() => {
-    if (_connection && _connection.state !== signalR.HubConnectionState.Disconnected) {
+    if (
+      _connection &&
+      _connection.state !== signalR.HubConnectionState.Disconnected
+    ) {
       _connection.stop();
       _connection = null;
     }

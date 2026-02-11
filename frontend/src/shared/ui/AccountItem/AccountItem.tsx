@@ -15,7 +15,7 @@ function getTokenExpiryInfo(expiresAt: string | null): {
   cls: string;
 } {
   if (!expiresAt)
-    return { text: "Срок неизвестен", cls: "text-font-secondary" };
+    return { text: "Срок неизвестен", cls: "text-secondary-font" };
 
   const exp = new Date(expiresAt);
   const now = new Date();
@@ -77,7 +77,7 @@ function AccountItem({
   status,
   lastSyncAt,
   tokenExpiresAt,
-  onDelete
+  onDelete,
 }: AccountItemProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -106,10 +106,10 @@ function AccountItem({
         <div className="flex gap-3">
           <WildberriesIcon width={48} height={48} />
           <div className="flex flex-col">
-            <h2 className="text-font-primary text-lg font-semibold leading-tight">
+            <h2 className="text-primary-font text-lg font-semibold leading-tight">
               {shopName}
             </h2>
-            <p className="text-font-secondary text-sm">Wildberries</p>
+            <p className="text-secondary-font text-sm">Wildberries</p>
           </div>
         </div>
         <div className="relative" ref={menuRef}>
@@ -117,10 +117,10 @@ function AccountItem({
             onClick={() => setMenuOpen(!menuOpen)}
             className="p-1 hover:bg-chat-secondary-bg rounded transition-colors"
           >
-            <EllipsisVertical className="text-font-primary w-5 h-5" />
+            <EllipsisVertical className="text-primary-font w-5 h-5" />
           </button>
           {menuOpen && (
-            <div className="absolute right-0 top-8 bg-chat-secondary-bg border border-primary-border rounded-lg shadow-lg z-10 min-w-35 py-1">
+            <div className="absolute right-0 top-8 bg-chat-secondary-bg border border-chat-primary-border rounded-lg shadow-lg z-10 min-w-35 py-1">
               <button
                 onClick={handleDelete}
                 className="w-full flex items-center gap-2 px-4 py-2 text-red-400 hover:bg-chat-tertiary-bg transition-colors text-sm"
@@ -138,7 +138,7 @@ function AccountItem({
         >
           {statusInfo.text}
         </span>
-        <span className="text-font-secondary text-sm">
+        <span className="text-secondary-font text-sm">
           {formatSyncTime(lastSyncAt)}
         </span>
       </div>

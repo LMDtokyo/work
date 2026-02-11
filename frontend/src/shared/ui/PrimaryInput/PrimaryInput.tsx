@@ -20,13 +20,13 @@ const PrimaryInput = forwardRef<HTMLInputElement, PrimaryInputProps>(
 
     return (
       <div className="relative w-full flex flex-col gap-2">
-        <label className="text-font-primary text-sm font-semibold ml-2">
+        <label className="text-primary-font text-xs md:text-sm font-semibold ml-2">
           {label}
         </label>
         <input
           ref={ref}
           type={inputType}
-          className={`bg-chat-tertiary-bg px-3 sm:px-4 md:px-6 py-2.5 sm:py-3 rounded-lg outline-none font-normal text-font-primary w-full shadow-[0_2px_4px_#00000025] placeholder:text-font-secondary text-sm sm:text-base focus:bg-chat-tertiary-bg-hover/60 duration-100 ${isPassword ? "pr-12 sm:pr-14 md:pr-18" : ""} ${hasError ? "border border-[#ff6464]" : ""} ${className || ""}`}
+          className={`bg-chat-tertiary-bg px-3 sm:px-4 md:px-6 py-2.5 sm:py-3 rounded-lg outline-none font-normal text-primary-font w-full shadow-[0_2px_4px_#00000025] placeholder:text-secondary-font text-sm sm:text-base focus:bg-chat-tertiary-bg-hover/60 duration-100 ${isPassword ? "pr-12 sm:pr-14 md:pr-18" : ""} ${hasError ? "border border-[#ff6464]" : ""} ${className || ""}`}
           {...rest}
         />
         {hasError && (
@@ -38,7 +38,7 @@ const PrimaryInput = forwardRef<HTMLInputElement, PrimaryInputProps>(
           <button
             type="button"
             onClick={() => setShowPass((v) => !v)}
-            className="absolute right-4 sm:right-5 md:right-6 top-9.5 sm:top-10 text-font-secondary cursor-pointer hover:text-font-primary duration-150"
+            className="absolute right-4 sm:right-5 md:right-6 top-8.5 sm:top-9 md:top-10 text-secondary-font cursor-pointer hover:text-primary-font duration-150"
           >
             {showPass ? (
               <Eye className="w-5 h-5 sm:w-6 sm:h-6" />

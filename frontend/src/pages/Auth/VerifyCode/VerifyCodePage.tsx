@@ -3,7 +3,7 @@ import VerifyCodeForm from "../../../widgets/Forms/VerifyCodeForm/VerifyCodeForm
 
 export const VerifyCode = () => {
   return (
-    <div className="w-full h-svh flex flex-col justify-center items-center bg-auth-bg overflow-hidden relative px-4 sm:px-6">
+    <div className="w-full h-svh flex flex-col justify-center items-center bg-landing-primary-bg overflow-hidden relative px-4 sm:px-6">
       <BackButton
         className="absolute left-4 sm:left-6 md:left-8 top-4 sm:top-5 md:top-6"
         link="/recovery-password"

@@ -8,7 +8,7 @@ interface SubscriptionData {
   advantages: string[];
 }
 
-const basePlans: Omit<SubscriptionData, 'price'>[] = [
+const basePlans: Omit<SubscriptionData, "price">[] = [
   {
     type: SubscriptionType.BASIC,
     title: "Базовый план",

@@ -30,10 +30,10 @@ function RecoveryPasswordForm() {
       className="animate-fade-in-bottom w-full max-w-[320px] sm:max-w-100 md:max-w-125"
     >
       <div className="flex flex-col gap-1 items-center">
-        <h1 className="text-font-primary font-bold text-xl sm:text-2xl md:text-[28px] lg:text-[32px] text-center">
+        <h1 className="text-primary-font font-bold text-xl sm:text-2xl md:text-[28px] lg:text-[32px] text-center">
           Восстановление пароля
         </h1>
-        <h3 className="text-font-secondary font-normal text-sm sm:text-base text-center">
+        <h3 className="text-secondary-font font-normal text-sm sm:text-base text-center">
           Пожалуйста, придумайте новый пароль
         </h3>
       </div>
