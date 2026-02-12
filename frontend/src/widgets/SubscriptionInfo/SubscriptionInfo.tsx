@@ -33,7 +33,7 @@ function SubscriptionInfo() {
           <h1 className="text-primary-font text-xl md:text-2xl font-semibold">
             Подписка
           </h1>
-          <p className="text-primary-font/50 text-sm md:text-base">
+          <p className="text-secondary-font text-sm md:text-base">
             Cледите за информацией о своей подписке
           </p>
         </div>

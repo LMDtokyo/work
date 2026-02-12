@@ -8,7 +8,7 @@ interface Props {
 function Searchbar({ value, onChange }: Props) {
   return (
     <div className="relative w-full animate-fade-in-bottom">
-      <Search className="text-secondary-font absolute top-2.5 md:top-3 left-5 w-5 h-5 md:w-7 md:h-7" />
+      <Search className="text-secondary-font absolute top-2.5 md:top-3 left-5 w-5 h-5 md:w-6 md:h-6" />
       <input
         type="text"
         value={value}

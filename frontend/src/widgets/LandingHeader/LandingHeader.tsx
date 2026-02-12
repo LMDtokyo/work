@@ -17,20 +17,20 @@ function LandingHeader() {
 
       <div className="hidden md:flex gap-3">
         <button
-          className="bg-theme-button rounded-full p-2.5 lg:p-3 cursor-pointer shadow-[0_2px_4px_#00000025] hover:shadow-[0_3px_4px_#00000040] duration-150"
+          className="bg-theme-button rounded-full p-2.5 lg:p-3 cursor-pointer group shadow-[0_2px_4px_#00000025] hover:bg-theme-button-hover duration-150"
           onClick={toggleTheme}
         >
           {theme === "light" ? (
-            <Sun className="text-primary-font w-5 h-5 lg:w-6 lg:h-6" />
+            <Sun className="text-primary-font w-5 h-5 lg:w-6 lg:h-6 group-hover:scale-105 duration-150" />
           ) : (
-            <Moon className="text-primary-font w-5 h-5 lg:w-6 lg:h-6" />
+            <Moon className="text-primary-font w-5 h-5 lg:w-6 lg:h-6 group-hover:scale-105 duration-250" />
           )}
         </button>
         <Link
           to="/login"
-          className="text-tertiary-font font-semibold bg-contrast px-8 lg:px-12 py-2.5 lg:py-3 rounded-full text-sm lg:text-base"
+          className="text-tertiary-font font-semibold bg-contrast px-8 lg:px-12 py-2.5 lg:py-3 rounded-full text-sm lg:text-base hover:scale-102 duration-100"
         >
-          Войти
+          <span>Войти</span>
         </Link>
       </div>
 

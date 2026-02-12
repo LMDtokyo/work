@@ -15,13 +15,13 @@ function SettingsThemeChanger() {
         </p>
       </div>
       <button
-        className="bg-chat-tertiary-bg rounded-xl p-2.5 lg:p-3 cursor-pointer hover:bg-chat-tertiary-bg-hover border border-chat-secondary-border duration-150"
+        className="bg-chat-tertiary-bg rounded-full group p-2.5 lg:p-3 cursor-pointer hover:bg-chat-tertiary-bg-hover border border-chat-secondary-border duration-150"
         onClick={toggleTheme}
       >
         {theme === "light" ? (
-          <Sun className="text-primary-font w-5 h-5 lg:w-6 lg:h-6" />
+          <Sun className="text-primary-font w-5 h-5 lg:w-6 lg:h-6 group-hover:scale-105 duration-150" />
         ) : (
-          <Moon className="text-primary-font w-5 h-5 lg:w-6 lg:h-6" />
+          <Moon className="text-primary-font w-5 h-5 lg:w-6 lg:h-6 group-hover:scale-105 duration-150" />
         )}
       </button>
     </div>

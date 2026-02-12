@@ -24,7 +24,7 @@ function HeroSection() {
         className="flex items-center gap-2 sm:gap-3 text-tertiary-font text-base sm:text-lg font-semibold
              bg-contrast
              px-8 sm:px-10 md:px-12 py-2.5 sm:py-3 rounded-full
-             duration-150 mt-8 sm:mt-10 group"
+             duration-100 mt-8 sm:mt-10 group hover:scale-102"
       >
         Попробовать бесплатно
       </Link>

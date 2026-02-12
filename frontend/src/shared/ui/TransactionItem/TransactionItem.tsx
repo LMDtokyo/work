@@ -60,7 +60,7 @@ function TransactionItem({
   const currSign = currency === "RUB" ? "₽" : currency;
 
   return (
-    <div className="flex justify-between items-center w-full bg-chat-tertiary-bg rounded-xl px-5 py-3">
+    <div className="flex justify-between items-center w-full bg-chat-tertiary-bg border border-chat-secondary-border rounded-xl px-5 py-3">
       <div className="flex gap-3 items-center">
         <div
           className={`flex items-center justify-center rounded-full p-3 ${style.bg}`}

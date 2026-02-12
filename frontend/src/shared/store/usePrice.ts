@@ -3,23 +3,19 @@ import { create } from "zustand";
 interface PriceStore {
   accounts: number;
   price: number;
-  oneAccountPrice: number;
-  economyPercentage: number;
+  platform: string;
+  setPlatform: (platform: string) => void;
   setAccounts: (accounts: number) => void;
   setPrice: (price: number) => void;
-  setOneAccountPrice: (oneAccountPrice: number) => void;
-  setEconomyPercentage: (economyPercentage: number) => void;
 }
 
 const usePrice = create<PriceStore>((set) => ({
-  accounts: 50,
-  price: 2700,
-  oneAccountPrice: 54,
-  economyPercentage: 64,
+  accounts: 1,
+  price: 100,
+  platform: "Wildberries",
+  setPlatform: (platform: string) => set({ platform }),
   setAccounts: (accounts: number) => set({ accounts }),
   setPrice: (price: number) => set({ price }),
-  setOneAccountPrice: (oneAccountPrice: number) => set({ oneAccountPrice }),
-  setEconomyPercentage: (economyPercentage: number) =>
-    set({ economyPercentage }),
 }));
+
 export default usePrice;

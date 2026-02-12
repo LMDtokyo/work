@@ -23,7 +23,7 @@ function PosibilityDescription({
       </div>
       <Link
         to="/login"
-        className="bg-contrast py-4 px-10 rounded-full text-tertiary-font font-semibold"
+        className="bg-contrast py-4 px-10 rounded-full text-tertiary-font font-semibold hover:scale-102 duration-100"
       >
         Начать сейчас
       </Link>

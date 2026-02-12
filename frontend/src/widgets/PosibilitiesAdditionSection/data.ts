@@ -1,4 +1,4 @@
-import { Clock } from "lucide-react";
+import { ChartBarStacked, Clock, DraftingCompass } from "lucide-react";
 
 export const items = [
   {
@@ -7,12 +7,12 @@ export const items = [
     desc: "Экономьте время. Все инструменты под рукой в интуитивно понятном пространстве.",
   },
   {
-    Icon: Clock,
+    Icon: ChartBarStacked,
     title: "Визуализация продаж и чатов",
     desc: "Контролируйте ключевые показатели и оптимизируйте операции здесь и сейчас.",
   },
   {
-    Icon: Clock,
+    Icon: DraftingCompass,
     title: "Мобильность и практичность",
     desc: "Объединяем все возможности маркетплейсов в едином, понятном и удобном интерфейсе.",
   },

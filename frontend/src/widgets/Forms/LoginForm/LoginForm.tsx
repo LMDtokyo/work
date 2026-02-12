@@ -62,7 +62,7 @@ function LoginForm() {
         <RememberCheckbox checked={remember} onChange={setRemember} />
         <Link
           to="/recovery-password"
-          className="text-contrast underline-offset-2 underline text-xs sm:text-sm hover:text-contrast/90"
+          className="text-contrast underline-offset-2 underline text-xs sm:text-sm hover:text-contrast-hover"
         >
           Забыли пароль?
         </Link>

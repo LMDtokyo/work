@@ -82,13 +82,13 @@ function Sidebar() {
         <div
           className={`absolute flex flex-col rounded-xl border border-chat-primary-border left-18 -top-px bg-chat-secondary-bg z-99 overflow-hidden ${menuOpen && "animate-fade-in-bottom"}`}
         >
-          {menuItems.map((item) => (
+          {menuItems.map((item, i) => (
             <NavLink
               key={item.link}
               to={item.link}
               onClick={() => setMenuOpen(false)}
               className={({ isActive }) =>
-                `flex gap-2 text-primary-font py-3 px-4 hover:bg-chat-tertiary-bg duration-100 ${isActive && "bg-chat-tertiary-bg"}`
+                `flex gap-2 text-primary-font py-3 px-4 hover:bg-chat-tertiary-bg duration-100 border-b border-chat-primary-border ${i === menuItems.length - 1 && "border-b-transparent"} ${isActive && "bg-chat-tertiary-bg"}`
               }
             >
               {item.icon}

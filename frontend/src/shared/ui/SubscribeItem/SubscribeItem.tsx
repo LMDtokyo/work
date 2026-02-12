@@ -30,10 +30,10 @@ function SubscribeItem({
 }: ISubscribeItem) {
   return (
     <div
-      className={`flex flex-col gap-7 border rounded-4xl relative p-8 min-w-82.5 w-full md:w-82.5 overflow-hidden ${color === "landing" ? "bg-landing-secondary-bg border-landing-border" : "bg-chat-secondary-bg border-chat-primary-border"}`}
+      className={`flex flex-col gap-7 border rounded-4xl relative p-8 overflow-hidden ${color === "landing" ? "bg-landing-secondary-bg border-landing-border" : "bg-chat-tertiary-bg border-chat-secondary-border"}`}
     >
       <div
-        className={`absolute top-0 left-0 px-7 py-5 w-full h-22 flex justify-between overflow-hidden items-center border-b z-99 ${color === "landing" ? "border-b-landing-border" : "border-b-chat-primary-border"}`}
+        className={`absolute top-0 left-0 px-7 py-5 w-full h-22 flex justify-between overflow-hidden items-center border-b z-99 ${color === "landing" ? "border-b-landing-border" : "border-b-chat-secondary-border"}`}
       >
         <h2 className="text-primary-font text-xl font-bold z-99">{title}</h2>
         <span
@@ -72,7 +72,7 @@ function SubscribeItem({
 
       <Link
         to=""
-        className={`flex items-center justify-center w-full rounded-full py-4 font-semibold text-tertiary-font z-99 ${type === SubscriptionType.BASIC ? "bg-current-tarif cursor-default touch-none" : "bg-contrast cursor-pointer"}`}
+        className={`flex items-center justify-center w-full rounded-full py-4 font-semibold text-tertiary-font z-99 ${type === SubscriptionType.BASIC ? "bg-current-tarif cursor-default touch-none" : "bg-contrast cursor-pointer hover:scale-102 duration-100"}`}
       >
         {type === SubscriptionType.BASIC
           ? "Текущий план"

@@ -15,14 +15,14 @@ function Accounts() {
 
   return (
     <div className="flex flex-col gap-3 py-6 pb-4 px-4 md:px-6 lg:px-8 bg-chat-secondary-bg rounded-2xl border border-chat-primary-border w-full min-h-100 h-full overflow-hidden animate-fade-in-bottom">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col gap-4 justify-between sm:flex-row sm:items-center">
         <div className="flex items-center gap-4">
           {accountCategory.length > 0 && (
             <button
               onClick={() => setCategory("")}
-              className="text-primary-font cursor-pointer bg-chat-tertiary-bg hover:bg-chat-tertiary-bg-hover p-2 rounded-md duration-100"
+              className="group text-primary-font cursor-pointer bg-chat-tertiary-bg hover:bg-chat-tertiary-bg-hover p-2 rounded-full border border-chat-secondary-border duration-100"
             >
-              <ChevronLeft />
+              <ChevronLeft className="group-hover:scale-115 duration-150" />
             </button>
           )}
           <div>

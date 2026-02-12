@@ -19,17 +19,19 @@ function TransactionsFilter({ selected, onChange }: Props) {
     <div className="flex flex-col relative" ref={dropdownRef}>
       <div
         onClick={() => setIsOpened(!isOpened)}
-        className="inline-flex justify-center items-center gap-3 py-2 px-3 bg-chat-tertiary-bg rounded-md text-primary-font cursor-pointer"
+        className="inline-flex justify-center items-center gap-3 py-2 px-3 bg-chat-tertiary-bg rounded-full text-primary-font border border-chat-secondary-border cursor-pointer hover:bg-chat-tertiary-bg-hover duration-100"
       >
         <ArrowDownWideNarrow className="w-5 md:w-6" />
         <span className="font-semibold select-none text-sm md:text-[16px]">
           {filterItems[selected]}
         </span>
-        <ChevronDown className="w-5 md:w-6" />
+        <ChevronDown
+          className={`w-5 md:w-6 duration-150 ${isOpened && "rotate-180"}`}
+        />
       </div>
       {isOpened && (
         <div
-          className={`flex flex-col gap-1 bg-chat-tertiary-bg absolute top-12 right-0 text-primary-font rounded-md z-50 p-1 w-30 ${isOpened && "animate-fade-in-bottom"}`}
+          className={`flex flex-col gap-1 bg-chat-tertiary-bg absolute top-12 right-0 text-primary-font border border-chat-secondary-border rounded-3xl z-50 p-1 w-30 ${isOpened && "animate-fade-in-bottom"}`}
         >
           {filterItems.map((item, i) => (
             <button
@@ -38,7 +40,7 @@ function TransactionsFilter({ selected, onChange }: Props) {
                 onChange(i);
                 setIsOpened(false);
               }}
-              className={`flex justify-between gap-2 py-2 px-3 cursor-pointer rounded-sm hover:bg-chat-tertiary-bg-hover duration-100 ${selected === i && "bg-chat-tertiary-bg-hover"}`}
+              className={`flex justify-between gap-2 py-2 px-3 cursor-pointer rounded-full hover:bg-chat-tertiary-bg-hover duration-100 ${selected === i && "bg-chat-tertiary-bg-hover"}`}
             >
               <span className="select-none text-center">{item}</span>
             </button>

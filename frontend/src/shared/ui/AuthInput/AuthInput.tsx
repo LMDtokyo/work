@@ -18,7 +18,7 @@ const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
         <input
           ref={ref}
           type={inputType}
-          className={`bg-auth-secondary-bg px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 rounded-full outline-none font-normal text-primary-font w-full shadow-[0_2px_4px_#00000025] placeholder:text-secondary-font text-sm sm:text-base ${isPassword ? "pr-12 sm:pr-14 md:pr-18" : ""} ${hasError ? "border border-[#ff6464]" : ""} ${className || ""}`}
+          className={`bg-auth-secondary-bg px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 rounded-full outline-none font-normal text-primary-font w-full focus:bg-chat-tertiary-bg duration-100 shadow-[0_2px_4px_#00000025] placeholder:text-secondary-font text-sm sm:text-base ${isPassword ? "pr-12 sm:pr-14 md:pr-18" : ""} ${hasError ? "border border-[#ff6464]" : ""} ${className || ""}`}
           {...rest}
         />
         {hasError && (

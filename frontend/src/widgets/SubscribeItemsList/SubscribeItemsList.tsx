@@ -11,9 +11,10 @@ function SubscribeItemsList({ color }: ISubscribeItemsList) {
   const data = period === "month" ? dataMonth : dataYear;
 
   return (
-    <div className="flex flex-wrap gap-7 w-full justify-center animate-fade-in-bottom">
+    <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-5 relative w-full overflow-hidden">
       {data.map((item) => (
         <SubscribeItem
+          key={item.title}
           type={item.type}
           title={item.title}
           price={item.price}

@@ -43,6 +43,8 @@
   --color-glare: #a4caff;
   --color-hover-shadow: #00000025;
   --color-theme-button: #fff;
+  --color-theme-button-hover: #fff;
+  --color-track-active-color: #0048ff;
 }
 
 [data-theme="dark"] {
@@ -87,6 +89,8 @@
   --color-glare: #000f2f;
   --color-hover-shadow: rgb(48, 15, 132);
   --color-theme-button: #081946;
+  --color-theme-button-hover: #091d52;
+  --color-track-active-color: #385394;
 }
 
 @theme {
@@ -144,6 +148,8 @@
   --color-glare: var(--color-glare);
   --color-hover-shadow: var(--color-hover-shadow);
   --color-theme-button: var(--color-theme-button);
+  --color-theme-button-hover: var(--color-theme-button-hover);
+  --color-track-active-color: var(--color-track-active-color);
 
   /* ----- Animations ----- */
   --animate-fade-in: fadeIn 0.4s ease;
