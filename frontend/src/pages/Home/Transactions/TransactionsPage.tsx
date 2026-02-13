@@ -36,12 +36,14 @@ export const Transactions = () => {
 
   return (
     <div className="flex flex-col gap-6 py-6 px-6 md:px-8 bg-chat-secondary-bg rounded-2xl border border-chat-primary-border w-full h-full overflow-hidden animate-fade-in-bottom">
-      <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center justify-between">
-        <div>
-          <h2 className="text-primary-font text-2xl font-semibold">
+      <div className="flex flex-col items-start gap-3 min-[450px]:flex-row min-[450px]:items-center justify-between">
+        <div className="flex flex-col gap-1 sm:gap-0">
+          <h2 className="text-primary-font text-base sm:text-lg md:text-xl font-semibold">
             История транзакций
           </h2>
-          <p className="text-secondary-font">Все заказы с ваших аккаунтов WB</p>
+          <p className="text-secondary-font text-xs sm:text-sm md:text-base">
+            Все заказы с ваших аккаунтов WB
+          </p>
         </div>
         <TransactionsFilter selected={filter} onChange={setFilter} />
       </div>

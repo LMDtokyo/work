@@ -1,18 +1,25 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { useAuth } from "../../shared/context/auth";
 import ManitoDark from "../../shared/assets/ManitoDark";
 import ManitoLight from "../../shared/assets/ManitoLight";
+import { useClickOutside } from "../../shared/hooks";
 
 function LandingHeader() {
   const { theme, setTheme } = useAuth();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [isOpened, setIsOpened] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useClickOutside(dropdownRef, () => setIsOpened(false), isOpened);
 
   const toggleTheme = () => setTheme(theme === "light" ? "dark" : "light");
 
   return (
-    <header className="flex justify-between items-center w-svw py-4 md:py-6 z-10 absolute left-0 px-4 sm:px-6 md:px-10 lg:px-14">
+    <header
+      className="flex justify-between items-center w-svw py-4 md:py-6 z-10 absolute left-0 px-4 sm:px-6 md:px-10 lg:px-14"
+      ref={dropdownRef}
+    >
       {theme === "dark" ? <ManitoDark /> : <ManitoLight />}
 
       <div className="hidden md:flex gap-3">
@@ -47,33 +54,33 @@ function LandingHeader() {
         </button>
         <button
           className="text-primary-font p-2"
-          onClick={() => setMenuOpen(!menuOpen)}
+          onClick={() => setIsOpened(!isOpened)}
         >
-          {menuOpen ? <X size={24} /> : <Menu size={24} />}
+          {isOpened ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
-      {menuOpen && (
-        <div className="fixed inset-0 top-14 bg-landing-bg-1/98 backdrop-blur-sm z-50 md:hidden animate-fade-in">
-          <nav className="flex flex-col items-center gap-6 pt-10 font-bold text-primary-font text-xl">
+      {isOpened && (
+        <div className="absolute top-20 right-4 border border-chat-primary-border p-3 rounded-3xl bg-landing-bg-1/98 backdrop-blur-sm z-50 md:hidden animate-fade-in">
+          <nav className="flex flex-col items-center gap-6 pt-3 font-bold text-primary-font text-xl">
             <a
               href="#posibilities"
-              className="hover:text-primary-font-hover"
-              onClick={() => setMenuOpen(false)}
+              className="hover:text-primary-font-hover text-sm"
+              onClick={() => setIsOpened(false)}
             >
               Возможности
             </a>
             <a
               href="#prices"
-              className="hover:text-primary-font-hover"
-              onClick={() => setMenuOpen(false)}
+              className="hover:text-primary-font-hover text-sm"
+              onClick={() => setIsOpened(false)}
             >
               Цены
             </a>
             <Link
               to="/login"
-              className="text-tertiary-font font-semibold bg-contrast px-10 py-3 rounded-full mt-4"
-              onClick={() => setMenuOpen(false)}
+              className="text-tertiary-font font-semibold bg-contrast px-10 py-3 text-sm rounded-full mt-1"
+              onClick={() => setIsOpened(false)}
             >
               Войти
             </Link>

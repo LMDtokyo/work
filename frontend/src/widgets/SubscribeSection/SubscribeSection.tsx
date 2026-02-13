@@ -7,7 +7,7 @@ function SubscribeSection() {
         Выберите ваш{" "}
         <span className="bg-contrast bg-clip-text text-transparent">план</span>
       </h2>
-      <h3 className="text-center text-secondary-font font-semibold text-base sm:text-lg md:text-xl mb-8 sm:mb-10 md:mb-14 z-99 px-2">
+      <h3 className="text-center text-secondary-font text-base sm:text-lg md:text-xl mb-8 sm:mb-10 md:mb-14 z-99 px-2">
         Выберите уровень доступа, который нужен вашему бизнесу
       </h3>
       <SubscribeItemsList color="landing" />

@@ -8,13 +8,13 @@ export const Accounts = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div className="flex flex-col gap-6 py-6 px-8 bg-chat-secondary-bg rounded-2xl border border-chat-primary-border w-full h-full overflow-hidden animate-fade-in-bottom">
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-primary-font text-2xl font-semibold">
+    <div className="flex flex-col gap-6 py-4 sm:py-5 md:py-6 px-4 sm:px-6 md:px-8 bg-chat-secondary-bg rounded-2xl border border-chat-primary-border w-full h-full overflow-hidden animate-fade-in-bottom">
+      <div className="flex flex-col gap-4 min-[500px]:flex-row justify-between min-[500px]:items-center">
+        <div className="flex flex-col gap-1 sm:gap-0">
+          <h2 className="text-primary-font text-base sm:text-lg md:text-xl font-semibold">
             Подключённые аккаунты
           </h2>
-          <p className="text-secondary-font">
+          <p className="text-secondary-font text-xs sm:text-sm md:text-base">
             Управляйте своими торговыми площадками
           </p>
         </div>

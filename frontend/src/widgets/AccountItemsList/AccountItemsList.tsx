@@ -28,7 +28,9 @@ function AccountItemsList({ limit }: AccountItemsListProps) {
   if (!accounts || accounts.length === 0) {
     return (
       <div className="flex items-center justify-center py-8">
-        <p className="text-secondary-font">Нет подключённых аккаунтов</p>
+        <p className="text-secondary-font text-xs sm:text-sm md:text-base">
+          Нет подключённых аккаунтов
+        </p>
       </div>
     );
   }

@@ -7,7 +7,7 @@ function ManitoDark() {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
-      className="w-37.5 md:w-45 lg:w-54.5 cursor-pointer"
+      className="w-30 sm:38 md:w-45 lg:w-54.5 cursor-pointer"
     >
       <g clip-path="url(#clip0_510_272)">
         <rect width="218" height="67" fill="#000A14" />

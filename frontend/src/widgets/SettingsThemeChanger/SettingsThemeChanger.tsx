@@ -9,8 +9,10 @@ function SettingsThemeChanger() {
   return (
     <div className="flex justify-between w-full items-center bg-chat-secondary-bg border border-chat-primary-border px-6 py-4 rounded-2xl animate-fade-in-bottom">
       <div>
-        <h2 className="text-lg md:text-xl font-bold text-primary-font">Тема</h2>
-        <p className="text-secondary-font text-sm md:text-base">
+        <h2 className="text-base sm:text-lg md:text-xl font-bold text-primary-font">
+          Тема
+        </h2>
+        <p className="text-secondary-font text-xs sm:text-sm md:text-base">
           {theme === "dark" ? "Тёмная" : "Светлая"}
         </p>
       </div>

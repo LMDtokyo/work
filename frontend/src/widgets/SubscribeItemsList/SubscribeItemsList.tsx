@@ -11,7 +11,7 @@ function SubscribeItemsList({ color }: ISubscribeItemsList) {
   const data = period === "month" ? dataMonth : dataYear;
 
   return (
-    <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-5 relative w-full overflow-hidden">
+    <div className="grid grid-cols-[repeat(auto-fit,minmax(170px,1fr))] min-[400px]:grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-5 relative w-full overflow-hidden">
       {data.map((item) => (
         <SubscribeItem
           key={item.title}

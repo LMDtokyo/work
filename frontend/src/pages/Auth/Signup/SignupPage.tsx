@@ -10,7 +10,7 @@ export const Signup = () => {
         link="/login"
       />
       <SignupForm />
-      <p className="text-primary-font absolute bottom-4 w-full max-w-[320px] sm:max-w-100 md:max-w-120 text-center text-xs sm:text-sm px-4">
+      <p className="text-primary-font fixed bottom-4 w-full max-w-[320px] sm:max-w-100 md:max-w-120 text-center text-xs sm:text-sm px-4">
         Нажимая кнопку, вы соглашаетесь с{" "}
         <Link
           to="/offer"

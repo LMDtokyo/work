@@ -32,7 +32,7 @@ const PrimaryInput = forwardRef<HTMLInputElement, PrimaryInputProps>(
         <input
           ref={ref}
           type={inputType}
-          className={`bg-chat-tertiary-bg px-3 sm:px-4 md:px-6 py-2.5 sm:py-3 rounded-full outline-none font-normal text-primary-font w-full shadow-[0_2px_4px_#00000025] placeholder:text-secondary-font text-sm sm:text-base focus:bg-chat-tertiary-bg-hover/90 ${isPassword ? "pr-12 sm:pr-14 md:pr-18" : ""} ${hasError ? "border border-[#ff6464]" : ""} ${className || ""}`}
+          className={`bg-chat-tertiary-bg px-4 sm:px-5 md:px-6 py-2.5 sm:py-3 rounded-full outline-none font-normal text-primary-font w-full shadow-[0_2px_4px_#00000025] placeholder:text-secondary-font text-sm sm:text-base focus:bg-chat-tertiary-bg-hover/90 ${isPassword ? "pr-12 sm:pr-14 md:pr-18" : ""} ${hasError ? "border border-[#ff6464]" : ""} ${className || ""}`}
           {...rest}
         />
         {hasError && (

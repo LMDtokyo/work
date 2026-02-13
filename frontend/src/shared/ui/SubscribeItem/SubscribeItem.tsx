@@ -30,14 +30,16 @@ function SubscribeItem({
 }: ISubscribeItem) {
   return (
     <div
-      className={`flex flex-col gap-7 border rounded-4xl relative p-8 overflow-hidden ${color === "landing" ? "bg-landing-secondary-bg border-landing-border" : "bg-chat-tertiary-bg border-chat-secondary-border"}`}
+      className={`flex flex-col gap-5 sm:gap-7 border rounded-2xl sm:rounded-3xl md:rounded-4xl relative p-4 sm:p-6 md:p-8 overflow-hidden ${color === "landing" ? "bg-landing-secondary-bg border-landing-border" : "bg-chat-tertiary-bg border-chat-secondary-border"}`}
     >
       <div
-        className={`absolute top-0 left-0 px-7 py-5 w-full h-22 flex justify-between overflow-hidden items-center border-b z-99 ${color === "landing" ? "border-b-landing-border" : "border-b-chat-secondary-border"}`}
+        className={`absolute top-0 left-0 px-4 sm:px-6 md:px-7 py-5 w-full h-15 sm:h-18 md:h-22 flex justify-between overflow-hidden items-center border-b z-99 ${color === "landing" ? "border-b-landing-border" : "border-b-chat-secondary-border"}`}
       >
-        <h2 className="text-primary-font text-xl font-bold z-99">{title}</h2>
+        <h2 className="text-primary-font text-sm sm:text-lg md:text-xl font-bold z-99">
+          {title}
+        </h2>
         <span
-          className={`text-primary-font/20 text-[100px] absolute right-10 -bottom-11 font-bold z-99 ${type === SubscriptionType.VIP && "text-primary-font/70"}`}
+          className={`text-primary-font/20 text-[60px] sm:text-[80px] md:text-[100px] absolute right-3 min-[330px]:right-10 -bottom-6 sm:-bottom-8 md:-bottom-11 font-bold z-99 ${type === SubscriptionType.VIP && "text-primary-font/70"}`}
         >
           {type}
         </span>
@@ -58,11 +60,11 @@ function SubscribeItem({
         ) : null}
       </div>
 
-      <div className="flex flex-col gap-1 mt-25 z-99">
-        <h2 className="text-primary-font text-2xl font-semibold">
+      <div className="flex flex-col gap-1 mt-18 sm:mt-23 md:mt-25 z-99">
+        <h2 className="text-primary-font text-lg sm:text-xl md:text-2xl font-semibold">
           {type === 1 ? "Бесплатно" : "₽" + price}
         </h2>
-        <p className="text-primary-font">
+        <p className="text-primary-font text-sm sm:text-base">
           {accounts}{" "}
           <span className="text-primary-font/50">
             {type === SubscriptionType.BASIC ? "аккаунта" : "аккаунтов"}
@@ -72,7 +74,7 @@ function SubscribeItem({
 
       <Link
         to=""
-        className={`flex items-center justify-center w-full rounded-full py-4 font-semibold text-tertiary-font z-99 ${type === SubscriptionType.BASIC ? "bg-current-tarif cursor-default touch-none" : "bg-contrast cursor-pointer hover:scale-102 duration-100"}`}
+        className={`flex items-center justify-center w-full text-xs sm:text-sm md:text-base rounded-full py-3 sm:py-4 font-semibold text-tertiary-font z-99 ${type === SubscriptionType.BASIC ? "bg-current-tarif cursor-default touch-none" : "bg-contrast cursor-pointer hover:scale-102 duration-100"}`}
       >
         {type === SubscriptionType.BASIC
           ? "Текущий план"
@@ -83,8 +85,8 @@ function SubscribeItem({
               : "Обновить до VIP"}
       </Link>
 
-      <div className="flex flex-col gap-3 z-99">
-        <h3 className="text-primary-font text-base">
+      <div className="flex flex-col gap-2 sm:gap-3 z-99">
+        <h3 className="text-primary-font text-xs sm:text-sm md:text-base">
           {type === SubscriptionType.BASIC
             ? "Для малого бизнеса"
             : type === SubscriptionType.PRO
@@ -93,11 +95,16 @@ function SubscribeItem({
                 ? "Для крупного бизнеса"
                 : "VIP-подписка"}
         </h3>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1 sm:gap-2">
           {advantages.map((advantage) => (
             <div className="flex items-center gap-2">
-              <CircleCheck strokeWidth={1} className="text-contrast" />
-              <p className="text-primary-font text-sm">{advantage}</p>
+              <CircleCheck
+                strokeWidth={1}
+                className="text-contrast w-4 sm:w-5 md:w-6"
+              />
+              <p className="text-primary-font text-[10px] sm:text-xs md:text-sm">
+                {advantage}
+              </p>
             </div>
           ))}
         </div>

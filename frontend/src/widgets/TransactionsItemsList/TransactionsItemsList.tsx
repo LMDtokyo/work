@@ -21,7 +21,7 @@ interface Props {
 function TransactionsItemsList({ orders }: Props) {
   if (!orders.length) {
     return (
-      <div className="flex items-center justify-center h-40 text-secondary-font">
+      <div className="flex items-center justify-center h-40 text-secondary-font text-xs sm:text-sm md:text-base">
         Нет заказов
       </div>
     );

@@ -43,16 +43,16 @@ function ChangePasswordForm() {
   }
 
   return (
-    <div className="flex flex-col bg-chat-secondary-bg px-6 md:px-8 py-6 pb-7 border border-chat-primary-border rounded-2xl w-full animate-fade-in-bottom">
-      <div className="flex items-center gap-4 mb-5">
-        <span className="p-2.5 bg-chat-tertiary-bg/80 rounded-lg text-primary-font border border-chat-secondary-border">
+    <div className="flex flex-col bg-chat-secondary-bg py-4 px-4 md:px-8 md:py-6 pb-7 border border-chat-primary-border rounded-2xl w-full animate-fade-in-bottom">
+      <div className="flex items-start sm:items-center gap-4 mb-5">
+        <span className="p-2 sm:p-2.5 bg-chat-tertiary-bg/80 rounded-lg text-primary-font border border-chat-secondary-border">
           <KeyRound width={20} />
         </span>
         <div className="flex flex-col justify-center">
-          <h2 className="text-primary-font font-semibold text-lg">
+          <h2 className="text-primary-font font-semibold text-base sm:text-lg md:text-xl">
             Изменить пароль
           </h2>
-          <p className="text-secondary-font text-sm">
+          <p className="text-secondary-font text-xs sm:text-sm md:text-basic">
             Обновите пароль для защиты аккаунта
           </p>
         </div>

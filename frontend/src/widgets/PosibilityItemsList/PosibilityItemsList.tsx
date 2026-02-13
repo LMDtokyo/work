@@ -7,7 +7,7 @@ function PosibilityItemsList() {
       {items.map((item) => (
         <PosibilityItem
           key={item.title}
-          icon={<item.Icon />}
+          icon={<item.Icon className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />}
           title={item.title}
           description={item.description}
           className="z-99"

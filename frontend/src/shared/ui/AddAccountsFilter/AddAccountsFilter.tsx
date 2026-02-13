@@ -38,7 +38,7 @@ function AddAccountFilter() {
     <div className="flex flex-col relative" ref={dropdownRef}>
       <div
         onClick={() => setIsOpened(!isOpened)}
-        className="inline-flex justify-between items-center gap-3 py-1.5 px-1.5 pr-3 bg-chat-tertiary-bg rounded-full text-primary-font cursor-pointer border border-chat-secondary-border hover:bg-chat-tertiary-bg-hover duration-100"
+        className="inline-flex justify-between items-center gap-3 py-1 sm:py-1.5 px-1 sm:px-1.5 pr-3 bg-chat-tertiary-bg rounded-full text-primary-font cursor-pointer border border-chat-secondary-border hover:bg-chat-tertiary-bg-hover duration-100"
       >
         <div className="flex gap-3 items-center">
           {filterItems[selected].Icon}

@@ -49,7 +49,7 @@ function ChatInput({ chatId, onMessageSent }: ChatInputProps) {
       <textarea
         ref={textareaRef}
         className={`bg-chat-secondary-bg rounded-3xl text-primary-font shadow-[0_1px_2px_#00000025] placeholder:text-secondary-font w-full py-2.5 px-14 outline-none resize-none min-h-12 max-h-75 h-12 ${styles["input-area"]}`}
-        placeholder="Введите сообщение..."
+        placeholder="Сообщение..."
         onInput={autoResize}
         value={value}
         onChange={(e) => setValue(e.target.value)}

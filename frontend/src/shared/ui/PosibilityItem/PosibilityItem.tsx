@@ -23,10 +23,10 @@ function PosibilityItem({
       <span className="bg-contrast-20 p-3 sm:p-4 md:p-5 rounded-lg text-contrast">
         {icon}
       </span>
-      <h3 className="text-xl sm:text-2xl font-bold text-primary-font mt-4 sm:mt-5 md:mt-6">
+      <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-primary-font mt-4 sm:mt-5 md:mt-6">
         {title}
       </h3>
-      <p className="text-base sm:text-lg text-secondary-font mt-2 sm:mt-2.5">
+      <p className="text-sm sm:text-base md:text-lg text-secondary-font mt-2 sm:mt-2.5">
         {description}
       </p>
     </div>

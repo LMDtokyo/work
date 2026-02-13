@@ -20,12 +20,14 @@ function AccountCategoryButton({
     >
       <div className="flex gap-4">
         <span>{icon}</span>
-        <div className="flex flex-col items-start gap-0.5">
-          <h2 className="font-semibold">{title}</h2>
-          <p className="text-secondary-font text-sm">{accounts} аккаунтов</p>
+        <div className="flex flex-col justify-center items-start gap-0.5">
+          <h2 className="font-semibold text-sm sm:text-base">{title}</h2>
+          <p className="text-secondary-font text-xs sm:text-sm">
+            {accounts} аккаунтов
+          </p>
         </div>
       </div>
-      <ChevronRight className="group-hover:translate-x-1 duration-100" />
+      <ChevronRight className="group-hover:translate-x-1 duration-100 w-5 h-5 sm:w-6 sm:h-6" />
     </button>
   );
 }

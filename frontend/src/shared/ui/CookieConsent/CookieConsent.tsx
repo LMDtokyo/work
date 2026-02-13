@@ -68,7 +68,7 @@ function CookieConsent() {
             </button>
             <button
               onClick={() => handleClose(true)}
-              className="flex-1 md:flex-none px-6 py-2.5 bg-contrast text-tertiary-font text-sm font-semibold rounded-full shadow-[0_2px_4px_var(--color-hover-shadow)] hover:shadow-[0_3px_8px_var(--color-hover-shadow)] transition-shadow cursor-pointer"
+              className="flex-1 md:flex-none px-6 py-2.5 bg-contrast text-tertiary-font text-sm font-semibold rounded-full transition-shadow cursor-pointer"
             >
               Принять
             </button>
