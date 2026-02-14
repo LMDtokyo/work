@@ -63,7 +63,7 @@ function Sidebar() {
     >
       <button
         onClick={() => setMenuOpen(!menuOpen)}
-        className="flex items-center justify-center w-14 h-14 md:h-16 md:w-14 border border-transparent border-r-chat-primary-border min-[450px]:border-b-chat-primary-border min-[450px]:border-r-transparent min-[450px]:rounded-t-xl cursor-pointer hover:bg-chat-tertiary-bg duration-100"
+        className="flex items-center justify-center w-14 h-14 md:h-16 md:w-16 border border-transparent border-r-chat-primary-border min-[450px]:border-b-chat-primary-border min-[450px]:border-r-transparent min-[450px]:rounded-t-xl cursor-pointer hover:bg-chat-tertiary-bg duration-100"
       >
         <Menu className="text-primary-font w-6 h-6 md:w-7 md:h-7" />
       </button>

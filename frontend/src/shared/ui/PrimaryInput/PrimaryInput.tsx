@@ -1,10 +1,11 @@
-import { Eye, EyeOff } from "lucide-react";
+import { ChevronDown, Eye, EyeOff } from "lucide-react";
 import { forwardRef, useState, type InputHTMLAttributes } from "react";
 
 interface PrimaryInputProps extends InputHTMLAttributes<HTMLInputElement> {
   isPassword?: boolean;
   errorMessage?: string;
   label?: string;
+  info?: string;
   className?: string;
 }
 
@@ -14,21 +15,25 @@ const PrimaryInput = forwardRef<HTMLInputElement, PrimaryInputProps>(
       isPassword = false,
       errorMessage = "",
       label = "",
+      info = "",
       className = "",
       ...rest
     },
     ref,
   ) => {
     const [showPass, setShowPass] = useState(false);
+    const [menuIsOpen, setMenuIsOpen] = useState(false);
 
     const inputType = isPassword && !showPass ? "password" : "text";
     const hasError = Boolean(errorMessage);
 
     return (
       <div className="relative w-full flex flex-col gap-2">
-        <label className="text-primary-font text-xs md:text-sm font-semibold ml-2">
-          {label}
-        </label>
+        <div className="flex items-center gap-2">
+          <label className="text-primary-font text-xs md:text-sm font-semibold ml-2">
+            {label}
+          </label>
+        </div>
         <input
           ref={ref}
           type={inputType}
@@ -39,6 +44,28 @@ const PrimaryInput = forwardRef<HTMLInputElement, PrimaryInputProps>(
           <p className="text-[#ff6464] ml-1 sm:ml-1 md:ml-2  text-xs sm:text-sm animate-fade-in-right">
             {errorMessage}
           </p>
+        )}
+        {info && (
+          <div className="flex flex-col gap-3">
+            <p
+              onClick={() => setMenuIsOpen(!menuIsOpen)}
+              className={`flex gap-2 items-center text-sm pl-2 cursor-pointer hover:text-primary-font duration-100 ${menuIsOpen ? "text-primary-font" : "text-secondary-font"}`}
+            >
+              Инструкция
+              <ChevronDown
+                width={16}
+                height={16}
+                className={`duration-100 ${menuIsOpen && "rotate-180"}`}
+              />
+            </p>
+            {menuIsOpen && (
+              <div
+                className={`flex w-full border border-chat-secondary-border p-3 rounded-xl text-primary-font text-xs bg-chat-tertiary-bg animate-fade-in-right`}
+              >
+                {info}
+              </div>
+            )}
+          </div>
         )}
         {isPassword && (
           <button

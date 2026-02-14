@@ -1,9 +1,9 @@
 import { useMemo } from "react";
 import { useChats } from "../../shared/api/hooks/useChats";
 import { markChatAsRead, type Chat } from "../../shared/api/requests/chats";
-import defaultAvatar from "../../shared/assets/avatar.jpg";
 import ChatItem from "../../shared/ui/ChatItem/ChatItem";
 import type { ChatFilter } from "../ChatsCategoryItemsList/ChatsCateogoryItemsList";
+import WildberriesIcon from "../../shared/assets/WildberriesIcon";
 
 interface ChatItemsListProps {
   selectedChat: string | null;
@@ -87,7 +87,13 @@ function ChatItemsList({
       {filtered.map((chat) => (
         <ChatItem
           key={chat.id}
-          image={chat.avatar || defaultAvatar}
+          image={
+            <WildberriesIcon
+              width={50}
+              height={50}
+              className="w-11 h-11 sm:w-13.5 sm:h-13.5"
+            />
+          }
           name={chat.name}
           lastMessage={chat.lastMessage || ""}
           timestamp={chat.lastMessageTime || ""}

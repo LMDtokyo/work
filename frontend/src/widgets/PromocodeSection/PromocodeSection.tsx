@@ -1,20 +1,9 @@
-import { Asterisk, Check, Copy } from "lucide-react";
+import { Asterisk, Check } from "lucide-react";
 import { useState } from "react";
+import PrimaryInput from "../../shared/ui/PrimaryInput/PrimaryInput";
 
 function PromocodeSection() {
-  const [copied, setCopied] = useState(false);
-  const promo = "asdfja;slkfj;aslkfjaf;jasldfj;afkj";
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(promo);
-      setCopied(true);
-
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      throw err;
-    }
-  };
+  const [promo, setPromo] = useState("");
 
   return (
     <div className="bg-chat-secondary-bg border border-chat-primary-border rounded-2xl py-4 px-4 md:py-5 md:px-8 w-full animate-fade-in-bottom">
@@ -31,15 +20,14 @@ function PromocodeSection() {
           </p>
         </div>
       </div>
-      <div className="relative group cursor-pointer" onClick={handleCopy}>
-        <div className="w-full rounded-full bg-chat-tertiary-bg py-2.5 px-5 pr-15 text-sm sm:text-base text-primary-font truncate overflow-hidden whitespace-nowrap text-ellipsis shadow-[0_2px_4px_#00000025] group hover:text-primary-font/80 duration-100 active:scale-98">
-          {promo}
-        </div>
-        {copied ? (
-          <Check className="absolute top-2 sm:top-2.5 right-5 pointer-events-none group-hover:scale-108 duration-150 text-primary-font w-4 sm:w-5" />
-        ) : (
-          <Copy onClick={handleCopy} className="absolute top-2 sm:top-2.5 right-5 pointer-events-none group-hover:scale-108 duration-150 text-primary-font w-4 sm:w-5" />
-        )}
+      <div className="relative cursor-pointer">
+        <PrimaryInput
+          value={promo}
+          onChange={(e) => setPromo(e.target.value)}
+          placeholder="Введите ваш промокод..."
+        />
+        {/* TODO onClick */}
+        <Check className="absolute top-4 sm:top-5 right-5 text-primary-font w-4 sm:w-5 cursor-pointer hover:scale-110 duration-100" />
       </div>
     </div>
   );

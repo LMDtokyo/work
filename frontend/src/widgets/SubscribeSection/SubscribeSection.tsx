@@ -2,7 +2,10 @@ import SubscribeItemsList from "../SubscribeItemsList/SubscribeItemsList";
 
 function SubscribeSection() {
   return (
-    <div id="prices" className="flex flex-col items-center my-40 w-full min-[1530px]:w-357.5">
+    <div
+      id="prices"
+      className="flex flex-col items-center my-40 w-full min-[1530px]:w-357.5"
+    >
       <h2 className="text-center text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary-font w-full sm:w-[90%] md:w-[85%] lg:w-220 mb-4 sm:mb-5 z-99 leading-tight">
         Выберите ваш{" "}
         <span className="bg-contrast bg-clip-text text-transparent">план</span>

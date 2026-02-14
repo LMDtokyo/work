@@ -4,7 +4,6 @@ import TelegramIcon from "../../shared/assets/TelegramIcon";
 import WildberriesIcon from "../../shared/assets/WildberriesIcon";
 import useAccountCategory from "../../shared/store/useAccountCategory";
 import AccountCategoryButton from "../../shared/ui/AccountCategoryButton/AccountCategoryButton";
-import TransactionItem from "../../shared/ui/TransactionItem/TransactionItem";
 
 function AccountCategoryButtonsList() {
   const setCategory = useAccountCategory((state) => state.setCategory);
@@ -59,7 +58,6 @@ function AccountCategoryButtonsList() {
         title="Все аккаунты"
         accounts={20}
       />
-      <TransactionItem productName="Диск с играми" status="Доставлен" totalPrice={744} currency="+" date="13 февр. 2026г" quantity={23}/>
     </div>
   );
 }

@@ -7,12 +7,14 @@ import { sendMessage } from "../../api/requests/chats";
 interface ChatInputProps {
   chatId: string;
   onMessageSent?: () => void;
+  onFileSelect?: (file: File) => void;
 }
 
-function ChatInput({ chatId, onMessageSent }: ChatInputProps) {
+function ChatInput({ chatId, onMessageSent, onFileSelect }: ChatInputProps) {
   const [value, setValue] = useState("");
   const [sending, setSending] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const autoResize = () => {
     const textarea = textareaRef.current;
@@ -43,9 +45,38 @@ function ChatInput({ chatId, onMessageSent }: ChatInputProps) {
     }
   };
 
+  const handlePaperclipClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      console.log("Выбран файл:", file.name);
+
+      if (onFileSelect) {
+        onFileSelect(file);
+      }
+
+      e.target.value = "";
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit} className="relative w-full">
-      <Paperclip className="text-secondary-font cursor-pointer absolute left-4 bottom-4.5" />
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        className="hidden"
+        multiple={false}
+        accept="image/*,video/*,audio/*,.pdf,.doc,.docx"
+      />
+
+      <Paperclip
+        className="text-secondary-font cursor-pointer absolute left-4 bottom-4.5"
+        onClick={handlePaperclipClick}
+      />
       <textarea
         ref={textareaRef}
         className={`bg-chat-secondary-bg rounded-3xl text-primary-font shadow-[0_1px_2px_#00000025] placeholder:text-secondary-font w-full py-2.5 px-14 outline-none resize-none min-h-12 max-h-75 h-12 ${styles["input-area"]}`}
