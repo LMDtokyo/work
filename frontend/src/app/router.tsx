@@ -84,7 +84,7 @@ export const router = createBrowserRouter([
     element: (
       <PrivateRoute>
         <App />
-      </PrivateRoute> 
+      </PrivateRoute>
     ),
     errorElement: <ErrorPage />,
     children: [

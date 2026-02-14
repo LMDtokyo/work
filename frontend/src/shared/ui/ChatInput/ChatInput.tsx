@@ -1,8 +1,10 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SendButton from "../SendButton/SendButton";
 import styles from "./ChatInput.module.css";
-import { Paperclip } from "lucide-react";
+import { Paperclip, Zap } from "lucide-react";
 import { sendMessage } from "../../api/requests/chats";
+import FastAnswersModal from "../../../widgets/FastAnswersModal/FastAnswersModal";
+import useFastMessage from "../../store/useFastMessage";
 
 interface ChatInputProps {
   chatId: string;
@@ -15,6 +17,15 @@ function ChatInput({ chatId, onMessageSent, onFileSelect }: ChatInputProps) {
   const [sending, setSending] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { message, setMessage } = useFastMessage();
+
+  useEffect(() => {
+    if (message) {
+      setValue(message);
+    }
+    setMessage("");
+  }, [message.length > 0]);
 
   const autoResize = () => {
     const textarea = textareaRef.current;
@@ -63,34 +74,41 @@ function ChatInput({ chatId, onMessageSent, onFileSelect }: ChatInputProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="relative w-full">
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileChange}
-        className="hidden"
-        multiple={false}
-        accept="image/*,video/*,audio/*,.pdf,.doc,.docx"
-      />
+    <>
+      <form onSubmit={handleSubmit} className="relative w-full">
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          className="hidden"
+          multiple={false}
+          accept="image/*,video/*,audio/*,.pdf,.doc,.docx"
+        />
 
-      <Paperclip
-        className="text-secondary-font cursor-pointer absolute left-4 bottom-4.5"
-        onClick={handlePaperclipClick}
-      />
-      <textarea
-        ref={textareaRef}
-        className={`bg-chat-secondary-bg rounded-3xl text-primary-font shadow-[0_1px_2px_#00000025] placeholder:text-secondary-font w-full py-2.5 px-14 outline-none resize-none min-h-12 max-h-75 h-12 ${styles["input-area"]}`}
-        placeholder="Сообщение..."
-        onInput={autoResize}
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-      ></textarea>
-      <SendButton
-        className="absolute right-1.5 bottom-2.75"
-        isLoading={sending}
-        isDisabled={value === "" || sending}
-      />
-    </form>
+        <Paperclip
+          className="text-secondary-font cursor-pointer absolute left-4 bottom-4.5 hover:text-primary-font duration-100"
+          onClick={handlePaperclipClick}
+        />
+        <Zap
+          className="text-secondary-font cursor-pointer absolute left-12 bottom-4.5 hover:text-primary-font duration-100"
+          onClick={() => setIsModalOpen(true)}
+        />
+        <textarea
+          ref={textareaRef}
+          className={`bg-chat-tertiary-bg rounded-3xl text-primary-font shadow-[0_1px_2px_#00000025] placeholder:text-secondary-font w-full py-2.5 px-14 pl-23 outline-none resize-none min-h-12 max-h-75 h-12 ${styles["input-area"]}`}
+          placeholder="Сообщение..."
+          onInput={autoResize}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+        ></textarea>
+        <SendButton
+          className="absolute right-1.5 bottom-2.75"
+          isLoading={sending}
+          isDisabled={value === "" || sending}
+        />
+      </form>
+      {isModalOpen && <FastAnswersModal setIsModalOpen={setIsModalOpen} />}
+    </>
   );
 }
 

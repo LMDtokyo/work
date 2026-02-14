@@ -30,9 +30,11 @@ const PrimaryInput = forwardRef<HTMLInputElement, PrimaryInputProps>(
     return (
       <div className="relative w-full flex flex-col gap-2">
         <div className="flex items-center gap-2">
-          <label className="text-primary-font text-xs md:text-sm font-semibold ml-2">
-            {label}
-          </label>
+          {label && (
+            <label className="text-primary-font text-xs md:text-sm font-semibold ml-2">
+              {label}
+            </label>
+          )}
         </div>
         <input
           ref={ref}

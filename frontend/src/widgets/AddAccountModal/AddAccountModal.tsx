@@ -22,7 +22,6 @@ function AddAccountModal({ setIsModalOpen }: IAddAccountModal) {
   } = useForm<FormData>();
 
   const closeModal = () => setIsModalOpen(false);
-
   const { mutate, isPending } = useAddWbAccount(closeModal);
 
   const onSubmit = (data: FormData) => {
@@ -43,7 +42,7 @@ function AddAccountModal({ setIsModalOpen }: IAddAccountModal) {
 
   return (
     <>
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col gap-4 bg-chat-secondary-bg rounded-2xl py-8 pb-11 px-4 sm:px-8 md:px-10 z-99 animate-fade-in-bottom w-full sm:w-150">
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col gap-4 border border-chat-primary-border bg-chat-secondary-bg rounded-2xl py-8 pb-11 px-4 sm:px-8 md:px-10 z-99 animate-fade-in-bottom w-full sm:w-150">
         <div className="flex items-start sm:items-center gap-4 mb-3">
           <span className="p-2.5 bg-chat-tertiary-bg/80 rounded-md text-contrast">
             <Unplug width={20} />
