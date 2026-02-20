@@ -24,19 +24,17 @@ function FastAnswerItemsList({
   const [filteredItems, setFilteredItems] = useState<IFastAnswerItem[]>([]);
 
   useEffect(() => {
-    if (searchValue) {
-      const filtered = items.filter(
-        (item) =>
-          item.title
-            .toLowerCase()
-            .startsWith(searchValue.toLowerCase().trim()) ||
-          item.title.toLowerCase().includes(searchValue.toLowerCase().trim()),
-      );
-      setFilteredItems(filtered);
-    } else {
-      setFilteredItems(items);
-    }
-  }, [searchValue]);
+  if (!searchValue.trim()) {
+    setFilteredItems(items);
+    return; 
+  }
+  
+  const trimmedSearch = searchValue.toLowerCase().trim();
+  const filtered = items.filter(item => 
+    item.title.toLowerCase().includes(trimmedSearch)
+  );
+  setFilteredItems(filtered);
+}, [searchValue]);
 
   if (searchValue && filteredItems.length === 0) {
     return (

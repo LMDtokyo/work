@@ -47,14 +47,6 @@ function FastAnswersModal({ setIsModalOpen }: IFastAnswerModal) {
             { title: "Какой то текст", message: "Какой то текст" },
             { title: "Какой то текст", message: "Какой то текст" },
             { title: "Какой то текст", message: "Какой то текст" },
-            { title: "Какой то текст", message: "Какой то текст" },
-            { title: "Какой то текст", message: "Какой то текст" },
-            { title: "Какой то текст", message: "Какой то текст" },
-            { title: "Какой то текст", message: "Какой то текст" },
-            { title: "Какой то текст", message: "Какой то текст" },
-            { title: "Какой то текст", message: "Какой то текст" },
-            { title: "Какой то текст", message: "Какой то текст" },
-            { title: "Какой то текст", message: "Какой то текст" },
           ]}
           searchValue={inputValue}
           isCreateModalOpen={isCreateModalOpen}

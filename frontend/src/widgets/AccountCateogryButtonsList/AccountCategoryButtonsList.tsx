@@ -4,6 +4,7 @@ import TelegramIcon from "../../shared/assets/TelegramIcon";
 import WildberriesIcon from "../../shared/assets/WildberriesIcon";
 import useAccountCategory from "../../shared/store/useAccountCategory";
 import AccountCategoryButton from "../../shared/ui/AccountCategoryButton/AccountCategoryButton";
+import ChatInput from "../../shared/ui/ChatInput/ChatInput";
 
 function AccountCategoryButtonsList() {
   const setCategory = useAccountCategory((state) => state.setCategory);
@@ -58,6 +59,7 @@ function AccountCategoryButtonsList() {
         title="Все аккаунты"
         accounts={20}
       />
+      <ChatInput chatId="1" />
     </div>
   );
 }
